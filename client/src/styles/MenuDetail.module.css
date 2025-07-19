@@ -1,0 +1,48 @@
+.wrapper {
+  padding: clamp(16px, 5vw, 32px);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.backButton {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+}
+
+.imageBox {
+  width: 100%;
+  height: 200px;
+  background: #ddd;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.name {
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.price {
+  font-size: clamp(16px, 4vw, 20px);
+  margin-bottom: 12px;
+}
+
+.desc {
+  font-size: clamp(14px, 3.5vw, 16px);
+  margin-bottom: 24px;
+}
+
+.chatButton {
+  background-color: #fcd265;
+  padding: clamp(10px, 3vw, 14px) clamp(20px, 6vw, 32px);
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
+import styles from '../styles/MenuDetail.module.css';
 
 const MenuDetail = () => {
   const { menuId } = useParams();
@@ -16,15 +17,18 @@ const MenuDetail = () => {
   if (!menu) return <div>메뉴를 찾을 수 없습니다.</div>;
 
   return (
-    <div style={{ padding: 20 }}>
-      <button onClick={() => navigate(-1)}>&lt; 뒤로가기</button>
-      <div style={{ width: '100%', height: 200, background: '#ddd', marginBottom: 20 }}>
-        상세사진 영역
-      </div>
-      <h2>{menu.name}</h2>
-      <p>{menu.price.toLocaleString()}원</p>
-      <p>{menu.desc}</p>
-      <button style={{ background: '#fcd265', padding: '10px 20px', border: 'none', borderRadius: 8 }}>채팅하기</button>
+    <div className={styles.wrapper}>
+      <button onClick={() => navigate(-1)} className={styles.backButton}>
+        &lt; 뒤로가기
+      </button>
+
+      <div className={styles.imageBox}>상세사진 영역</div>
+
+      <h2 className={styles.name}>{menu.name}</h2>
+      <p className={styles.price}>{menu.price.toLocaleString()}원</p>
+      <p className={styles.desc}>{menu.desc}</p>
+
+      <button className={styles.chatButton}>채팅하기</button>
     </div>
   );
 };

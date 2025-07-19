@@ -16,7 +16,7 @@ const Home = () => {
 
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=Your_ID';
+    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=kfa8a20u6r';
     script.async = true;
     script.onload = () => {
       const map = new window.naver.maps.Map(mapRef.current, {
