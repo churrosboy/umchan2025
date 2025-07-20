@@ -1,0 +1,59 @@
+.wrapper {
+  position: relative;
+  height: calc(100vh - 60px);
+  font-family: sans-serif;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+.panel {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #ffffff;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  transition: height 0.2s ease;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dragHandle {
+  width: 100%;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.dragBar {
+  width: 40px;
+  height: 5px;
+  background: #ccc;
+  border-radius: 5px;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sellerItem {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.sellerItem strong {
+  font-size: clamp(14px, 4vw, 18px);
+}
+
+.sellerItem p {
+  font-size: clamp(12px, 3.5vw, 16px);
+  margin: 4px 0;
+}
