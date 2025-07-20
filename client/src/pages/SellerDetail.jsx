@@ -16,7 +16,7 @@ const SellerDetail = () => {
         &lt; 뒤로가기
       </button>
 
-      <h2 className={styles.title}>{seller.name}</h2>
+      <h2 onClick={() => navigate(`/other_user_profile/${seller.id}`)}>{seller.name}</h2>
       <p className={styles.info}>
         ⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}
       </p>
