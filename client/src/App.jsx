@@ -2,13 +2,13 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // pages
-import Login from './pages/login';
-import Signup1 from './pages/signup1';
-import Signup2 from './pages/signup2';
-import Signup3 from './pages/signup3';
-import Signup4 from './pages/signup4';
-import Signup5 from './pages/signup5';
-import Home from './pages/home';
+import Login from './pages/Login';
+import Signup1 from './pages/Signup1';
+import Signup2 from './pages/Signup2';
+import Signup3 from './pages/Signup3';
+import Signup4 from './pages/Signup4';
+import Signup5 from './pages/Signup5';
+import Home from './pages/Home';
 import SellerDetail from './pages/seller_detail';
 import MenuDetail from './pages/menu_detail';
 import OtherProfile from './pages/other_user_profile';
