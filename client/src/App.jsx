@@ -16,6 +16,12 @@ import SellerAuth from './pages/seller_auth';
 import SellerItem from './pages/seller_item';
 import RecipeList from './pages/user_recipe_list';
 import ReviewList from './pages/user_review_list';
+import Profile from './pages/Profile';
+import Setting from './pages/Setting';
+import Sales_History from './pages/Sales_History';
+import Purchase_History from './pages/Purchase_History';
+import MyRecipe from './pages/MyRecipe';
+import MyReview from './pages/MyReview';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -48,6 +54,12 @@ const AppRoutes = () => {
         <Route path="/seller_item/:userId" element={<SellerItem />} />
         <Route path="/user_recipe_list/:userId" element={<RecipeList />} />
         <Route path="/user_review_list/:userId" element={<ReviewList />} />
+        <Route path="/Profile" element={<Profile />} />
+        <Route path="/setting" element={<Setting />} />
+        <Route path="/Sales_History" element={<Sales_History />} />
+        <Route path="/Purchase_History" element={<Purchase_History />} />
+        <Route path="/MyRecipe/:userId" element={<MyRecipe />} />
+        <Route path="/MyReview/:userId" element={<MyReview />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>
