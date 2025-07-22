@@ -21,8 +21,6 @@ const SellerDetail = () => {
         ⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}
       </p>
 
-      <div className={styles.mapBox}>지도 삽입</div>
-
       <h3 className={styles.sectionTitle}>즉시구매 상품</h3>
       {seller.sellingType === 'immediate' &&
         seller.menus.map(menu => (

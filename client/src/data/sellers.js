@@ -13,6 +13,12 @@ export const sellers = [
       { id: 101, name: '메뉴A', price: 15000, desc: '소불고기 반찬', reviews: 9 },
       { id: 102, name: '메뉴B', price: 12000, desc: '오이무침', reviews: 5 },
     ],
+    images: [
+      '/images/seller1-1.jpeg',
+      '/images/seller1-2.jpeg',
+      '/images/seller1-3.jpeg'
+    ],
+
   },
   {
     id: 2,
@@ -26,6 +32,11 @@ export const sellers = [
     address: '서울 성북구 하월곡동 222-1',
     menus: [
       { id: 103, name: '메뉴C', price: 13000, desc: '김치전', reviews: 12 },
+    ],
+    images: [
+      '/images/seller2-1.jpeg',
+      '/images/seller2-2.jpeg',
+      '/images/seller2-3.jpeg'
     ],
   },
 ];
