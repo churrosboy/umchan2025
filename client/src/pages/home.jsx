@@ -17,7 +17,7 @@ const Home = () => {
 
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=kfa8a20u6r';
+    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=';
     script.async = true;
     script.onload = () => {
       const map = new window.naver.maps.Map(mapRef.current, {
@@ -115,7 +115,7 @@ const Home = () => {
                 <div
                   key={seller.id}
                   className={styles.sellerItem}
-                  onClick={() => navigate(`/seller/${seller.id}`)}
+                  onClick={() => navigate(`/seller_detail/${seller.id}`)}
                 >
                   <strong>{seller.name}</strong>
                   <p>⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}</p>

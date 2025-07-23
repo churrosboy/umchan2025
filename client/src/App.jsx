@@ -47,7 +47,7 @@ const AppRoutes = () => {
         <Route path="/signup4" element={<Signup4 />} />
         <Route path="/signup5" element={<Signup5 />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/seller/:sellerId" element={<SellerDetail />} />
+        <Route path="/seller_detail/:sellerId" element={<SellerDetail />} />
         <Route path="/menu/:menuId" element={<MenuDetail />} />
         <Route path="/other_user_profile/:userId" element={<OtherProfile />} />
         <Route path="/seller_auth/:userId" element={<SellerAuth />} />
