@@ -14,7 +14,7 @@ const OtherProfile = () => {
     };
 
     const goToSellerItem = () => {
-        navigate('/seller_item/' + userId);
+        navigate('/seller_detail/' + userId);
     }
 
     const goToRecipeList = () => {
