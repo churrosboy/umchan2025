@@ -2,13 +2,13 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // pages
-import Login from './pages/Login';
-import Signup1 from './pages/Signup1';
-import Signup2 from './pages/Signup2';
-import Signup3 from './pages/Signup3';
-import Signup4 from './pages/Signup4';
-import Signup5 from './pages/Signup5';
-import Home from './pages/Home';
+import Login from './pages/login';
+import Signup1 from './pages/signup1';
+import Signup2 from './pages/signup2';
+import Signup3 from './pages/signup3';
+import Signup4 from './pages/signup4';
+import Signup5 from './pages/signup5';
+import Home from './pages/home';
 import SellerDetail from './pages/seller_detail';
 import MenuDetail from './pages/menu_detail';
 import OtherProfile from './pages/other_user_profile';
@@ -16,12 +16,12 @@ import SellerAuth from './pages/seller_auth';
 import SellerItem from './pages/seller_item';
 import RecipeList from './pages/user_recipe_list';
 import ReviewList from './pages/user_review_list';
-import Profile from './pages/Profile';
-import Setting from './pages/Setting';
-import Sales_History from './pages/Sales_History';
-import Purchase_History from './pages/Purchase_History';
-import MyRecipe from './pages/MyRecipe';
-import MyReview from './pages/MyReview';
+import Profile from './pages/profile';
+import Setting from './pages/setting';
+import Sales_History from './pages/sales_history';
+import Purchase_History from './pages/purchase_history';
+import MyRecipe from './pages/my_recipe';
+import MyReview from './pages/my_review';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -54,12 +54,12 @@ const AppRoutes = () => {
         <Route path="/seller_item/:userId" element={<SellerItem />} />
         <Route path="/user_recipe_list/:userId" element={<RecipeList />} />
         <Route path="/user_review_list/:userId" element={<ReviewList />} />
-        <Route path="/Profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/setting" element={<Setting />} />
-        <Route path="/Sales_History" element={<Sales_History />} />
-        <Route path="/Purchase_History" element={<Purchase_History />} />
-        <Route path="/MyRecipe/:userId" element={<MyRecipe />} />
-        <Route path="/MyReview/:userId" element={<MyReview />} />
+        <Route path="/sales_history" element={<Sales_History />} />
+        <Route path="/purchase_history" element={<Purchase_History />} />
+        <Route path="/my_recipe/:userId" element={<MyRecipe />} />
+        <Route path="/my_review/:userId" element={<MyReview />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>

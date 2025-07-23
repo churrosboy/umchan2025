@@ -17,12 +17,17 @@ const Home = () => {
 
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=Your_ID';
+    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=';
     script.async = true;
     script.onload = () => {
       const map = new window.naver.maps.Map(mapRef.current, {
         center: new window.naver.maps.LatLng(37.5665, 126.9780),
         zoom: 15,
+      });
+
+      window.naver.maps.Event.addListener(map, 'click', () => {
+        setSelectedSeller(null);
+        setPanelHeight(100);
       });
 
       filtered.forEach((seller) => {
@@ -41,6 +46,17 @@ const Home = () => {
     document.head.appendChild(script);
   }, [filter]);
 
+  useEffect(() => {
+    if (panelHeight > 100) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [panelHeight]);
+
   const handleTouchStart = (e) => {
     setStartY(e.touches[0].clientY);
     setStartHeight(panelHeight);
@@ -51,13 +67,19 @@ const Home = () => {
     e.preventDefault();
     const deltaY = e.touches[0].clientY - startY;
     let newHeight = startHeight - deltaY;
-    newHeight = Math.max(100, Math.min(400, newHeight));
+    newHeight = Math.max(100, Math.min(window.innerHeight - 60, newHeight));
     setPanelHeight(newHeight);
   };
 
   const handleTouchEnd = () => {
-    if (panelHeight < 200) setPanelHeight(100);
-    else setPanelHeight(340);
+    const maxHeight = window.innerHeight - 60;
+    if (panelHeight > maxHeight * 0.85) {
+      setPanelHeight(maxHeight);
+    } else if (panelHeight < 150) {
+      setPanelHeight(100);
+    } else {
+      setPanelHeight(panelHeight);
+    }
     setStartY(null);
   };
 
@@ -65,7 +87,6 @@ const Home = () => {
     <div className={styles.wrapper}>
       <div ref={mapRef} className={styles.map} />
 
-      {/* 슬라이드 패널 */}
       <div
         className={styles.panel}
         style={{ height: panelHeight }}
@@ -79,25 +100,10 @@ const Home = () => {
           <div className={styles.dragBar} />
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: 10 }}>
-          {/* 공통 가로 스크롤 이미지 섹션 */}
-          <div style={{ display: 'flex', overflowX: 'auto', gap: 8, marginBottom: 10 }}>
-            {filtered.flatMap(seller => seller.images.slice(0, 1)).map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`썸네일${idx}`}
-                style={{
-                  width: 100,
-                  height: 100,
-                  objectFit: 'cover',
-                  borderRadius: 8,
-                  flexShrink: 0
-                }}
-              />
-            ))}
-          </div>
-
+        <div className={styles.panelContent}>
+          {selectedSeller && (
+            <button onClick={() => setSelectedSeller(null)} className={styles.backButton}>←</button>
+          )}
           {!selectedSeller ? (
             <>
               <div className={styles.filterButtons}>
@@ -114,6 +120,16 @@ const Home = () => {
                   <strong>{seller.name}</strong>
                   <p>⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}</p>
                   <p>{seller.address}</p>
+                  <div className={styles.thumbnailScroll}>
+                    {seller.images.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`썸네일${idx}`}
+                        className={styles.thumbnailImage}
+                      />
+                    ))}
+                  </div>
                 </div>
               ))}
             </>
@@ -123,27 +139,15 @@ const Home = () => {
               <p>⭐ {selectedSeller.rating} ({selectedSeller.reviews}) 💚 {selectedSeller.hearts}</p>
               <p style={{ fontSize: 14, color: '#666' }}>{selectedSeller.intro}</p>
               <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>{selectedSeller.address}</p>
-
-              {/* 선택된 판매자의 상세 이미지들 */}
-              <div style={{ display: 'flex', overflowX: 'auto', gap: 8 }}>
+              <div className={styles.thumbnailScroll}>
                 {selectedSeller.images.map((img, idx) => (
                   <img
                     key={idx}
                     src={img}
                     alt={`판매자사진${idx}`}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      objectFit: 'cover',
-                      borderRadius: 8,
-                      flexShrink: 0
-                    }}
+                    className={styles.thumbnailImage}
                   />
                 ))}
-              </div>
-
-              <div style={{ marginTop: 10, textAlign: 'right' }}>
-                <button onClick={() => setSelectedSeller(null)}>← 리스트로 돌아가기</button>
               </div>
             </div>
           )}

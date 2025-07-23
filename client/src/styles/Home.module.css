@@ -78,3 +78,14 @@
   border-radius: 8px;
   flex-shrink: 0;
 }
+
+.backButton {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+}
