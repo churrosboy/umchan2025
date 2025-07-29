@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
 import styles from '../styles/Home.module.css';
 
+const naverMapKey = process.env.REACT_APP_NAVER_MAP_KEY;
+
 const Home = () => {
   const mapRef = useRef(null);
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ const Home = () => {
 
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=';
+    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${naverMapKey}`;
     script.async = true;
     script.onload = () => {
       const map = new window.naver.maps.Map(mapRef.current, {

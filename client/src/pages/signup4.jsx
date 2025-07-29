@@ -1,12 +1,41 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
-const Signup4 = () => {
+const Signup4 = async () => {
   const navigate = useNavigate();
 
-  const handleNext = () => {
-    navigate('/signup5');
-  };
+const handleSubmit = async () => {
+  const email = localStorage.getItem('email');
+  const password = localStorage.getItem('password');
+  const phone = localStorage.getItem('phone');
+  const address = document.querySelectorAll('input[type="text"]')[0].value;
+
+  try {
+    // 1. Firebase 계정 생성
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
+
+    // 2. MongoDB에 사용자 정보 저장
+    await fetch('http://localhost:5000/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        uid,
+        phone_number: phone,
+        address
+      }),
+    });
+
+    alert('🎉 회원가입이 완료되었습니다!');
+    localStorage.clear();
+    navigate('/');
+  } catch (error) {
+    alert('회원가입 실패: ' + error.message);
+  }
+};
+
 
   return (
     <div style={styles.wrapper}>
@@ -15,7 +44,7 @@ const Signup4 = () => {
         <input style={styles.input} type="text" placeholder="주소" />
         <button style={styles.button}>주소 찾기</button>
         <input style={styles.input} type="text" placeholder="상세 주소" />
-        <button style={styles.button} onClick={handleNext}>다음</button>
+        <button style={styles.button} onClick={handleSubmit}>회원가입</button>
       </div>
     </div>
   );

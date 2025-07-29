@@ -2,6 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Login.module.css';
 
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
+
 const Login = () => {
   const navigate = useNavigate();
 
@@ -9,8 +12,17 @@ const Login = () => {
     navigate('/signup1');
   };
 
-  const handleLogin = () => {
-    navigate('/home');
+  const handleLogin = async() => {
+    const email = document.querySelector('input[type="text"]').value;
+    const password = document.querySelector('input[type="password"]').value;
+  
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/home');
+    } catch (error) {
+      alert('로그인 실패: ' + error.message);
+    }    
+  
   };
 
   return (

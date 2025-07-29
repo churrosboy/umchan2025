@@ -5,6 +5,12 @@ const Signup1 = () => {
   const navigate = useNavigate();
 
   const handleNext = () => {
+    const email = document.querySelector('input[type="email"]').value;
+    const name = document.querySelector('input[type="text"]').value;
+
+    localStorage.setItem('email', email);
+    localStorage.setItem('name', name);
+
     navigate('/signup2');
   };
 

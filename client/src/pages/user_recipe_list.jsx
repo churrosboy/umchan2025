@@ -1,12 +1,13 @@
 import React from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
+import { users } from '../data/users';
 import { recipes } from '../data/recipes';
 
 
 const RecipeList = () => {
     const { userId } = useParams();
-    const user = sellers.find(u => u.id === Number(userId));
+    const user = users.find(u => u.id === Number(userId));
     const recipeList = recipes.filter(recipe => recipe.user_id === Number(userId));
     const navigate = useNavigate();
 

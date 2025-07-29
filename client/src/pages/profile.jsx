@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
 import {
   HiChevronRight,
   HiUser,
@@ -14,15 +16,15 @@ import { users } from '../data/users';
 const Profile = () => {
   const navigate = useNavigate();
 
-  const userId = 10203;
-  const user = users.find(u => u.id === userId);
+  const { userId } = useParams();
+  const user = users.find(u => u.id === Number(userId));
 
   const goToSetting = () => {
     navigate('/setting');
   };
 
   const goToMyRecipe = () => {
-    navigate('/MyRecipe/' + userId);
+    navigate('/user_recipe_list/' + userId);
   }
 
   const goToSalesHistory = () => {
@@ -98,6 +100,11 @@ const Profile = () => {
           <button style={styles.button} onClick={goToMyReview}>
             <HiBookOpen size={22} style={styles.leftIcon}/>
             <span style={styles.buttonText}>리뷰 관리</span>
+            <HiChevronRight size={22} style={styles.rightIcon}/>
+          </button>
+          <button style={styles.button} onClick={goToMyRecipe}>
+            <HiBookOpen size={22} style={styles.leftIcon}/>
+            <span style={styles.buttonText}>내 레시피</span>
             <HiChevronRight size={22} style={styles.rightIcon}/>
           </button>
         </div>
