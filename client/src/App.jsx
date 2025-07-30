@@ -22,6 +22,12 @@ import Sales_History from './pages/sales_history';
 import Purchase_History from './pages/purchase_history';
 import MyRecipe from './pages/my_recipe';
 import MyReview from './pages/my_review';
+import Search from './pages/search';
+import SellerList from './pages/seller_list';
+import Recipes from './pages/recipes';
+import SearchRecipe from './pages/search_recipe';
+import RecipeDetail from './pages/recipe_detail';
+import ReviewPost from './pages/review_post';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -34,7 +40,7 @@ const AppRoutes = () => {
     '/', '/signup1', '/signup2', '/signup3', '/signup4', '/signup5'
   ].includes(location.pathname);
 
-  const showSearchBar = location.pathname === '/home';
+  const showSearchBar = (location.pathname === '/home' || location.pathname.startsWith('/seller_list/'));
 
   return (
     <>
@@ -60,6 +66,12 @@ const AppRoutes = () => {
         <Route path="/purchase_history" element={<Purchase_History />} />
         <Route path="/my_recipe/:userId" element={<MyRecipe />} />
         <Route path="/my_review/:userId" element={<MyReview />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/seller_list/:keyword" element={<SellerList />} />
+        <Route path="/recipes/:keyword" element={<Recipes />} />
+        <Route path="/search_recipe" element={<SearchRecipe />} />
+        <Route path="/recipe_detail/:recipeId" element={<RecipeDetail />} />
+        <Route path="/review_post" element={<ReviewPost />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>
