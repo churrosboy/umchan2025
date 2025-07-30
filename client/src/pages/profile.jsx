@@ -18,11 +18,11 @@ const Profile = () => {
   const user = users.find(u => u.id === userId);
 
   const goToSetting = () => {
-    navigate('/setting');
+    navigate('/setting/' + userId);
   };
 
-  const goToMyRecipe = () => {
-    navigate('/MyRecipe/' + userId);
+  const goToRecipeRegister = () => {
+    navigate('/RecipeRegister');
   }
 
   const goToSalesHistory = () => {
@@ -36,14 +36,26 @@ const Profile = () => {
   const goToMyReview = () => {
     navigate('/MyReview/' + userId);
   }
+
+  const goToMyRecipe = () => {
+    navigate('/MyRecipe/' + userId);
+  }
   
   return (
     <div style={styles.wrapper}>
       <div style={styles.container}>
         {/* 프로필 카드 */}
         <button style={styles.profileCard} onClick={goToSetting}>
-          <div style={styles.profileImage}>
+          <div style={styles.profileImageContainer}>
+          {user.profile_img ? (
+            <img
+              src={user.profile_img}
+              alt="프로필 사진"
+              style={styles.profileImage}
+            />
+          ) : (
             <HiUser size={36} />
+          )}
           </div>
           <div style={styles.profileInfo}>
             {user ? (
@@ -54,7 +66,7 @@ const Profile = () => {
             }
             <div style={styles.ratingBadge}>
               {user ? (
-                <span style={styles.ratingText}>{user.rate}공기</span>
+                <span style={styles.ratingText}>{user.avg_rating}공기</span>
               ) : (
                 <span style={styles.ratingText}>error</span>
               )
@@ -75,7 +87,7 @@ const Profile = () => {
             <span style={styles.buttonText}>내 음식 판매하기</span>
             <HiChevronRight size={22} style={styles.rightIcon}/>
           </button>
-          <button style={styles.button} onClick={goToMyRecipe}>
+          <button style={styles.button} onClick={goToRecipeRegister}>
             <HiPencil size={22} style={styles.leftIcon}/>
             <span style={styles.buttonText}>레시피 공유하기</span>
             <HiChevronRight size={22} style={styles.rightIcon}/>
@@ -100,7 +112,13 @@ const Profile = () => {
             <span style={styles.buttonText}>리뷰 관리</span>
             <HiChevronRight size={22} style={styles.rightIcon}/>
           </button>
+          <button style={styles.button} onClick={goToMyRecipe}>
+            <HiBookOpen size={22} style={styles.leftIcon}/>
+            <span style={styles.buttonText}>내 레시피</span>
+            <HiChevronRight size={22} style={styles.rightIcon}/>
+          </button>
         </div>
+        <div style={styles.margin}></div>
       </div>
     </div>
   );
@@ -137,16 +155,21 @@ const styles = {
     alignItems: 'center',
     gap: '15px'
   },
-  profileImage: {
+  profileImageContainer: {
     width: '65px',
     height: '65px',
     borderRadius: '50%',
     backgroundColor: '#B4B3B3',
-
-    display: 'flex',           // Flexbox로
-    justifyContent: 'center',  // 가로 중앙
-    alignItems: 'center',      // 세로 중앙
-    overflow: 'hidden',        // 원을 벗어나면 잘라냄
+    overflow: 'hidden',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: '15px'
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover'
   },
   profileInfo: {
     flex: 1,
@@ -222,6 +245,9 @@ const styles = {
   buttonText: {
     display: 'block'
   },
+  margin: {
+    padding: '40px'
+  }
 };
 
 export default Profile;

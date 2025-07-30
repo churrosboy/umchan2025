@@ -1,11 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { users } from '../data/users';
 
 const Setting = () => {
+    const { userId } = useParams();
     const navigate = useNavigate();
+
+    const user = users.find(u => u.id === Number(userId));
 
     const goBack = () => {
         navigate(-1);
+    }
+
+    const goToUpdateProfile = () => {
+      navigate('/UpdateProfile/' + userId);
     }
 
     return (
@@ -14,7 +22,7 @@ const Setting = () => {
             <div style={styles.backButton}><span onClick={goBack}>
                 &lt; 뒤로가기
             </span></div>
-            <button style={styles.button}>프로필 수정</button>
+            <button style={styles.button} onClick={goToUpdateProfile}>프로필 수정</button>
             <button style={styles.button}>계정 관리</button>
             <button style={styles.button}>알림설정</button>
             <button style={styles.button}>채팅설정</button>
