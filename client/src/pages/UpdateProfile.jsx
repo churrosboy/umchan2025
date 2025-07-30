@@ -60,12 +60,17 @@ const UpdateProfile = () => {
         navigate(-1);
     };
 
+    const SaveProfile = () => {
+
+    };
+
     return (
         <div style={styles.wrapper}>
         <div style={styles.container}>
             <div style={styles.header}>
                 <div style={styles.backButton}><span onClick={goBack}>←</span></div>
                 <div style={styles.headerTitle}>프로필</div>
+                <div style={styles.saveButton}><span onclick={SaveProfile}>저장하기</span></div>
             </div>
             <div style={styles.scrollArea}>
             <div style={styles.profileContainer}>
@@ -103,17 +108,8 @@ const UpdateProfile = () => {
                   }}
                 />
                 <div style={{margin:6}}></div>
-                <div style={styles.buttonGroup}>
-                <button style={styles.buttonYellow}>채팅하기</button>
-                <button style={styles.buttonYellow}>관심 판매자 등록하기</button>
-                </div>
             </div>
-            <div style={styles.menuList}>
-                <div style={styles.menuItem}><span onClick={goToSellerAuth} style={{cursor: 'pointer'}}><span style={styles.menuIcon}>🧾</span>판매자 인증한 사용자입니다.</span></div>
-                <div style={styles.menuItem}><span onClick={goToSellerItem} style={{cursor: 'pointer'}}><span style={styles.menuIcon}>📃</span>판매 물품</span></div>
-                <div style={styles.menuItem}><span onClick={goToRecipeList} style={{cursor: 'pointer'}}><span style={styles.menuIcon}>🍱</span>등록한 레시피</span></div>
-                <div style={styles.menuItem}><span onClick={goToReviewList} style={{cursor: 'pointer'}}><span style={styles.menuIcon}>🍱</span>받은 평가</span></div>
-            </div>
+
             </div>
         </div>
         </div>
@@ -148,6 +144,11 @@ const styles = {
     backButton: {
         cursor: 'pointer',
         fontSize: 18,
+        color: '#333',
+    },
+    saveButton: {
+        cursor: 'pointer',
+        fontSize: 14,
         color: '#333',
     },
     headerTitle: {
