@@ -22,6 +22,8 @@ import Sales_History from './pages/sales_history';
 import Purchase_History from './pages/purchase_history';
 import MyRecipe from './pages/my_recipe';
 import MyReview from './pages/my_review';
+import RecipeRegister from './pages/RecipeRegister';
+import UpdateProfile from './pages/UpdateProfile';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -55,11 +57,13 @@ const AppRoutes = () => {
         <Route path="/user_recipe_list/:userId" element={<RecipeList />} />
         <Route path="/user_review_list/:userId" element={<ReviewList />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/setting" element={<Setting />} />
+        <Route path="/setting/:userId" element={<Setting />} />
         <Route path="/sales_history" element={<Sales_History />} />
         <Route path="/purchase_history" element={<Purchase_History />} />
         <Route path="/my_recipe/:userId" element={<MyRecipe />} />
         <Route path="/my_review/:userId" element={<MyReview />} />
+        <Route path="/RecipeRegister" element={<RecipeRegister />} />
+        <Route path="/UpdateProfile/:userId" element={<UpdateProfile />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>
