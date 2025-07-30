@@ -1,7 +1,13 @@
 import React from 'react';
 import { HiOutlineSearch } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
+  const navigate = useNavigate();
+
+  const goToSearch = () => {
+    navigate('/search');
+  };
   return (
     <div style={{
       position: 'absolute',
@@ -23,6 +29,7 @@ const SearchBar = () => {
         <HiOutlineSearch size={20} color="#888" style={{ marginRight: 8 }} />
         <input
           type="text"
+          onClick={goToSearch}
           placeholder="원하는 음식을 검색해보세요"
           style={{
             border: 'none',

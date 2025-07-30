@@ -10,7 +10,7 @@ const RecipeList = () => {
     const recipeList = recipes.filter(recipe => recipe.user_id === Number(userId));
     const navigate = useNavigate();
 
-    if (!user) return <div>사용자를 찾을 수 없습니다.</div>;
+    if (!user) return <div style={styles.header}>사용자를 찾을 수 없습니다.</div>;
 
     const goBack = () => {
         navigate(-1);
@@ -28,10 +28,14 @@ const RecipeList = () => {
               <div style={styles.recipeCard} key={item.id} onClick={() => navigate(`/recipe/${item.id}`)}>
                 <div style={styles.recipeImage}></div>
                 <div style={styles.recipeInfo}>
-                <div style={styles.recipeTitle}>{item.title}</div>
+                <div style={styles.recipeTitle}>
+                    <span>{item.user_name}</span>{item.title}
+                    <span style={styles.rating}> ⭐{item.rating}</span>
+                    <span style={styles.likes}> 💚{item.hearts}</span>
+                </div>
                 <div style={styles.recipeDesc}>{item.desc}</div>
               </div>
-              <div style={styles.editIcon}>🖋️</div>
+              <div style={styles.editIcon} onClick={() => navigate(`/edit-recipe/${item.id}`)}>🖋️</div>
             </div>
             ))}
         </div>
@@ -130,6 +134,14 @@ const styles = {
     page: {
         minHeight: "100vh",
         background: "#fff",
+    },
+    rating: {
+        color: '#f5a623',
+    },
+    likes: {
+        marginLeft: 'auto',
+        fontSize: '13px',
+        color: '#23a34a',
     },
 };
 
