@@ -7,6 +7,7 @@ import {RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 const Signup3 = () => {
   const navigate = useNavigate();
 
+  /*
   useEffect(() => {
     if (!window.recaptchaVerifier) {
       // The 'sign-in-button' is the ID of the button that triggers the SMS sending
@@ -21,6 +22,7 @@ const Signup3 = () => {
       });
     }
   }, []); // Empty dependency array ensures this runs only once
+  
 
   const handleSendCode = async () => {
     const phoneNumber = document.querySelector('input[name="phone"]').value;
@@ -39,6 +41,7 @@ const Signup3 = () => {
       alert('전송 실패: ' + error.message);
     }
   };
+  
 
 const handleVerifyCode = async () => {
   const code = document.querySelector('input[name="code"]').value;
@@ -69,6 +72,29 @@ const handleVerifyCode = async () => {
       </div>
     </div>
   );
+  */
+
+  const handleNext = () => {
+    const phone = document.querySelector('input[name="phone"]').value;
+    if (!phone) {
+      alert('휴대폰 번호를 입력해주세요.');
+      return;
+    }
+
+    localStorage.setItem('phone', phone);
+    navigate('/signup4');
+  };
+
+  return (
+    <div style={styles.wrapper}>
+      <div style={styles.container}>
+        <h2 style={styles.title}>📱 휴대폰 번호를 입력해주세요</h2>
+        <input name="phone" style={styles.input} type="text" placeholder="휴대폰 번호" />
+        <button style={styles.button} onClick={handleNext}>다음</button>
+      </div>
+    </div>
+  );
+
 };
 
 

@@ -8,13 +8,13 @@ import { getAuth, RecaptchaVerifier } from 'firebase/auth';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyB3JxS8YGU7CY59YTa6kcR_Bwwnwz1UC_U",
-  authDomain: "umchan-d9dd1.firebaseapp.com",
-  projectId: "umchan-d9dd1",
-  storageBucket: "umchan-d9dd1.firebasestorage.app",
-  messagingSenderId: "474380891679",
-  appId: "1:474380891679:web:ccc89fc2ef085ef18e872a",
-  measurementId: "G-LX1F7B9Q0W"
+  apiKey: "AIzaSyAJCgpoNfjLj9aKIMLpNX7V6h78B6kr68Y",
+  authDomain: "umchan-c2fa3.firebaseapp.com",
+  projectId: "umchan-c2fa3",
+  storageBucket: "umchan-c2fa3.firebasestorage.app",
+  messagingSenderId: "537881686160",
+  appId: "1:537881686160:web:d91569745748c205bb6815",
+  measurementId: "G-GQBV4S22K8"
 };
 
 // Initialize Firebase

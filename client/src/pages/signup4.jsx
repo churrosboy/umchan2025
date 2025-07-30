@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 
-const Signup4 = async () => {
+const Signup4 = () => {
   const navigate = useNavigate();
 
 const handleSubmit = async () => {

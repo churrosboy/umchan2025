@@ -23,6 +23,7 @@ const Login = () => {
       alert('로그인 실패: ' + error.message);
     }    
   
+    navigate('/home');
   };
 
   return (
