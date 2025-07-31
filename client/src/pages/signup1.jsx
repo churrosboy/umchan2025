@@ -4,17 +4,18 @@ import { useNavigate } from 'react-router-dom';
 const Signup1 = () => {
   const navigate = useNavigate();
 
+  {/*다음 페이지로 이동하는 함수*/}
   const handleNext = () => {
     navigate('/signup2');
   };
 
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.container}>
-        <h2 style={styles.title}>✏️ 회원정보를 입력해 주세요</h2>
-        <input style={styles.input} type="text" placeholder="이름" />
-        <input style={styles.input} type="email" placeholder="이메일" />
-        <button style={styles.button} onClick={handleNext}>다음</button>
+    <div style={styles.wrapper}>  {/*배경*/}
+      <div style={styles.container}>  {/*요소들 담은 박스*/}
+        <h2 style={styles.title}>✏️ 회원정보를 입력해 주세요</h2> {/*제목*/}
+        <input style={styles.input} type="text" placeholder="이름" /> {/*이름 입력란*/}
+        <input style={styles.input} type="email" placeholder="이메일" /> {/*이메일 입력란*/}
+        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음 페이지로 이동하는 함수(onClick={클릭하면 함수 실행})*/}
       </div>
     </div>
   );

@@ -7,12 +7,12 @@ const Login = () => {
 
   {/*회원가입 화면으로 이동하는 함수 */}
   const goToSignup = () => {
-    navigate('/signup1');
+    navigate('/signup1'); {/*App.jsx 가보면 '/signup1' 같은거 어떤 페이지 뜨게하는건지 나와있음*/}
   };
   
   {/*홈화면으로 이동하는 함수*/}
   const handleLogin = () => {
-    navigate('/home');
+    navigate('/home');  {/*'/home'도 App.jsx 참고*/}
   };
 
   {/*화면*/}
