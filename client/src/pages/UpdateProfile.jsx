@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { users } from '../data/users';
-import { HiUser, HiPencil, HiCheck } from 'react-icons/hi2';
+import { HiUser, HiPencil, HiCheck, HiPlus, HiMiniXCircle} from 'react-icons/hi2';
 import InlineEditor from '../components/InlineProfileEditor';
 
 const UpdateProfile = () => {
@@ -14,7 +14,8 @@ const UpdateProfile = () => {
     const [profile, setProfile] = useState({
         nickname: user.nickname,
         disc: user.disc,
-        file: user.profile_img
+        file: user.profile_img,
+        main_img: [...user.main_img, null].slice(0, 3)
     });
 
     const updateNickname = newNickname => {
@@ -38,23 +39,29 @@ const UpdateProfile = () => {
         }));
     };
 
-    if (!user) return <div>사용자를 찾을 수 없습니다.</div>;
-
-    const goToSellerAuth = () => {
-        navigate('/seller_auth/' + userId);
+    const handleRemoveProfileImage = () => {
+      setProfile(prev => ({ ...prev, file: null }));
     };
 
-    const goToSellerItem = () => {
-        navigate('/seller_detail/' + userId);
-    }
+    // main_img 슬롯에 이미지 추가/교체
+    const handleAddImage = (slotIdx, file) => {
+        setProfile(prev => {
+            const imgs = [...prev.main_img];
+            imgs[slotIdx] = URL.createObjectURL(file);
+            return { ...prev, main_img: imgs };
+        });
+    };
 
-    const goToRecipeList = () => {
-        navigate('/user_recipe_list/' + userId);
-    }
+    // main_img 슬롯에서 이미지 제거
+    const handleRemoveImage = slotIdx => {
+        setProfile(prev => {
+            const imgs = [...prev.main_img];
+            imgs[slotIdx] = null;
+            return { ...prev, main_img: imgs };
+        });
+    };
 
-    const goToReviewList = () => {
-        navigate('/user_review_list/' + userId);
-    }
+    if (!user) return <div>사용자를 찾을 수 없습니다.</div>;
 
     const goBack = () => {
         navigate(-1);
@@ -66,52 +73,111 @@ const UpdateProfile = () => {
 
     return (
         <div style={styles.wrapper}>
-        <div style={styles.container}>
-            <div style={styles.header}>
-                <div style={styles.backButton}><span onClick={goBack}>←</span></div>
-                <div style={styles.headerTitle}>프로필</div>
-                <div style={styles.saveButton}><span onclick={SaveProfile}>저장하기</span></div>
-            </div>
-            <div style={styles.scrollArea}>
-            <div style={styles.profileContainer}>
-                <label style={styles.profileImageContainer}>
-                    <input
-                        type="file"
-                        style={styles.photoInput}
-                        onChange={e => updateFile(e.target.files[0])}
-                    />
-                    {profile.file ? (
-                      <img
-                        src={profile.file}
-                        alt='프로필 사진'
-                        style={styles.profileImage}
-                      />
-                    ) : (
-                      <HiUser size={36} />
-                    )}
-                </label>
-                <div style={styles.profileNameRow}>
-                <InlineEditor
-                  initialValue={user.nickname}
-                  onSave={newNick => {
-                    setProfile(prev => ({ ...prev, nickname: newNick }));
-                    // 서버 저장 등 추가 로직
-                  }}
-                />
-                <p>⭐ {user.avg_rating} ({user.review_cnt}) 💚 {user.like_cnt}</p>
+            <div style={styles.container}>
+                <div style={styles.header}>
+                    <div style={styles.backButton}><span onClick={goBack}>←</span></div>
+                    <div style={styles.headerTitle}>프로필</div>
+                    <div style={styles.saveButton}><span onclick={SaveProfile}>저장하기</span></div>
                 </div>
-                <InlineEditor
-                  initialValue={user.disc}
-                  onSave={newDisc => {
-                    setProfile(prev => ({ ...prev, disc: newDisc }));
-                    // 서버 저장 등 추가 로직
-                  }}
-                />
-                <div style={{margin:6}}></div>
+                <div style={styles.scrollArea}>
+                    <div style={styles.profileContainer}>
+                        <label style={{ ...styles.profileImageContainer, position: 'relative' }}>
+                          <input
+                            type="file"
+                            style={styles.photoInput}
+                            onChange={e => updateFile(e.target.files[0])}
+                          />
+                          {profile.file ? (
+                            <>
+                              <img
+                                src={profile.file}
+                                alt="프로필 사진"
+                                style={styles.profileImage}
+                              />
+                              <div style={styles.removeIcon}
+                                    onClick={e => {
+                                      e.preventDefault();    // 레이블 기본 동작 방지
+                                      e.stopPropagation();   // 이벤트 버블링 방지
+                                      handleRemoveProfileImage();
+                                    }}
+                                    >
+                                    ×
+                              </div>
+                            </>
+                          ) : (
+                            <HiUser size={36} />
+                          )}
+                        </label>
+                        <div style={styles.profileNameRow}>
+                        <InlineEditor
+                          initialValue={user.nickname}
+                          onSave={newNick => {
+                            setProfile(prev => ({ ...prev, nickname: newNick }));
+                            // 서버 저장 등 추가 로직
+                          }}
+                        />
+                        <p>⭐ {user.avg_rating} ({user.review_cnt}) 💚 {user.like_cnt}</p>
+                        </div>
+                        <InlineEditor
+                          initialValue={user.disc}
+                          onSave={newDisc => {
+                            setProfile(prev => ({ ...prev, disc: newDisc }));
+                            // 서버 저장 등 추가 로직
+                          }}
+                        />
+                        <div style={{margin:6}}></div>
+                    </div>
+                </div>
+                <div style={styles.panelContent}>
+                    <div style={styles.userItem}>
+                        <strong style={styles.userItemStrong}>{profile.nickname}</strong>
+                        <p style={styles.userItemParagraph}>⭐ {user.avg_rating} ({user.review_cnt}) 💚 {user.like_cnt}</p>
+                        <p style={styles.userItemParagraph}>{user.location}</p>
+                        <div style={styles.thumbnailScroll}>
+                          {[0,1,2].map(slotIdx => {
+                            // 마지막 채워진 인덱스 계산
+                            const filled = profile.main_img
+                              .map((img,i) => img ? i : -1)
+                              .filter(i => i>=0);
+                            const lastFilled = filled.length ? filled[filled.length-1] : -1;
+                        
+                            return (
+                              <label key={slotIdx}
+                                     style={{ ...styles.thumbnailSlot, position: 'relative' }}>
+                                <input
+                                  type="file"
+                                  style={styles.photoInput}
+                                  onChange={e => handleAddImage(slotIdx, e.target.files[0])}
+                                />
+                                {profile.main_img[slotIdx] ? (
+                                  <>
+                                    <img
+                                      src={profile.main_img[slotIdx]}
+                                      alt={`썸네일${slotIdx}`}
+                                      style={styles.thumbnailImage}
+                                    />
+                                    {slotIdx === lastFilled && (
+                                      <div style={styles.removeIcon}
+                                            onClick={e => {
+                                              e.preventDefault();
+                                              e.stopPropagation();
+                                              handleRemoveImage(slotIdx);
+                                            }}
+                                           >
+                                        ×
+                                      </div>
+                                    )}
+                                  </>
+                                ) : (
+                                  <HiPlus size={24} />
+                                )}
+                              </label>
+                            );
+                          })}
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            </div>
-        </div>
         </div>
     );
 };
@@ -158,9 +224,8 @@ const styles = {
         fontWeight: 'bold',
     },
     scrollArea: {
-        flex: 1,
+        flex: 0,
         overflowY: 'auto',
-        paddingBottom: 80,
     },
     profileContainer: {
         padding: 20,
@@ -246,7 +311,71 @@ const styles = {
     },
     clickableText: {
         cursor: 'pointer',
-    }
+    },
+    panelContent: {
+        flex: 0,
+        overflowY: 'auto',
+        padding: '10px',
+    },
+    userItemStrong: {
+        fontSize: 'clamp(14px, 4vw, 18px)'
+    },
+    userItemParagraph: {
+        fontSize: 'clamp(12px, 3.5vw, 16px)',
+        margin: '4px 0'
+    },
+    thumbnailScroll: {
+        display: 'flex',        // 가로 정렬
+        overflowX: 'auto',      // 가로 스크롤
+        gap: '8px',             // 아이템 간격
+        marginTop: '12px',      // 텍스트와 쫌 띄우기
+    },
+    thumbnailImage: {
+        width: '80px',          // 적당히 줄인 크기
+        height: '80px',
+        objectFit: 'cover',
+        borderRadius: '8px',
+        flexSrink: 0
+    },
+    userItem: {
+      padding: '10px',
+      borderBottom: '1px solid #ddd',
+      cursor: 'pointer',
+    },
+    thumbnailSlot: {
+        width: '80px',
+        height: '80px',
+        flexShrink: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '8px',
+        backgroundColor: '#f0f0f0', /* 비어 있을 때 연한 회색 배경 */
+        overflow: 'hidden'
+    },  
+    // 빈 슬롯에 적용할 라벨(파일 인풋 + 플러스 아이콘)
+    thumbnailPlaceholder: {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        cursor: 'pointer',
+        position: 'relative'
+    },
+
+    removeIcon: {
+        position: 'absolute',
+        top: 4, right: 4,
+        background: '#fff',
+        borderRadius: '50%',
+        width: 20, height: 20,
+        lineHeight: '20px',
+        textAlign: 'center',
+        fontSize: '14px',
+        cursor: 'pointer',
+        zIndex: 2
+    },
 };
 
 export default UpdateProfile;
