@@ -39,4 +39,27 @@ export const sellers = [
       '/images/seller2-3.jpeg'
     ],
   },
+  {
+  id: 3,
+  name: '해당 가게는 한국에서 가장 긴 도로명 주소를 가지고 있는 가게입니다',
+  lat: 37.565,
+  lng: 126.976,
+  rating: 4.9,
+  reviews: 10000,
+  hearts: 12,
+  sellingType: 'reservation',
+  address: '부산광역시 강서구 녹산산단382로14번가길 10~29번지',
+  menus: [
+    { id: 102, name: '메뉴B', price: 12000, desc: '오이무침', reviews: 5 },
+    { id: 103, name: '메뉴C', price: 13000, desc: '김치전', reviews: 12 },
+  ],
+  images: [
+    '/images/seller1-1.jpeg',
+    '/images/seller2-1.jpeg',
+    '/images/seller1-2.jpeg',
+    '/images/seller2-2.jpeg',
+    '/images/seller1-3.jpeg',
+    '/images/seller2-3.jpeg',
+  ],
+},
 ];
