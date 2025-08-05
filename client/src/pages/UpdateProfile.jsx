@@ -75,7 +75,7 @@ const UpdateProfile = () => {
 
     return (
         <div style={styles.wrapper}>
-            
+            <div style={styles.container}>
                 <div style={styles.header}>
                     <div style={styles.backButton}><span onClick={goBack}>←</span></div>
                     <div style={styles.headerTitle}>프로필</div>
@@ -118,10 +118,10 @@ const UpdateProfile = () => {
                             // 서버 저장 등 추가 로직
                           }}
                         />
-                        <p>
-                          <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
-                          {user.avg_rating} ({user.review_cnt}) 
-                          <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                        <p style={styles.text}>
+                          <Star width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                          {user.avg_rating } ({user.review_cnt})
+                          <Heart width={17} height={17} style={{ verticalAlign: 'middle' }}/>
                           {user.like_cnt}</p>
                         </div>
                         <InlineEditor
@@ -138,9 +138,9 @@ const UpdateProfile = () => {
                     <div style={styles.userItem}>
                         <strong style={styles.userItemStrong}>{profile.nickname}</strong>
                         <p style={styles.userItemParagraph}>
-                          <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                          <Star width={15} height={15} style={{ verticalAlign: 'middle' }}/>
                           {user.avg_rating} ({user.review_cnt}) 
-                          <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                          <Heart width={17} height={17} style={{ verticalAlign: 'middle' }}/>
                           {user.like_cnt}</p>
                         <p style={styles.userItemParagraph}>{user.location}</p>
                         <div style={styles.thumbnailScroll}>
@@ -187,7 +187,8 @@ const UpdateProfile = () => {
                         </div>
                     </div>
                 </div>
-            
+                <div style={styles.margin}></div>
+            </div>
         </div>
     );
 };
@@ -200,6 +201,7 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
+        padding: '0 16px',
     },
     container: {
         flex: 1,
@@ -238,7 +240,7 @@ const styles = {
         overflowY: 'auto',
     },
     profileContainer: {
-        padding: 20,
+        padding: '16px',
         display: 'flex', 
         flexDirection: 'column', 
         textAlign: 'center',
@@ -265,7 +267,6 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         gap: 6,
-        marginBottom: 6,
     },
     profileName: {
         fontWeight: 'bold',
@@ -325,20 +326,23 @@ const styles = {
     panelContent: {
         flex: 0,
         overflowY: 'auto',
-        padding: '10px',
     },
     userItemStrong: {
         fontSize: 'clamp(14px, 4vw, 18px)'
     },
     userItemParagraph: {
         fontSize: 'clamp(12px, 3.5vw, 16px)',
-        margin: '4px 0'
+        margin: '4px 0',
+        flexDirection: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     thumbnailScroll: {
         display: 'flex',        // 가로 정렬
         overflowX: 'auto',      // 가로 스크롤
         gap: '8px',             // 아이템 간격
-        marginTop: '12px',      // 텍스트와 쫌 띄우기
+        marginTop: '16px',      // 텍스트와 좀 띄우기
+        marginBottom: '16px',
     },
     thumbnailImage: {
         width: '80px',          // 적당히 줄인 크기
@@ -348,7 +352,6 @@ const styles = {
         flexSrink: 0
     },
     userItem: {
-      padding: '10px',
       borderBottom: '1px solid #ddd',
       cursor: 'pointer',
     },
@@ -386,6 +389,15 @@ const styles = {
         cursor: 'pointer',
         zIndex: 2
     },
+    text: {
+      display: 'flex',
+      flexDirection: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    margin: {
+      padding: '30px'
+    }
 };
 
 export default UpdateProfile;

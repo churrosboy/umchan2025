@@ -30,6 +30,7 @@ const Setting = () => {
             <div style={styles.margin}></div>
             <button style={styles.button} onClick={() => navigate(`/`)}>로그아웃</button>
             <button style={styles.button}>탈퇴하기</button>
+            <div style={styles.margin}></div>
           </div>
         </div>
     );
@@ -42,16 +43,13 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'start',
-    padding: '40px 0',
     boxSizing: 'border-box',
     fontFamily: 'Roboto, sans-serif'
   },
   container: {
     width: '100%',
-    maxWidth: '375px',
     backgroundColor: '#ffffff',
-    borderRadius: '20px',
-    padding: '20px',
+    padding: '16px',
     boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
     boxSizing: 'border-box',
     display: 'flex',
@@ -65,6 +63,7 @@ const styles = {
   },
   button: {
     backgroundColor: '#FFD856',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
     borderRadius: '15px',
     position: 'relative',
     padding: '12px 40px',
@@ -78,7 +77,7 @@ const styles = {
     display: 'block'
   },
   margin: {
-    padding: '40px'
+    padding: '20px'
   }
 };
 
