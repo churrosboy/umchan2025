@@ -7,7 +7,7 @@ import { sellers } from '../data/sellers';
 
 const RecipeList = () => {
     const navigate = useNavigate();
-    const { keyword } = useParams();
+    const { keyword } = useParams();    //화면에 띄울 레시피들을 관리하기 위한 키워드(검색 전 - all, 검색 후 - 검색어)
     const [liked, setLiked] = useState({});
     let recipeList = (keyword === 'all') ? recipes : recipes.filter(recipe => recipe.title.toLowerCase().includes(keyword.toLowerCase()));
 
