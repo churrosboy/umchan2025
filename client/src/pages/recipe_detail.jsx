@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { recipes } from '../data/recipes';
 import { sellers } from '../data/sellers';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const RecipeDetail = () => {
     const { recipeId } = useParams();
@@ -55,8 +57,12 @@ const RecipeDetail = () => {
         <div style={styles.recipeInfo}>
             <div style={styles.recipeTitle}>
                 <h3 style={styles.recipeName}>{recipe.title}</h3>
-                <span style={styles.rating}>⭐ {recipe.rating} ({recipe.reviews || 0})</span>
-                <span style={styles.likes}>💚 {recipe.hearts || 0}</span>
+                <span style={styles.rating}>
+                    <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/>
+                    {recipe.rating} ({recipe.reviews || 0})</span>
+                <span style={styles.likes}>
+                    <Heart width={19} height={19} style={{ verticalAlign: 'middle' }}/>
+                    {recipe.hearts || 0}</span>
             </div>
             
             <p style={{ margin: '8px 0 16px', color: '#666', fontSize: '15px' }}>

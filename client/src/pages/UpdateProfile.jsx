@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { users } from '../data/users';
 import { HiUser, HiPencil, HiCheck, HiPlus, HiMiniXCircle} from 'react-icons/hi2';
 import InlineEditor from '../components/InlineProfileEditor';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const UpdateProfile = () => {
     const { userId } = useParams();
@@ -73,7 +75,7 @@ const UpdateProfile = () => {
 
     return (
         <div style={styles.wrapper}>
-            <div style={styles.container}>
+            
                 <div style={styles.header}>
                     <div style={styles.backButton}><span onClick={goBack}>←</span></div>
                     <div style={styles.headerTitle}>프로필</div>
@@ -116,7 +118,11 @@ const UpdateProfile = () => {
                             // 서버 저장 등 추가 로직
                           }}
                         />
-                        <p>⭐ {user.avg_rating} ({user.review_cnt}) 💚 {user.like_cnt}</p>
+                        <p>
+                          <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                          {user.avg_rating} ({user.review_cnt}) 
+                          <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                          {user.like_cnt}</p>
                         </div>
                         <InlineEditor
                           initialValue={user.disc}
@@ -131,7 +137,11 @@ const UpdateProfile = () => {
                 <div style={styles.panelContent}>
                     <div style={styles.userItem}>
                         <strong style={styles.userItemStrong}>{profile.nickname}</strong>
-                        <p style={styles.userItemParagraph}>⭐ {user.avg_rating} ({user.review_cnt}) 💚 {user.like_cnt}</p>
+                        <p style={styles.userItemParagraph}>
+                          <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                          {user.avg_rating} ({user.review_cnt}) 
+                          <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                          {user.like_cnt}</p>
                         <p style={styles.userItemParagraph}>{user.location}</p>
                         <div style={styles.thumbnailScroll}>
                           {[0,1,2].map(slotIdx => {
@@ -177,7 +187,7 @@ const UpdateProfile = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            
         </div>
     );
 };

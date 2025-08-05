@@ -2,6 +2,8 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
 import styles from '../styles/SellerDetail.module.css';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const SellerDetail = () => {
   const { sellerId } = useParams();
@@ -18,7 +20,10 @@ const SellerDetail = () => {
 
       <h2 onClick={() => navigate(`/other_user_profile/${seller.id}`)}>{seller.name}</h2>
       <p className={styles.info}>
-        ⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}
+        <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/>
+        {seller.rating} ({seller.reviews})
+        <Heart width={19} height={19} style={{ verticalAlign: 'middle' }}/>
+        {seller.hearts}
       </p>
 
       <h3 className={styles.sectionTitle}>즉시구매 상품</h3>
