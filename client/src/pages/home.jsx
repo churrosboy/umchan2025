@@ -8,9 +8,9 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [filter, setFilter] = useState('all');
-  const [panelHeight, setPanelHeight] = useState(100);
+  const [panelHeight, setPanelHeight] = useState(window.innerHeight * 0.35);
   const [startY, setStartY] = useState(null);
-  const [startHeight, setStartHeight] = useState(100);
+  const [startHeight, setStartHeight] = useState(window.innerHeight * 0.35);
   const [selectedSeller, setSelectedSeller] = useState(null);
 
   const filtered = sellers.filter(s => filter === 'all' || s.sellingType === filter);
@@ -67,12 +67,12 @@ const Home = () => {
     e.preventDefault();
     const deltaY = e.touches[0].clientY - startY;
     let newHeight = startHeight - deltaY;
-    newHeight = Math.max(100, Math.min(window.innerHeight - 60, newHeight));
+    newHeight = Math.max(100, Math.min(window.innerHeight - 132, newHeight));
     setPanelHeight(newHeight);
   };
 
   const handleTouchEnd = () => {
-    const maxHeight = window.innerHeight - 60;
+    const maxHeight = window.innerHeight - 132;
     if (panelHeight > maxHeight * 0.85) {
       setPanelHeight(maxHeight);
     } else if (panelHeight < 150) {
@@ -107,9 +107,9 @@ const Home = () => {
           {!selectedSeller ? (
             <>
               <div className={styles.filterButtons}>
-                <button onClick={() => setFilter('immediate')}>즉시</button>
-                <button onClick={() => setFilter('reservation')}>예약</button>
-                <button onClick={() => setFilter('all')}>전체</button>
+                <button onClick={() => setFilter('immediate')} className={styles.filterButton}>즉시</button>
+                <button onClick={() => setFilter('reservation')} className={styles.filterButton}>예약</button>
+                <button onClick={() => setFilter('all')} className={styles.filterButton}>전체</button>
               </div>
               {filtered.map((seller) => (
                 <div
@@ -117,9 +117,12 @@ const Home = () => {
                   className={styles.sellerItem}
                   onClick={() => navigate(`/seller_detail/${seller.id}`)}
                 >
-                  <strong>{seller.name}</strong>
-                  <p>⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}</p>
-                  <p>{seller.address}</p>
+                  <div className={styles.sellerItemMain}>
+                    <div className={styles.name}>{seller.name}</div>
+                    <div className={styles.meta}>⭐ {seller.rating} ({seller.reviews > 999 ? '999+' : seller.reviews})</div>
+                    <div className={styles.meta}>💚 {seller.hearts > 999 ? '999+' : seller.hearts}</div>
+                  </div>
+                  <div className={styles.address}>{seller.address}</div>
                   <div className={styles.thumbnailScroll}>
                     {seller.images.map((img, idx) => (
                       <img
