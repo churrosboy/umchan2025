@@ -156,13 +156,12 @@ const RecipeRegister = () => {
         <button style={styles.addButton} onClick={addIngredient}>+ 재료 추가</button>
         </div>
 
-        {/* 설명 라벨 */}
-        <div style={styles.descriptionSection}>
-          <div style={styles.descriptionLabel}>조리 순서를 등록해주세요 :)</div>
-        </div>
-
         {/* 동적 조리 단계 */}
         <div style={styles.stepsSection}>
+          {/* 설명 라벨 */}
+          <div style={styles.descriptionSection}>
+            <div style={styles.descriptionLabel}>조리 순서를 등록해주세요 :)</div>
+          </div>
           {steps.map((step, idx) => (
             <div key={step.id} style={styles.stepWrapper}>
               <HiMiniXCircle style={styles.removeIcon} onClick={() => removeStep(step.id)} />
@@ -193,11 +192,13 @@ const RecipeRegister = () => {
               </div>
             </div>
           ))}
+
+          {/* 단계 추가 버튼 */}
+          <button style={styles.addButton} onClick={addStep}>+ 단계 추가</button>
+          <div style={styles.margin2}></div>
         </div>
 
-        {/* 단계 추가 버튼 */}
-        <button style={styles.addButton} onClick={addStep}>+ 단계 추가</button>
-        <div style={styles.margin2}></div>
+
         {/* 다음 버튼 */}
         <button style={styles.submitButton}>
           다음<HiChevronRight style={styles.nextIcon} />
@@ -209,9 +210,9 @@ const RecipeRegister = () => {
 };
 
 const styles = {
-  page: { minHeight: '100vh', backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column' },
+  page: { backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column',},
   header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', background: '#fff', borderBottom: '1px solid #ddd', position: 'relative', zIndex: 1 },
-  backButton: { fontSize: 18, cursor: 'pointer' },
+  backButton: { display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, cursor: 'pointer' },
   headerTitle: { position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontWeight: 'bold', fontSize: 16 },
   headerSpacer: { width: 18 },
   container: { flex: 1, backgroundColor: '#fff', padding: '16px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' },
@@ -219,13 +220,13 @@ const styles = {
   uploadIcon: { color: '#888888' },
   uploadLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
   inputSection: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid #E6E6E6' },
-  inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'row', gap: '8px' },
+  inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'column', gap: '8px'},
   inputTitle: { fontSize: 16, fontWeight: 600, color: '#111111' },
   inputField: { height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
-  inputFieldIngredient: { flex: 1, height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
+  inputFieldIngredient: { flex: 1, borderRadius: 15, border: '0.5px solid #888888', fontSize: 14, padding: '12px' },
   descriptionSection: { padding: '0 12px' },
   descriptionLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
-  stepsSection: { display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' },
+  stepsSection: { display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px'},
   stepWrapper: { position: 'relative' },
   removeIcon: { position: 'absolute', top: '4px', right: '4px', fontSize: 16, color: '#888888', cursor: 'pointer' },
   stepCard: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #E6E6E6' },
@@ -233,8 +234,8 @@ const styles = {
   photoInput: { display: 'none' },
   photoPreview: { width: '100%', height: '100%', objectFit: 'cover' },
   stepIcon: { color: '#888888' },
-  stepInput: { flex: 1, height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
-  addButton: { marginTop: '8px', backgroundColor: '#fff', border: '1px solid #888888', borderRadius: 15, padding: '8px 12px', fontSize: 14, cursor: 'pointer', alignSelf: 'center' },
+  stepInput: { flex: 1, height: 40, borderRadius: 15, border: '0.5px solid #888888', paddingLeft: '12px', fontSize: 14 },
+  addButton: { backgroundColor: '#fff', border: '1px solid #888888', borderRadius: 15, padding: '8px 12px', fontSize: 14, cursor: 'pointer', alignSelf: 'center' },
   submitButton: { marginTop: 'auto', backgroundColor: '#FFD856', borderRadius: 15, padding: '12px', fontSize: 16, fontWeight: 600, color: '#111111', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none', gap: '8px' },
   nextIcon: { fontSize: 20, color: '#888888' },
   margin2: {padding: '4px'},
