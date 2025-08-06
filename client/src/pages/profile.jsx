@@ -162,7 +162,6 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: '15px'
   },
   profileImage: {
     width: '100%',
@@ -195,6 +194,7 @@ const styles = {
   },
   arrowIcon: {
     backgroundColor: 'transparent',
+    padding: '21.5px'
   },
   activityCard: {
     boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
