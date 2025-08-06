@@ -1,12 +1,23 @@
+// app.js
 import express from 'express';
 import cors from 'cors';
-import usersRouter from './routes/users.js';
+import dotenv from 'dotenv';
+import userRouter from './routes/users.js';
+import geocodeRouter from './routes/geocode.js';
+import sellerRoutes from './routes/sellers.js';
 
+
+dotenv.config();
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-app.use('/api/users', usersRouter);
+app.use(cors({ origin: 'http://localhost:3000' }));
 
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.use(express.json());
+
+app.use('/api/users', userRouter); // ✅ user router mount
+app.use('/api/geocode', geocodeRouter);
+app.use("/api/sellers", sellerRoutes);
+
+app.listen(5050, () => {
+  console.log('✅ 서버 실행: http://localhost:5050');
+});

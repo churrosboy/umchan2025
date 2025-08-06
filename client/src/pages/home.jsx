@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { sellers } from '../data/sellers';
+import axios from 'axios';
 import styles from '../styles/Home.module.css';
 
-const naverMapKey = process.env.REACT_APP_NAVER_MAP_KEY;
+const naverMapKey = process.env.REACT_APP_NAVER_CLIENT_ID;
 
 const Home = () => {
   const mapRef = useRef(null);
@@ -14,8 +14,24 @@ const Home = () => {
   const [startY, setStartY] = useState(null);
   const [startHeight, setStartHeight] = useState(100);
   const [selectedSeller, setSelectedSeller] = useState(null);
+  const [sellers, setSellers] = useState([]);
 
-  const filtered = sellers.filter(s => filter === 'all' || s.sellingType === filter);
+  const filtered = sellers.filter(
+    (s) => filter === 'all' || s.sellingType === filter
+  );
+
+  useEffect(() => {
+    const fetchSellers = async () => {
+      try {
+        const res = await axios.get('/api/sellers');
+        console.log("✅ 받아온 sellers:", res.data); 
+        setSellers(res.data);
+      } catch (err) {
+        console.error('❌ 판매자 데이터 가져오기 실패:', err);
+      }
+    };
+    fetchSellers();
+  }, []);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -33,6 +49,8 @@ const Home = () => {
       });
 
       filtered.forEach((seller) => {
+        if (!seller.lat || !seller.lng) return;
+
         const marker = new window.naver.maps.Marker({
           position: new window.naver.maps.LatLng(seller.lat, seller.lng),
           map,
@@ -46,7 +64,7 @@ const Home = () => {
       });
     };
     document.head.appendChild(script);
-  }, [filter]);
+  }, [filtered]);
 
   useEffect(() => {
     if (panelHeight > 100) {
@@ -89,10 +107,7 @@ const Home = () => {
     <div className={styles.wrapper}>
       <div ref={mapRef} className={styles.map} />
 
-      <div
-        className={styles.panel}
-        style={{ height: panelHeight }}
-      >
+      <div className={styles.panel} style={{ height: panelHeight }}>
         <div
           className={styles.dragHandle}
           onTouchStart={handleTouchStart}
@@ -104,7 +119,9 @@ const Home = () => {
 
         <div className={styles.panelContent}>
           {selectedSeller && (
-            <button onClick={() => setSelectedSeller(null)} className={styles.backButton}>←</button>
+            <button onClick={() => setSelectedSeller(null)} className={styles.backButton}>
+              ←
+            </button>
           )}
           {!selectedSeller ? (
             <>
@@ -120,7 +137,9 @@ const Home = () => {
                   onClick={() => navigate(`/seller_detail/${seller.id}`)}
                 >
                   <strong>{seller.name}</strong>
-                  <p>⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}</p>
+                  <p>
+                    ⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}
+                  </p>
                   <p>{seller.address}</p>
                   <div className={styles.thumbnailScroll}>
                     {seller.images.map((img, idx) => (
@@ -138,9 +157,13 @@ const Home = () => {
           ) : (
             <div>
               <h3 style={{ marginBottom: 5 }}>{selectedSeller.name}</h3>
-              <p>⭐ {selectedSeller.rating} ({selectedSeller.reviews}) 💚 {selectedSeller.hearts}</p>
+              <p>
+                ⭐ {selectedSeller.rating} ({selectedSeller.reviews}) 💚 {selectedSeller.hearts}
+              </p>
               <p style={{ fontSize: 14, color: '#666' }}>{selectedSeller.intro}</p>
-              <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>{selectedSeller.address}</p>
+              <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>
+                {selectedSeller.address}
+              </p>
               <div className={styles.thumbnailScroll}>
                 {selectedSeller.images.map((img, idx) => (
                   <img
