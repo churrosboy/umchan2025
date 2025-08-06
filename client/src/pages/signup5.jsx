@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup5 = () => {
@@ -6,7 +6,7 @@ const Signup5 = () => {
 
   {/*로그인 화면으로 돌아가는 함수*/}
   const goToLogin = () => {
-    navigate('/');
+   navigate('/');
   };
 
   return (
@@ -60,4 +60,4 @@ const styles = {
   },
 };
 
-export default Signup5;
+export default Signup5;*/

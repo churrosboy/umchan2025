@@ -1,28 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { sellers } from '../data/sellers';
+import axios from 'axios';
 import styles from '../styles/Home.module.css';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
+const naverMapKey = process.env.REACT_APP_NAVER_CLIENT_ID;
+
 const Home = () => {
   const mapRef = useRef(null);  // 지도를 그릴 화면 참조
   const navigate = useNavigate();
-
   const [filter, setFilter] = useState('all');  //즉시/예약/전체 상태를 선택하기 위한 필터
   const [panelHeight, setPanelHeight] = useState(window.innerHeight * 0.35);  //판매자 패널의 높이
   const [startY, setStartY] = useState(null); //터치스크롤 시작 위치 저장
   const [startHeight, setStartHeight] = useState(window.innerHeight * 0.35);  //터치스크롤 높이 저장
   const [selectedSeller, setSelectedSeller] = useState(null); //현재 선택된 판매자
+  const [sellers, setSellers] = useState([]);
 
 
   //즉시/예약/전체 필터가 적용된 판매자의 목록
   const filtered = sellers.filter(s => filter === 'all' || s.sellingType === filter);
+  
+  useEffect(() => {
+    const fetchSellers = async () => {
+      try {
+        const res = await axios.get('/api/sellers');
+        console.log("✅ 받아온 sellers:", res.data); 
+        setSellers(res.data);
+      } catch (err) {
+        console.error('❌ 판매자 데이터 가져오기 실패:', err);
+      }
+    };
+    fetchSellers();
+  }, []);
 
   //최초 렌더 시 네이버 지도 스크립트 로드 및 마커 생성
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=';
+    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${naverMapKey}`;
     script.async = true;
     script.onload = () => {
       //지도 생성
@@ -39,6 +54,8 @@ const Home = () => {
 
       //각 판매자 위치에 마커 표시, 클릭 이벤트
       filtered.forEach((seller) => {
+        if (!seller.lat || !seller.lng) return;
+
         const marker = new window.naver.maps.Marker({
           position: new window.naver.maps.LatLng(seller.lat, seller.lng),
           map,
@@ -52,7 +69,7 @@ const Home = () => {
       });
     };
     document.head.appendChild(script);
-  }, [filter]); //필터가 바뀔 때마다 다시 그리기 위한 부분
+  }, [filtered]);
 
   //패널 높이에 따라 바디 스크롤 잠금/해제
   useEffect(() => {
@@ -119,7 +136,9 @@ const Home = () => {
         <div className={styles.panelContent}>
           {/*지도 마커 클릭 시 나온 판매자에서 뒤로가기 버튼*/}
           {selectedSeller && (
-            <button onClick={() => setSelectedSeller(null)} className={styles.backButton}>←</button>
+            <button onClick={() => setSelectedSeller(null)} className={styles.backButton}>
+              ←
+            </button>
           )}
           {/*지도 마커 클릭 안했으면 -> 필터에 따른 판매자 리스트, 마커 클릭하면 -> 클릭한 장소 판매자 리스트 표시*/}
           {!selectedSeller ? (
@@ -150,7 +169,7 @@ const Home = () => {
                     {seller.images.map((img, idx) => (
                       <img
                         key={idx}
-                        src={img}
+                        src={`/images${img}`}
                         alt={`썸네일${idx}`}
                         className={styles.thumbnailImage}
                       />
@@ -169,12 +188,14 @@ const Home = () => {
                 <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
                 {selectedSeller.hearts}</p>
               <p style={{ fontSize: 14, color: '#666' }}>{selectedSeller.intro}</p>
-              <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>{selectedSeller.address}</p>
+              <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>
+                {selectedSeller.address}
+              </p>
               <div className={styles.thumbnailScroll}>
                 {selectedSeller.images.map((img, idx) => (
                   <img
                     key={idx}
-                    src={img}
+                    src={`/images${img}`}
                     alt={`판매자사진${idx}`}
                     className={styles.thumbnailImage}
                   />

@@ -4,11 +4,18 @@ import { useNavigate } from 'react-router-dom';
 const Signup2 = () => {
   const navigate = useNavigate();
 
-  {/*다음 페이지로 이동하는 함수*/}
-  const handleNext = () => {
-    navigate('/signup3');
-  };
+const handleNext = () => {
+  const password = document.querySelectorAll('input[type="password"]')[0].value;
+  const confirm = document.querySelectorAll('input[type="password"]')[1].value;
 
+  if (password !== confirm) {
+    alert('비밀번호가 일치하지 않습니다');
+    return;
+  }
+
+  localStorage.setItem('password', password);
+  navigate('/signup3');
+};
   return (
     <div style={styles.wrapper}>  {/*배경*/}
       <div style={styles.container}>  {/*요소들 담은 박스*/}

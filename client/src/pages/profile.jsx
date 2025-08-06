@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
 import {
   HiChevronRight,
   HiUser,
@@ -14,6 +16,10 @@ import { users } from '../data/users';  {/*임시 user data*/}
 const Profile = () => {
   const navigate = useNavigate();
 
+
+  /*const { userId } = useParams();
+  const user = users.find(u => u.id === Number(userId));
+  */
   const userId = 10203; //임시 userId, 기능 확인용으로 숫자 바꿔봐도 됨(data/users 의 id 참고).
   const user = users.find(u => u.id === userId);  //user = userId와 일치하는 유저의 데이터를 담아둠
 
@@ -21,6 +27,11 @@ const Profile = () => {
   const goToSetting = () => {
     navigate('/setting/' + userId);
   };
+
+/*
+  const goToMyRecipe = () => {
+    navigate('/user_recipe_list/' + userId);
+ */
 
   {/*레시피 생성 화면으로 이동하는 함수, userId 넘겨주는 작업 필요*/}
   const goToRecipeRegister = () => {

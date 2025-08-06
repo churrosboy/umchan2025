@@ -2,6 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Login.module.css';
 
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
+
 const Login = () => {
   const navigate = useNavigate();
 
@@ -9,10 +12,18 @@ const Login = () => {
   const goToSignup = () => {
     navigate('/signup1'); {/*App.jsx 가보면 '/signup1' 같은거 어떤 페이지 뜨게하는건지 나와있음*/}
   };
+  const handleLogin = async() => {
+    const email = document.querySelector('input[type="text"]').value;
+    const password = document.querySelector('input[type="password"]').value;
   
-  {/*홈화면으로 이동하는 함수*/}
-  const handleLogin = () => {
-    navigate('/home');  {/*'/home'도 App.jsx 참고*/}
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/home');
+    } catch (error) {
+      alert('로그인 실패: ' + error.message);
+    }    
+  
+    navigate('/home');
   };
 
   {/*화면*/}

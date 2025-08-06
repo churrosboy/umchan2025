@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
+import { users } from '../data/users';
 import { recipes } from '../data/recipes';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';

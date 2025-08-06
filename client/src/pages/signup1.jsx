@@ -6,6 +6,12 @@ const Signup1 = () => {
 
   {/*다음 페이지로 이동하는 함수*/}
   const handleNext = () => {
+    const email = document.querySelector('input[type="email"]').value;
+    const name = document.querySelector('input[type="text"]').value;
+
+    localStorage.setItem('email', email);
+    localStorage.setItem('name', name);
+
     navigate('/signup2');
   };
 
