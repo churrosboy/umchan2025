@@ -74,6 +74,7 @@ const handleVerifyCode = async () => {
   );
   */
 
+  {/*다음 페이지로 이동하는 함수*/}
   const handleNext = () => {
     const phone = document.querySelector('input[name="phone"]').value;
     if (!phone) {
@@ -91,6 +92,14 @@ const handleVerifyCode = async () => {
         <h2 style={styles.title}>📱 휴대폰 번호를 입력해주세요</h2>
         <input name="phone" style={styles.input} type="text" placeholder="휴대폰 번호" />
         <button style={styles.button} onClick={handleNext}>다음</button>
+    
+//<div style={styles.wrapper}>  {/*배경*/}
+//      <div style={styles.container}>  {/*요소들 담은 박스*/}
+//        <h2 style={styles.title}>✅ 본인인증을 진행해주세요</h2>  {/*제목*/}
+//        <input style={styles.input} type="text" placeholder="휴대폰 번호" />  {/*휴대폰 번호 입력란*/}
+//        <button style={styles.button}>인증번호 받기</button>  {/*인증번호 받기 버튼, 아직 기능 X*/}
+//        <input style={styles.input} type="text" placeholder="인증번호 입력" />  {/*인증번호 입력란*/}
+//        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음페이지로 이동하는 함수*/}
       </div>
     </div>
   );

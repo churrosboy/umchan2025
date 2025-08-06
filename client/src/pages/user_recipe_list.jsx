@@ -3,39 +3,51 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
 import { users } from '../data/users';
 import { recipes } from '../data/recipes';
-
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const RecipeList = () => {
-    const { userId } = useParams();
-    const user = users.find(u => u.id === Number(userId));
-    const recipeList = recipes.filter(recipe => recipe.user_id === Number(userId));
+    const { userId } = useParams(); //userId 받아오기
+    const user = sellers.find(u => u.id === Number(userId));    //userId와 일치하는 sellers 의 데이터 저장
+    const recipeList = recipes.filter(recipe => recipe.user_id === Number(userId)); //recipes에서 판매자가 등록한 레시피를 걸러주는 부분 --> recipeList에 저장
     const navigate = useNavigate();
 
-    if (!user) return <div>사용자를 찾을 수 없습니다.</div>;
+    if (!user) return <div style={styles.header}>사용자를 찾을 수 없습니다.</div>;
 
+    //뒤로가기 함수
     const goBack = () => {
         navigate(-1);
     };
+
     return (
         <div style={{ ...styles.page, paddingBottom: 60 }}>
+        {/*헤더 - 뒤로가기 버튼, 유저 닉네임(제목)*/}
         <div style={styles.header}>
             <div style={styles.backButton} onClick={goBack}>←</div>
             <div style={styles.headerTitle}>{user.name}</div>
             <div style={styles.headerSpacer}></div>
         </div>
+        {/*소제목*/}
         <div style={styles.sectionTitleBar}>등록한 레시피</div>
         <div style={styles.recipeSection}>
+            {/*레시피 리스트*/}
             {recipeList.map(item => (
-              <div style={styles.recipeCard} key={item.id} onClick={() => navigate(`/recipe/${item.id}`)}>
+              <div style={styles.recipeCard} key={item.id} onClick={() => navigate(`/recipe/${item.id}`)}>  {/*레시피 클릭 시 레시피 페이지로 이동*/}
+                {/*레시피 이미지*/}
                 <div style={styles.recipeImage}></div>
+                {/*레시피 정보*/}
                 <div style={styles.recipeInfo}>
-                <div style={styles.recipeTitle}>{item.title}</div>
-                <div style={styles.recipeDesc}>{item.desc}</div>
-              </div>
-              <div style={styles.editIcon}>🖋️</div>
+                <div style={styles.recipeTitle}>
+                    <span>{item.user_name}</span>{item.title}
+                    <span style={styles.rating}>
+                        <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                        {item.rating}</span>
+                    <span style={styles.likes}>
+                        <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                        {item.hearts}</span>
+                </div>
+                ))}
             </div>
-            ))}
-        </div>
         </div>
     );
 }
@@ -131,6 +143,14 @@ const styles = {
     page: {
         minHeight: "100vh",
         background: "#fff",
+    },
+    rating: {
+        color: '#f5a623',
+    },
+    likes: {
+        marginLeft: 'auto',
+        fontSize: '13px',
+        color: '#23a34a',
     },
 };
 
