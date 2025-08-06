@@ -145,7 +145,7 @@ const Home = () => {
                     {seller.images.map((img, idx) => (
                       <img
                         key={idx}
-                        src={img}
+                        src={`/images${img}`}
                         alt={`썸네일${idx}`}
                         className={styles.thumbnailImage}
                       />
@@ -168,7 +168,7 @@ const Home = () => {
                 {selectedSeller.images.map((img, idx) => (
                   <img
                     key={idx}
-                    src={img}
+                    src={`/images${img}`}
                     alt={`판매자사진${idx}`}
                     className={styles.thumbnailImage}
                   />
