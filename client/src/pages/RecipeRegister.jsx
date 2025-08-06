@@ -9,7 +9,9 @@ const RecipeRegister = () => {
   const [recipe, setRecipes] = useState({
     id: Date.now(),
     title: '',
-    ingredients: [''] ,
+    ingredients: [
+      {name: '', amount: ''}
+    ] ,
     file: null
   });
 
@@ -22,7 +24,7 @@ const RecipeRegister = () => {
       ...prev,
       ingredients: [
         ...prev.ingredients,
-        ''
+        {name: '', amount: ''}
       ]
     }));
   };
@@ -48,10 +50,18 @@ const RecipeRegister = () => {
     }));
   };
 
-  const updateIngredient = (index, value) => {
+  const updateIngredientName = (index, value) => {
     setRecipes(prev => {
       const next = [...prev.ingredients];
-      next[index] = value;
+      next[index] = {...prev, name: value};
+      return { ...prev, ingredients: next};
+    });
+  };
+
+  const updateIngredientAmount = (index, value) => {
+    setRecipes(prev => {
+      const next = [...prev.ingredients];
+      next[index] = {...prev, amount: value};
       return { ...prev, ingredients: next };
     });
   };
@@ -120,16 +130,23 @@ const RecipeRegister = () => {
           <div style={styles.inputTitle}>재료</div>
         
         
-        {recipe.ingredients.map((ing, idx) => (
+        {recipe.ingredients.map(({name ,amount}, idx) => (
           <div key={idx} style={styles.stepWrapper}>
             <HiMiniXCircle style={styles.removeIcon} onClick={() => removeIngredient(idx)} />
             <div style={styles.inputSectionIngredient}>
             <input
               type="text"
-              value={ing}
-              onChange={e => updateIngredient(idx, e.target.value)}
+              value={name}
+              onChange={e => updateIngredientName(idx, e.target.value)}
               placeholder="재료를 입력하세요"
-              style={styles.inputField}
+              style={styles.inputFieldIngredient}
+            />
+            <input
+              type="text"
+              value={amount}
+              onChange={e => updateIngredientAmount(idx, e.target.value)}
+              placeholder="수량을 입력하세요"
+              style={styles.inputFieldIngredient}
             />
             </div>
           </div>
@@ -202,9 +219,10 @@ const styles = {
   uploadIcon: { color: '#888888' },
   uploadLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
   inputSection: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid #E6E6E6' },
-  inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'column', gap: '8px' },
+  inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'row', gap: '8px' },
   inputTitle: { fontSize: 16, fontWeight: 600, color: '#111111' },
   inputField: { height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
+  inputFieldIngredient: { flex: 1, height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
   descriptionSection: { padding: '0 12px' },
   descriptionLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
   stepsSection: { display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' },

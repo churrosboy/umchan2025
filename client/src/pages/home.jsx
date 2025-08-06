@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
 import styles from '../styles/Home.module.css';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const Home = () => {
   const mapRef = useRef(null);
@@ -119,8 +121,12 @@ const Home = () => {
                 >
                   <div className={styles.sellerItemMain}>
                     <div className={styles.name}>{seller.name}</div>
-                    <div className={styles.meta}>⭐ {seller.rating} ({seller.reviews > 999 ? '999+' : seller.reviews})</div>
-                    <div className={styles.meta}>💚 {seller.hearts > 999 ? '999+' : seller.hearts}</div>
+                    <div className={styles.meta}>
+                      <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                      {seller.rating} ({seller.reviews > 999 ? '999+' : seller.reviews})</div>
+                    <div className={styles.meta}>
+                      <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                      {seller.hearts > 999 ? '999+' : seller.hearts}</div>
                   </div>
                   <div className={styles.address}>{seller.address}</div>
                   <div className={styles.thumbnailScroll}>
@@ -139,7 +145,11 @@ const Home = () => {
           ) : (
             <div>
               <h3 style={{ marginBottom: 5 }}>{selectedSeller.name}</h3>
-              <p>⭐ {selectedSeller.rating} ({selectedSeller.reviews}) 💚 {selectedSeller.hearts}</p>
+              <p>
+                <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                {selectedSeller.rating} ({selectedSeller.reviews})
+                <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                {selectedSeller.hearts}</p>
               <p style={{ fontSize: 14, color: '#666' }}>{selectedSeller.intro}</p>
               <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>{selectedSeller.address}</p>
               <div className={styles.thumbnailScroll}>

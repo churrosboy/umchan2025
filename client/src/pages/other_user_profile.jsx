@@ -1,6 +1,8 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const OtherProfile = () => {
     const { userId } = useParams();
@@ -42,7 +44,11 @@ const OtherProfile = () => {
                 <div style={styles.profileImage}>👩‍🍳</div>
                 <div style={styles.profileNameRow}>
                 <div style={styles.profileName}>{user.name}</div>
-                <p>⭐ {user.rating} ({user.reviews}) 💚 {user.hearts}</p>
+                <p>
+                    <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                    {user.rating} ({user.reviews})
+                    <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                    {user.hearts}</p>
                 </div>
                 <div style={styles.profileDesc}>진심을 담아 정성껏 만들겠습니다.</div>
                 <div style={styles.buttonGroup}>

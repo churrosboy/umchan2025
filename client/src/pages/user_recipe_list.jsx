@@ -2,7 +2,8 @@ import React from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
 import { recipes } from '../data/recipes';
-
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const RecipeList = () => {
     const { userId } = useParams();
@@ -30,8 +31,12 @@ const RecipeList = () => {
                 <div style={styles.recipeInfo}>
                 <div style={styles.recipeTitle}>
                     <span>{item.user_name}</span>{item.title}
-                    <span style={styles.rating}> ⭐{item.rating}</span>
-                    <span style={styles.likes}> 💚{item.hearts}</span>
+                    <span style={styles.rating}>
+                        <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                        {item.rating}</span>
+                    <span style={styles.likes}>
+                        <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                        {item.hearts}</span>
                 </div>
                 <div style={styles.recipeDesc}>{item.desc}</div>
               </div>
