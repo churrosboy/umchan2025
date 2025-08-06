@@ -25,20 +25,24 @@ const Profile = () => {
     navigate('/RecipeRegister');
   }
 
+  const goToItemRegister = () => {
+    navigate('/item_register');
+  }
+
   const goToSalesHistory = () => {
     navigate('/Sales_History');
   }
 
   const goToPurchaseHistory = () => {
-    navigate('/Purchase_History');
+    navigate('/purchase_history');
   }
 
   const goToMyReview = () => {
-    navigate('/MyReview/' + userId);
+    navigate('/my_review/' + userId);
   }
 
   const goToMyRecipe = () => {
-    navigate('/MyRecipe/' + userId);
+    navigate('/my_recipe/' + userId);
   }
   
   return (
@@ -84,7 +88,7 @@ const Profile = () => {
           <div style={styles.sectionTitle}>활동하기</div>
           <button style={styles.button}>
             <HiPlusCircle size={22} style={styles.leftIcon}/>
-            <span style={styles.buttonText}>내 음식 판매하기</span>
+            <span style={styles.buttonText} onClick={goToItemRegister}>내 음식 판매하기</span>
             <HiChevronRight size={22} style={styles.rightIcon}/>
           </button>
           <button style={styles.button} onClick={goToRecipeRegister}>

@@ -9,7 +9,7 @@ const RecipeRegister = () => {
   const [recipe, setRecipes] = useState({
     id: Date.now(),
     title: '',
-    ingredients: [''] ,
+    ingredients: [{ name: '', amount: '' }] ,
     file: null
   });
 
@@ -22,7 +22,7 @@ const RecipeRegister = () => {
       ...prev,
       ingredients: [
         ...prev.ingredients,
-        ''
+        { name: '', amount: '' }
       ]
     }));
   };
@@ -48,10 +48,10 @@ const RecipeRegister = () => {
     }));
   };
 
-  const updateIngredient = (index, value) => {
+  const updateIngredient = (index, field, value) => {
     setRecipes(prev => {
       const next = [...prev.ingredients];
-      next[index] = value;
+      next[index] = { ...next[index], [field]: value };
       return { ...prev, ingredients: next };
     });
   };
@@ -70,6 +70,91 @@ const RecipeRegister = () => {
 
   const updateFile = (id, file) => {
     setSteps(prev => prev.map(step => step.id === id ? { ...step, file } : step));
+  };
+
+  // 레시피 등록 핸들러 (파일 포함)
+  const handleSubmit = async () => {
+    // 유효성 검사: 제목, 재료, 단계 설명 모두 비어있으면 등록 불가
+    if (!recipe.title.trim()) {
+      alert('메뉴 이름을 입력하세요.');
+      return;
+    }
+    if (!recipe.ingredients.length || recipe.ingredients.some(ing => !ing.name.trim() || !ing.amount.trim())) {
+      alert('모든 재료명과 양을 입력하세요.');
+      return;
+    }
+    if (!steps.length || steps.some(step => !step.desc.trim())) {
+      alert('모든 조리 순서 설명을 입력하세요.');
+      return;
+    }
+
+    // 파일이 없으면 JSON으로 전송
+    if (!recipe.file && steps.every(step => !step.file)) {
+      const data = {
+        user_id: 123,
+        name: recipe.title,
+        text: steps.map(s => s.desc).join('\n'),
+        ingredients: recipe.ingredients,
+      };
+      try {
+        const response = await fetch('http://localhost:4000/api/recipes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (response.ok) {
+          alert('레시피 등록 성공!');
+          navigate('/profile');
+        } else {
+          alert('레시피 등록 실패');
+        }
+      } catch (err) {
+        alert('에러 발생');
+      }
+    } else {
+      // 파일이 하나라도 있으면 FormData로 전송
+      const formData = new FormData();
+      formData.append('user_id', 123);
+      formData.append('name', recipe.title);
+      formData.append('text', steps.map(s => s.desc).join('\n'));
+      formData.append('ingredients', JSON.stringify(recipe.ingredients));
+      
+      // 메인 이미지
+      if (recipe.file) {
+        console.log('Adding main image:', recipe.file.name);
+        formData.append('mainImage', recipe.file);
+      }
+      
+      // 단계별 이미지
+      steps.forEach((step, idx) => {
+        if (step.file) {
+          console.log(`Adding step ${idx} image:`, step.file.name);
+          formData.append(`stepImage${idx}`, step.file);
+        }
+        formData.append(`stepDesc${idx}`, step.desc);
+      });
+
+      // FormData 내용 확인
+      console.log('FormData contents:');
+      for (let pair of formData.entries()) {
+        console.log(pair[0], ':', pair[1]);
+      }
+
+      try {
+        const response = await fetch('http://localhost:4000/api/recipes', {
+          method: 'POST',
+          body: formData,
+        });
+        if (response.ok) {
+          alert('레시피 등록 성공!');
+          navigate('/profile');
+        } else {
+          alert('레시피 등록 실패');
+        }
+      } catch (err) {
+        alert('에러 발생');
+      }
+    }
   };
 
   return (
@@ -118,24 +203,28 @@ const RecipeRegister = () => {
         {/* 재료 */}
         <div style={styles.inputSection}>
           <div style={styles.inputTitle}>재료</div>
-        
-        
         {recipe.ingredients.map((ing, idx) => (
           <div key={idx} style={styles.stepWrapper}>
             <HiMiniXCircle style={styles.removeIcon} onClick={() => removeIngredient(idx)} />
-            <div style={styles.inputSectionIngredient}>
-            <input
-              type="text"
-              value={ing}
-              onChange={e => updateIngredient(idx, e.target.value)}
-              placeholder="재료를 입력하세요"
-              style={styles.inputField}
-            />
+            <div style={styles.ingredientRow}>
+              <input
+                type="text"
+                value={ing.name}
+                onChange={e => updateIngredient(idx, 'name', e.target.value)}
+                placeholder="재료명 (예: 양파)"
+                style={{...styles.inputField, ...styles.ingredientNameField}}
+              />
+              <input
+                type="text"
+                value={ing.amount}
+                onChange={e => updateIngredient(idx, 'amount', e.target.value)}
+                placeholder="양 (예: 1개, 100g)"
+                style={{...styles.inputField, ...styles.ingredientAmountField}}
+              />
             </div>
           </div>
         ))}
-        
-        {/* 단계 추가 버튼 */}
+        {/* 재료 추가 버튼 */}
         <button style={styles.addButton} onClick={addIngredient}>+ 재료 추가</button>
         </div>
 
@@ -182,7 +271,7 @@ const RecipeRegister = () => {
         <button style={styles.addButton} onClick={addStep}>+ 단계 추가</button>
         <div style={styles.margin2}></div>
         {/* 다음 버튼 */}
-        <button style={styles.submitButton}>
+        <button style={styles.submitButton} onClick={handleSubmit}>
           다음<HiChevronRight style={styles.nextIcon} />
         </button>
         <div style={styles.margin}></div>
@@ -203,6 +292,9 @@ const styles = {
   uploadLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
   inputSection: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid #E6E6E6' },
   inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'column', gap: '8px' },
+  ingredientRow: { display: 'flex', gap: '8px', alignItems: 'center' },
+  ingredientNameField: { flex: 2 },
+  ingredientAmountField: { flex: 1 },
   inputTitle: { fontSize: 16, fontWeight: 600, color: '#111111' },
   inputField: { height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
   descriptionSection: { padding: '0 12px' },
