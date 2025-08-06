@@ -2,16 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sellers } from '../data/sellers';
 import styles from '../styles/Home.module.css';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const Home = () => {
   const mapRef = useRef(null);  // 지도를 그릴 화면 참조
   const navigate = useNavigate();
 
   const [filter, setFilter] = useState('all');  //즉시/예약/전체 상태를 선택하기 위한 필터
-  const [panelHeight, setPanelHeight] = useState(100);  //판매자 패널의 높이
+  const [panelHeight, setPanelHeight] = useState(window.innerHeight * 0.35);  //판매자 패널의 높이
   const [startY, setStartY] = useState(null); //터치스크롤 시작 위치 저장
-  const [startHeight, setStartHeight] = useState(100);  //터치스크롤 높이 저장
+  const [startHeight, setStartHeight] = useState(window.innerHeight * 0.35);  //터치스크롤 높이 저장
   const [selectedSeller, setSelectedSeller] = useState(null); //현재 선택된 판매자
+
 
   //즉시/예약/전체 필터가 적용된 판매자의 목록
   const filtered = sellers.filter(s => filter === 'all' || s.sellingType === filter);
@@ -75,13 +78,13 @@ const Home = () => {
     e.preventDefault();
     const deltaY = e.touches[0].clientY - startY;
     let newHeight = startHeight - deltaY;
-    newHeight = Math.max(100, Math.min(window.innerHeight - 60, newHeight));
+    newHeight = Math.max(100, Math.min(window.innerHeight - 132, newHeight));
     setPanelHeight(newHeight);
   };
 
   // 터치 끝: 최종 위치에 따라 패널 위치 조정(검색란에 스크롤 부분이 가려지면 맨 위로 패널 이동)
   const handleTouchEnd = () => {
-    const maxHeight = window.innerHeight - 60;
+    const maxHeight = window.innerHeight - 132;
     if (panelHeight > maxHeight * 0.85) {
       setPanelHeight(maxHeight);
     } else if (panelHeight < 150) {
@@ -122,9 +125,9 @@ const Home = () => {
           {!selectedSeller ? (
             <>
               <div className={styles.filterButtons}>
-                <button onClick={() => setFilter('immediate')}>즉시</button>
-                <button onClick={() => setFilter('reservation')}>예약</button>
-                <button onClick={() => setFilter('all')}>전체</button>
+                <button onClick={() => setFilter('immediate')} className={styles.filterButton}>즉시</button>
+                <button onClick={() => setFilter('reservation')} className={styles.filterButton}>예약</button>
+                <button onClick={() => setFilter('all')} className={styles.filterButton}>전체</button>
               </div>
               {/*판매 유형에 따른 판매자 리스트*/}
               {filtered.map((seller) => (
@@ -133,9 +136,16 @@ const Home = () => {
                   className={styles.sellerItem}
                   onClick={() => navigate(`/seller_detail/${seller.id}`)}
                 >
-                  <strong>{seller.name}</strong>
-                  <p>⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}</p>
-                  <p>{seller.address}</p>
+                  <div className={styles.sellerItemMain}>
+                    <div className={styles.name}>{seller.name}</div>
+                    <div className={styles.meta}>
+                      <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                      {seller.rating} ({seller.reviews > 999 ? '999+' : seller.reviews})</div>
+                    <div className={styles.meta}>
+                      <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                      {seller.hearts > 999 ? '999+' : seller.hearts}</div>
+                  </div>
+                  <div className={styles.address}>{seller.address}</div>
                   <div className={styles.thumbnailScroll}>
                     {seller.images.map((img, idx) => (
                       <img
@@ -153,7 +163,11 @@ const Home = () => {
             /* 지도 마커에서 선택된 판매자 상세보기 */
             <div>
               <h3 style={{ marginBottom: 5 }}>{selectedSeller.name}</h3>
-              <p>⭐ {selectedSeller.rating} ({selectedSeller.reviews}) 💚 {selectedSeller.hearts}</p>
+              <p>
+                <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                {selectedSeller.rating} ({selectedSeller.reviews})
+                <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                {selectedSeller.hearts}</p>
               <p style={{ fontSize: 14, color: '#666' }}>{selectedSeller.intro}</p>
               <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>{selectedSeller.address}</p>
               <div className={styles.thumbnailScroll}>

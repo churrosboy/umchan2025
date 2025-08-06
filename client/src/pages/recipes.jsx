@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { recipes } from '../data/recipes';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { sellers } from '../data/sellers';
-
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const RecipeList = () => {
     const navigate = useNavigate();
@@ -97,8 +98,12 @@ const RecipeList = () => {
                     <div style={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.id}`)}>
                     <div style={styles.recipeTitle}>
                         <span>{item.user_name}</span>{item.title}
-                        <span style={styles.rating}> ⭐{item.rating}</span>
-                        <span style={styles.likes}> 💚{item.hearts}</span>
+                        <span style={styles.rating}>
+                            <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                            {item.rating}</span>
+                        <span style={styles.likes}>
+                            <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                        {item.hearts}</span>
                     </div>
                     <div style={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
                     <div style={styles.recipeDesc}>{item.desc}</div>

@@ -38,7 +38,7 @@ const InlineEditor = ({ initialValue, onSave }) => {
         style={styles.iconContainer}
         onClick={editing ? handleSave : handleEdit}
       >
-        {editing ? <HiCheck size={20} /> : <HiPencil size={20} />}
+        {editing ? <HiCheck size={16} /> : <HiPencil size={16} />}
       </div>
     </div>
   );
@@ -51,12 +51,12 @@ const styles = {
     gap: 8
   },
   text: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 600,
     color: '#333'
   },
   input: {
-    fontSize: 16,
+    fontSize: 14,
     padding: '4px 8px',
     borderRadius: 8,
     border: '1px solid #ccc',

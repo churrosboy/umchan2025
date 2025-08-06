@@ -1,7 +1,10 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+
 import { sellers } from '../data/sellers';  //나중에 users에 담겨있을 내용들
 import styles from '../styles/SellerDetail.module.css'; //스타일 가져오는 부분
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const SellerDetail = () => {
   const { sellerId } = useParams(); //홈화면에서 선택된 판매자의 Id를 가져오는 부분
@@ -20,7 +23,10 @@ const SellerDetail = () => {
       {/*판매자 닉네임 부분. 클릭 시 판매자의 프로필로 이동.*/}
       <h2 onClick={() => navigate(`/other_user_profile/${seller.id}`)}>{seller.name}</h2>
       <p className={styles.info}>
-        ⭐ {seller.rating} ({seller.reviews}) 💚 {seller.hearts}
+        <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/>
+        {seller.rating} ({seller.reviews})
+        <Heart width={19} height={19} style={{ verticalAlign: 'middle' }}/>
+        {seller.hearts}
       </p>
 
       {/*즉시구매 상품란/sellingType에 따라 표시되는 상품 구분*/}

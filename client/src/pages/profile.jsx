@@ -52,8 +52,9 @@ const Profile = () => {
       <div style={styles.container}>  {/*요소들 담은 박스*/}
 
         {/* 프로필 카드 */}
-        <button style={styles.profileCard} onClick={goToSetting}> {/*회색 구역 전체가 버튼임. 누르면 세팅화면으로 이동*/}
+        <div style={styles.profileCard} onClick={goToSetting}>  {/*프로필 구역 전체가 버튼임. 누르면 세팅화면으로 이동*/}
           {/*프로필 이미지 담은 컨테이너*/}
+
           <div style={styles.profileImageContainer}>
           {user.profile_img ? (
             <img
@@ -75,9 +76,9 @@ const Profile = () => {
             } {/*user 존재하면 닉네임 띄워줌*/}
             <div style={styles.ratingBadge}>
               {user ? (
-                <span style={styles.ratingText}>{user.avg_rating}공기</span>
+                <div style={styles.ratingText}>{user.avg_rating}공기</div>
               ) : (
-                <span style={styles.ratingText}>error</span>
+                <div style={styles.ratingText}>error</div>
               )
               } {/*user 존재하면 평점 띄워줌(avg_rating)*/}
               
@@ -85,9 +86,9 @@ const Profile = () => {
           </div>
           {/*프로필란 자체가 버튼임을 알게해주는 아이콘 삽입함*/}
           <div style={styles.arrowIcon}>
-            <HiChevronRight size={22} style={{ marginRight: 8 }}/>
+            <HiChevronRight size={22}/>
           </div>
-        </button>
+        </div>
 
         {/* 활동하기 카드 */}
         <div style={styles.activityCard}>
@@ -141,16 +142,13 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'start',
-    padding: '40px 0',
     boxSizing: 'border-box',
     fontFamily: 'Roboto, sans-serif'
   },
   container: {
     width: '100%',
-    maxWidth: '375px',
+    padding: '16px',
     backgroundColor: '#ffffff',
-    borderRadius: '20px',
-    padding: '20px',
     boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
     boxSizing: 'border-box',
     display: 'flex',
@@ -158,9 +156,10 @@ const styles = {
     gap: '20px'
   },
   profileCard: {
-    backgroundColor: '#D9D9D9',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     borderRadius: '15px',
-    padding: '20px',
+    padding: '16px',
     display: 'flex',
     alignItems: 'center',
     gap: '15px'
@@ -169,12 +168,11 @@ const styles = {
     width: '65px',
     height: '65px',
     borderRadius: '50%',
-    backgroundColor: '#B4B3B3',
+    backgroundColor: '#ffffff',
     overflow: 'hidden',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: '15px'
   },
   profileImage: {
     width: '100%',
@@ -185,6 +183,7 @@ const styles = {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     gap: '5px'
   },
   profileName: {
@@ -194,9 +193,10 @@ const styles = {
   },
   ratingBadge: {
     backgroundColor: '#22BC03',
-    borderRadius: '22px',
+    borderRadius: '15px',
     padding: '4px 10px',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    textAlign: 'center',
   },
   ratingText: {
     fontSize: '12px',
@@ -205,19 +205,20 @@ const styles = {
   },
   arrowIcon: {
     backgroundColor: 'transparent',
+    padding: '21.5px'
   },
   activityCard: {
-    backgroundColor: '#D9D9D9',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     borderRadius: '15px',
-    padding: '20px',
+    padding: '16px',
     display: 'flex',
     flexDirection: 'column',
     gap: '10px'
   },
   transactionCard: {
-    backgroundColor: '#D9D9D9',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     borderRadius: '15px',
-    padding: '20px',
+    padding: '16px',
     display: 'flex',
     flexDirection: 'column',
     gap: '10px'
@@ -229,6 +230,7 @@ const styles = {
   },
   button: {
     backgroundColor: '#FFD856',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     borderRadius: '15px',
     position: 'relative',
     padding: '12px 40px',
@@ -236,7 +238,8 @@ const styles = {
     fontSize: '16px',
     fontWeight: 600,
     cursor: 'pointer',
-    border: 'none'
+    border: 'none',
+    transition: 'background-color 0.2s ease',
   },
   leftIcon: {
     position: 'absolute',
@@ -256,7 +259,7 @@ const styles = {
     display: 'block'
   },
   margin: {
-    padding: '40px'
+    padding: '20px'
   }
 };
 
