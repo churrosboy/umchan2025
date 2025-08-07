@@ -1,7 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
-
+import { useParams, useNavigate } from 'react-router-dom';
+import { users } from '../data/users'; 
 import {
   HiChevronRight,
   HiUser,
@@ -11,7 +10,7 @@ import {
   HiShoppingBag,
   HiBookOpen
 } from 'react-icons/hi2'; {/*아이콘들*/}
-import { users } from '../data/users';  {/*임시 user data*/}
+
 
 const Profile = () => {
   const navigate = useNavigate();

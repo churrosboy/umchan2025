@@ -93,6 +93,10 @@ const getCoordinatesFromAddress = async (address) => {
         <button style={styles.button}>주소 찾기</button>
         <input style={styles.input} type="text" placeholder="상세 주소" />
         <button style={styles.button} onClick={handleSubmit}>회원가입</button>
+      </div>
+    </div>
+  );
+};
 
 //  {/*다음 페이지로 이동하는 함수*/}
 //  const handleNext = () => {
@@ -107,10 +111,6 @@ const getCoordinatesFromAddress = async (address) => {
 //        <button style={styles.button}>주소 찾기</button>  {/*주소 찾기 버튼, 기능X*/}
 //        <input style={styles.input} type="text" placeholder="상세 주소" />  {/*상세 주소 입력란*/}
 //        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음 페이지로 이동하는 함수*/}
-      </div>
-    </div>
-  );
-};
 
 const styles = {
   wrapper: {

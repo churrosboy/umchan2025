@@ -46,8 +46,10 @@ const RecipeList = () => {
                         <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
                         {item.hearts}</span>
                 </div>
-                ))}
             </div>
+            </div>
+            ))}
+        </div>
         </div>
     );
 }
