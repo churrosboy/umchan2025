@@ -6,14 +6,18 @@ import dotenv from 'dotenv';
 dotenv.config();
 const router = express.Router();
 
+console.log("Client ID:", process.env.NAVER_CLIENT_ID);
+console.log("Client Secret:", process.env.NAVER_CLIENT_SECRET);
+
+
 router.get('/', async (req, res) => {
   const { address } = req.query;
   const url = `https://maps.apigw.ntruss.com/map-geocode/v2/geocode?query=${encodeURIComponent(address)}`;
   try {
     const response = await fetch(url, {
       headers: {
-        'x-ncp-apigw-api-key-id': process.env.NAVER_CLIENT_ID,
-        'x-ncp-apigw-api-key': process.env.NAVER_CLIENT_SECRET,
+        'x-ncp-apigw-api-key-id': process.env.REACT_APP_NAVER_CLIENT_ID,
+        'x-ncp-apigw-api-key': process.env.REACT_APP_NAVER_CLIENT_SECRET,
         'Accept': 'application/json'
       },
     });
