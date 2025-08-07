@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     // 유효성 체크
-    if (!uid || !nickname || !phone_number || !address || !longitude || !latitude) {
+    if (!uid || !phone_number || !address || !longitude || !latitude) {
       return res.status(400).json({ message: "필수 입력값 누락" });
     }
 

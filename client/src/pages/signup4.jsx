@@ -61,6 +61,10 @@ const getCoordinatesFromAddress = async (address) => {
 
       console.log("📍 fetch 요청 시작");
 
+      console.log("보낼 데이터:", {
+        uid, nickname, phone, address, longitude, latitude
+      });
+
       // 3. MongoDB에 사용자 정보 저장
       const response = await fetch('/api/users', {
         method: 'POST',
