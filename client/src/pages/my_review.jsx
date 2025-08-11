@@ -30,7 +30,7 @@ const MyReview = () => {
                 <div style={styles.reviewCard} key={review.id} onClick={() => navigate(`/seller/${review.seller_id}`)}>
                 <div style={styles.reviewHeader}>
                     <div style={styles.reviewerName}>{review.buyer_name}</div>
-                    <div style={styles.reviewRating}>{review.rating}</div>
+                    <div style={styles.reviewRating}>⭐ {review.rating}</div>
                 </div>
                 <div style={styles.reviewContent}>
                     {review.desc}

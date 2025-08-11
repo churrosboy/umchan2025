@@ -37,6 +37,10 @@ const Profile = () => {
     navigate('/RecipeRegister');
   }
 
+  const goToItemRegister = () => {
+    navigate('/item_register');
+  }
+
   {/*판매 내역 페이지로 이동(아직 구현X)*/}
   const goToSalesHistory = () => {
     navigate('/Sales_History');
@@ -44,17 +48,17 @@ const Profile = () => {
 
   {/*구매 내역 페이지로 이동(아직 구현X)*/}
   const goToPurchaseHistory = () => {
-    navigate('/Purchase_History');
+    navigate('/purchase_history');
   }
 
   {/*내가 작성한 리뷰 페이지로 이동, userId 넘겨줌*/}
   const goToMyReview = () => {
-    navigate('/MyReview/' + userId);
+    navigate('/my_review/' + userId);
   }
 
   {/*내 레시피 페이지로 이동, userId 넘겨줌*/}
   const goToMyRecipe = () => {
-    navigate('/MyRecipe/' + userId);
+    navigate('/my_recipe/' + userId);
   }
   
   return (
@@ -105,7 +109,7 @@ const Profile = () => {
           <div style={styles.sectionTitle}>활동하기</div> {/*제목*/}
           <button style={styles.button}>  {/*음식 판매 페이지로 이동하는 버튼. 음식 판매 페이지 아직 구현X*/}
             <HiPlusCircle size={22} style={styles.leftIcon}/>
-            <span style={styles.buttonText}>내 음식 판매하기</span>
+            <span style={styles.buttonText} onClick={goToItemRegister}>내 음식 판매하기</span>
             <HiChevronRight size={22} style={styles.rightIcon}/>
           </button>
           <button style={styles.button} onClick={goToRecipeRegister}>  {/*레시피 공유 페이지로 이동하는 버튼, RecipeRegister로 이동하는 함수*/}

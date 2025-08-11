@@ -1,6 +1,5 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
-import { recipes } from '../data/recipes';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { sellers } from '../data/sellers';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
@@ -8,32 +7,76 @@ import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const RecipeList = () => {
     const navigate = useNavigate();
-    const { keyword } = useParams();    //화면에 띄울 레시피들을 관리하기 위한 키워드(검색 전 - all, 검색 후 - 검색어)
+    const { keyword } = useParams();  //화면에 띄울 레시피들을 관리하기 위한 키워드(검색 전 - all, 검색 후 - 검색어)
     const [liked, setLiked] = useState({});
-    let recipeList = (keyword === 'all') ? recipes : recipes.filter(recipe => recipe.title.toLowerCase().includes(keyword.toLowerCase()));
+    const [recipeList, setRecipeList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    recipeList = recipeList.sort((a, b) => b.hearts - a.hearts);
+    useEffect(() => {
+        const fetchRecipes = async () => {
+            try {
+                setLoading(true);
+                const url = keyword 
+                    ? `http://localhost:4000/api/recipes?keyword=${keyword}` // 검색어가 있을 경우
+                    : 'http://localhost:4000/api/recipes'; // 검색어가 없을 경우
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류');
+                }
+                
+                const data = await response.json();
+                setRecipeList(data); // 가져온 데이터를 상태에 저장
+                setError(null);
+            } catch (err) {
+                console.error('레시피 불러오기 실패:', err);
+                setError('레시피를 불러오는 데 실패했습니다.');
+                setRecipeList([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchRecipes();
+    }, [keyword]);
 
-    if (recipeList.length === 0) return <div style={styles.noResult}>사용자를 찾을 수 없습니다.</div>;
+    if (loading) return <div>레시피를 불러오는 중...</div>;
+    if (error) return <div>{error}</div>;
+    if (recipeList.length === 0) return <div>레시피를 찾을 수 없습니다.</div>;
 
     const goToSearch = () => {
         navigate('/search_recipe');
     };
 
-    const handleHeartClick = (id) => {
+    const handleHeartClick = async (id) => {
         const willBeLiked = !liked[id];
-        
-        if (willBeLiked) {
-            console.log(`레시피 ${id}에 좋아요를 눌렀습니다.`);
-        } else {
-            console.log(`레시피 ${id}의 좋아요를 취소했습니다.`);
+
+        try {
+            const response = await fetch(`http://localhost:4000/api/recipes/${id}/like`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ liked: willBeLiked }),
+            });
+
+            if (!response.ok) {
+                throw new Error("좋아요 상태 변경 실패");
+            }
+
+            const data = await response.json();
+            console.log(data.message);
+
+            setLiked(prev => {
+                const newLiked = { ...prev };
+                newLiked[id] = willBeLiked;
+                return newLiked;
+            });
+        } catch (err) {
+            console.error(err);
         }
-        
-        setLiked(prev => {
-            const newLiked = {...prev};
-            newLiked[id] = !prev[id];
-            return newLiked;
-        });
     };
     
     const getSellerName = (userId) => {
@@ -76,40 +119,39 @@ const RecipeList = () => {
                 />
                 </div>
             </div>
-
-            {keyword !== 'all' && (
+        
+            {keyword && (
                 <div style={styles.sectionTitleBar}>
-                    <h3 style={styles.resultTitle}>"{keyword}" 검색 결과</h3>
+                    <h3 style={styles.resultTitle}>
+                        "{keyword}" 검색 결과
+                    </h3>
                     <p style={styles.resultCount}>{recipeList.length}개의 레시피를 찾았습니다</p>
                 </div>
             )}
-            
-            {keyword === 'all' && (
+
+            {!keyword && (
                 <div style={styles.sectionTitleBar}>
-                    <h3 style={styles.resultTitle}>등록된 레시피</h3>
-                    <p style={styles.resultCount}>전체 {recipeList.length}개</p>
+                    <h3 style={styles.resultTitle}>
+                        {recipeList.length}개의 등록된 레시피
+                    </h3>
                 </div>
             )}
 
             <div style={styles.recipeSection}>
                 {recipeList.map(item => (
-                <div style={styles.recipeCard} key={item.id}>
-                    <div style={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.id}`)}></div>
-                    <div style={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.id}`)}>
+                <div style={styles.recipeCard} key={item.recipe_id}>
+                    <div style={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}></div>
+                    <div style={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
                     <div style={styles.recipeTitle}>
-                        <span>{item.user_name}</span>{item.title}
-                        <span style={styles.rating}>
-                            <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
-                            {item.rating}</span>
-                        <span style={styles.likes}>
+                        {item.title}
+                        <span style={styles.likes}> 
                             <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
-                        {item.hearts}</span>
+                        {item.like_cnt}</span>
                     </div>
                     <div style={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
-                    <div style={styles.recipeDesc}>{item.desc}</div>
                 </div>
-                    <div style={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.id)}}>
-                        {liked[item.id] ? '❤️' : '♡'}
+                    <div style={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.recipe_id)}}>
+                        {liked[item.recipe_id] ? '❤️' : '♡'}
                     </div>
                 </div>
                 ))}
@@ -188,23 +230,11 @@ const styles = {
         minHeight: "100vh",
         background: "#fff",
     },
-    rating: {
-        color: '#f5a623',
-    },
     likes: {
         marginLeft: 'auto',
         fontSize: '13px',
         color: '#23a34a',
     },
-    noResult: {
-        width: '100%',
-        maxWidth: '500px',
-        margin: '0 auto',
-        fontFamily: 'sans-serif',
-        background: '#fff',
-        paddingBottom: '60px', /* for nav */
-        paddingTop: '100px', /* for nav */
-  },
 };
 
 export default RecipeList;

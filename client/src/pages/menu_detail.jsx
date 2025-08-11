@@ -1,21 +1,59 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { sellers } from '../data/sellers';  //나중에는 users에서 관리할 데이터
-import styles from '../styles/MenuDetail.module.css'; //스타일을 불러오는 부분
+import styles from '../styles/MenuDetail.module.css';
 
 const MenuDetail = () => {
-  const { menuId } = useParams(); //이전 화면에서 선택된 메뉴Id를 가져오는 부분
+  const { menuId } = useParams(); // menuId = item_id
   const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`http://localhost:4000/api/products/${menuId}`);
+        
+        if (!response.ok) {
+          throw new Error('상품을 찾을 수 없습니다.');
+        }
+        
+        const data = await response.json();
+        setProduct(data);
+        setCurrentImageIndex(0); // 새 상품 로드 시 첫 번째 이미지로 리셋
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  let menu = null;  //메뉴 데이터를 받아놓을 변수
-  sellers.forEach(s => {  //sellers의 데이터에서 메뉴의 데이터 가져오는 함수 -> menu에 저장
-    s.menus.forEach(m => {
-      if (m.id === Number(menuId)) menu = m;
-    });
-  });
+    if (menuId) {
+      fetchProduct();
+    }
+  }, [menuId]);
 
-  // menu에 저장된거 없으면 메뉴 없음
-  if (!menu) return <div>메뉴를 찾을 수 없습니다.</div>;
+  const nextImage = () => {
+    if (product?.images && product.images.length > 1) {
+      setCurrentImageIndex((prev) => 
+        prev === product.images.length - 1 ? 0 : prev + 1
+      );
+    }
+  };
+
+  const prevImage = () => {
+    if (product?.images && product.images.length > 1) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? product.images.length - 1 : prev - 1
+      );
+    }
+  };
+
+  if (loading) return <div className={styles.wrapper}>로딩 중...</div>;
+  if (error) return <div className={styles.wrapper}>에러: {error}</div>;
+  if (!product) return <div className={styles.wrapper}>메뉴를 찾을 수 없습니다.</div>;
 
   return (
     <div className={styles.wrapper}>
@@ -23,14 +61,102 @@ const MenuDetail = () => {
       <button onClick={() => navigate(-1)} className={styles.backButton}>
         &lt; 뒤로가기
       </button>
+      <div className={styles.imageBox}>
+        {product.images && product.images.length > 0 ? (
+          <div style={{ position: 'relative' }}>
+            <img 
+              src={`http://localhost:4000${product.images[currentImageIndex]}`} 
+              alt={`${product.name} ${currentImageIndex + 1}`}
+              style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+            />
+            
+            {/* 이미지가 2개 이상일 때만 버튼 표시 */}
+            {product.images.length > 1 && (
+              <>
+                <button 
+                  onClick={prevImage}
+                  style={{
+                    position: 'absolute',
+                    left: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '40px',
+                    height: '40px',
+                    cursor: 'pointer',
+                    fontSize: '18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  &#8249;
+                </button>
+                
+                <button 
+                  onClick={nextImage}
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '40px',
+                    height: '40px',
+                    cursor: 'pointer',
+                    fontSize: '18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  &#8250;
+                </button>
+                
+                {/* 이미지 인디케이터 (점) */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '10px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  gap: '5px'
+                }}>
+                  {product.images.map((_, index) => (
+                    <div
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: index === currentImageIndex ? 'white' : 'rgba(255, 255, 255, 0.5)',
+                        cursor: 'pointer'
+                      }}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          '상세사진 영역'
+        )}
+      </div>
 
-      {/*메뉴 이미지*/}
-      <div className={styles.imageBox}>상세사진 영역</div>
-
-      {/*메뉴 정보란*/}
-      <h2 className={styles.name}>{menu.name}</h2>
-      <p className={styles.price}>{menu.price.toLocaleString()}원</p>
-      <p className={styles.desc}>{menu.desc}</p>
+      <h2 className={styles.name}>{product.name}</h2>
+      <p className={styles.price}>{Number(product.price).toLocaleString()}원</p>
+      <p className={styles.desc}>{product.info}</p>
+      <p className={styles.type}>판매 방식: {product.type}</p>
+      {product.reserve_end !== '0' && (
+        <p className={styles.reserveEnd}>예약 마감: {product.reserve_end}</p>
+      )}
 
       {/*채팅하기 버튼*/}
       <button className={styles.chatButton}>채팅하기</button>

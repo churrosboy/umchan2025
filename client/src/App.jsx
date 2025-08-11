@@ -13,7 +13,7 @@ import SellerDetail from './pages/seller_detail';
 import MenuDetail from './pages/menu_detail';
 import OtherProfile from './pages/other_user_profile';
 import SellerAuth from './pages/seller_auth';
-import SellerItem from './pages/seller_item';
+import SellerItem from './pages/seller_item(del)';
 import RecipeList from './pages/user_recipe_list';
 import ReviewList from './pages/user_review_list';
 import Profile from './pages/profile';
@@ -30,6 +30,8 @@ import Recipes from './pages/recipes';
 import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import ReviewPost from './pages/review_post';
+import ItemRegister from './pages/item_register';
+import Chat from './pages/chat';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -72,9 +74,12 @@ const AppRoutes = () => {
         <Route path="/search" element={<Search />} />
         <Route path="/seller_list/:keyword" element={<SellerList />} />
         <Route path="/recipes/:keyword" element={<Recipes />} />
+        <Route path="/recipes" element={<Recipes />} />
         <Route path="/search_recipe" element={<SearchRecipe />} />
         <Route path="/recipe_detail/:recipeId" element={<RecipeDetail />} />
         <Route path="/review_post" element={<ReviewPost />} />
+        <Route path="/item_register" element={<ItemRegister />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>
