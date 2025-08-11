@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const SellerList = () => {
     const navigate = useNavigate();
@@ -42,8 +44,12 @@ const SellerList = () => {
                         <div style={styles.sellerInfo}>
                             <div style={styles.top}>
                                 <span style={styles.name}>{seller.nickname}</span>
-                                <span style={styles.rating}>⭐ {seller.avg_rating} ({seller.review_cnt})</span>
-                                <span style={styles.likes}>💚 {seller.like_cnt}</span>
+                                <span style={styles.rating}>
+                                    <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                                {seller.avg_rating} ({seller.review_cnt})</span>
+                                <span style={styles.likes}>
+                                    <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                                {seller.like_cnt}</span>
                             </div>
                             <div style={styles.matchingProducts}>
                                 {seller.matchingProducts.slice(0, 2).map((product, idx) => (

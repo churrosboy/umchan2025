@@ -4,17 +4,25 @@ import { useNavigate } from 'react-router-dom';
 const Signup2 = () => {
   const navigate = useNavigate();
 
-  const handleNext = () => {
-    navigate('/signup3');
-  };
+const handleNext = () => {
+  const password = document.querySelectorAll('input[type="password"]')[0].value;
+  const confirm = document.querySelectorAll('input[type="password"]')[1].value;
 
+  if (password !== confirm) {
+    alert('비밀번호가 일치하지 않습니다');
+    return;
+  }
+
+  localStorage.setItem('password', password);
+  navigate('/signup3');
+};
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.container}>
-        <h2 style={styles.title}>🙈 비밀번호를 설정해주세요</h2>
-        <input style={styles.input} type="password" placeholder="비밀번호" />
-        <input style={styles.input} type="password" placeholder="비밀번호 확인" />
-        <button style={styles.button} onClick={handleNext}>다음</button>
+    <div style={styles.wrapper}>  {/*배경*/}
+      <div style={styles.container}>  {/*요소들 담은 박스*/}
+        <h2 style={styles.title}>🙈 비밀번호를 설정해주세요</h2>  {/*제목*/}
+        <input style={styles.input} type="password" placeholder="비밀번호" /> {/*비밀번호 입력란*/}
+        <input style={styles.input} type="password" placeholder="비밀번호 확인" />  {/*비밀번호 확인 입력란*/}
+        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음 페이지로 이동하는 함수*/}
       </div>
     </div>
   );

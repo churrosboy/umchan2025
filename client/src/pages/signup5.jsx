@@ -1,18 +1,19 @@
-import React from 'react';
+/*import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup5 = () => {
   const navigate = useNavigate();
 
+  {/*로그인 화면으로 돌아가는 함수*/}
   const goToLogin = () => {
-    navigate('/');
+   navigate('/');
   };
 
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.container}>
-        <h2 style={styles.title}>🎉 회원가입이 완료되었습니다!</h2>
-        <button style={styles.button} onClick={goToLogin}>로그인 하러 가기</button>
+    <div style={styles.wrapper}>  {/*배경*/}
+      <div style={styles.container}>  {/*요소들 담은 박스*/}
+        <h2 style={styles.title}>🎉 회원가입이 완료되었습니다!</h2> {/*제목*/}
+        <button style={styles.button} onClick={goToLogin}>로그인 하러 가기</button> {/*로그인으로 이동하는 버튼, 로그인 화면으로 돌아가는 함수*/}
       </div>
     </div>
   );
@@ -59,4 +60,4 @@ const styles = {
   },
 };
 
-export default Signup5;
+export default Signup5;*/

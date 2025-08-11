@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { sellers } from '../data/sellers';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const RecipeList = () => {
     const navigate = useNavigate();
-    const { keyword } = useParams(); // URL에서 검색어 가져오기
+    const { keyword } = useParams();  //화면에 띄울 레시피들을 관리하기 위한 키워드(검색 전 - all, 검색 후 - 검색어)
     const [liked, setLiked] = useState({});
     const [recipeList, setRecipeList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -142,7 +144,9 @@ const RecipeList = () => {
                     <div style={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
                     <div style={styles.recipeTitle}>
                         {item.title}
-                        <span style={styles.likes}> 💚{item.like_cnt}</span>
+                        <span style={styles.likes}> 
+                            <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                        {item.like_cnt}</span>
                     </div>
                     <div style={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
                 </div>

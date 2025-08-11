@@ -35,22 +35,27 @@ const OtherProfile = () => {
     if (loading) return <div style={styles.loading}>로딩 중...</div>;
     if (error || !user) return <div style={styles.error}>사용자를 찾을 수 없습니다.</div>;
 
+    //판매자 위생인증 페이지 이동.Id 전달
     const goToSellerAuth = () => {
         navigate('/seller_auth/' + userId);
     };
 
+    //판매자 판매물품 페이지로 이동.Id 전달(홈화면에서 판매자 선택 시 이동되는 화면과 동일)
     const goToSellerItem = () => {
         navigate('/seller_detail/' + userId);
     }
 
+    //판매자가 등록한 레시피 리스트 페이지로 이동.Id 전달
     const goToRecipeList = () => {
         navigate('/user_recipe_list/' + userId);
     }
 
+    //판매자에게 작성된 리뷰 리스트 페이지로 이동.Id 전달
     const goToReviewList = () => {
         navigate('/user_review_list/' + userId);
     }
 
+    //뒤로가기 함수
     const goBack = () => {
         navigate(-1);
     };
@@ -99,19 +104,24 @@ const OtherProfile = () => {
     return (
         <div style={styles.wrapper}>
         <div style={styles.container}>
+            {/*뒤로가기 버튼과 페이지 제목*/}
             <div style={styles.header}>
             <div style={styles.backButton}><span onClick={goBack}>←</span></div>
             <div style={styles.headerTitle}>프로필</div>
             <div style={{ width: 18 }} />
             </div>
             <div style={styles.scrollArea}>
+            {/*프로필 정보 부분*/}
             <div style={styles.profileContainer}>
+                {/*프로필 이미지란. 아직 이미지 불러오는거 구현X*/}
                 <div style={styles.profileImage}>👩‍🍳</div>
+                {/*닉네임과 평점, 관심 정보*/}
                 <div style={styles.profileNameRow}>
                 <div style={styles.profileName}>{user.nickname || user.name}</div>
                 <p>⭐ {user.avg_rating || user.rating} ({user.review_cnt || user.reviews}) 💚 {user.like_cnt || user.hearts}</p>
                 </div>
                 <div style={styles.profileDesc}>{user.disc || '진심을 담아 정성껏 만들겠습니다.'}</div>
+                {/*판매자와 상호작용하는 버튼들*/}
                 <div style={styles.buttonGroup}>
                 <button style={styles.buttonYellow}>채팅하기</button>
                 <button 
@@ -126,6 +136,8 @@ const OtherProfile = () => {
                   최근 로그인 {getTimeDiff(user.updatedAt || new Date())}
                 </div>
             </div>
+
+            {/*위의 함수들을 통해 이동하는 부분들.*/}
             <div style={styles.menuList}>
                 <div style={styles.menuItem}><span onClick={goToSellerAuth} style={{cursor: 'pointer'}}><span style={styles.menuIcon}>🧾</span>판매자 인증한 사용자입니다.</span></div>
                 <div style={styles.menuItem}><span onClick={goToSellerItem} style={{cursor: 'pointer'}}><span style={styles.menuIcon}>📃</span>판매 물품</span></div>

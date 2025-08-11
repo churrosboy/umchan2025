@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import styles from '../styles/SellerDetail.module.css';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
+import styles from '../styles/SellerDetail.module.css'; //스타일 가져오는 부분
 
 const SellerDetail = () => {
-  const { sellerId } = useParams();
+  const { sellerId } = useParams(); //홈화면에서 선택된 판매자의 Id를 가져오는 부분
   const navigate = useNavigate();
-  
-  const [seller, setSeller] = useState(null);
+  const [seller, setSeller] = useState(null); //sellers 데이터에서 sellerId와 일치하는 데이터를 seller에 저장
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,15 +43,20 @@ const SellerDetail = () => {
 
   return (
     <div className={styles.wrapper}>
+      {/*뒤로가기 버튼*/}
       <button onClick={() => navigate(-1)} className={styles.backButton}>
         &lt; 뒤로가기
       </button>
 
       <h2 onClick={() => navigate(`/other_user_profile/${seller.id}`)}>{seller.nickname}</h2>
       <p className={styles.info}>
-        ⭐ {seller.avg_rating} ({seller.review_cnt}) 💚 {seller.like_cnt}
+        <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/> 
+        {seller.avg_rating} ({seller.review_cnt})
+        <Heart width={19} height={19} style={{ verticalAlign: 'middle' }}/>
+        {seller.like_cnt}
       </p>
 
+      {/*즉시구매 상품란/sellingType에 따라 표시되는 상품 구분*/}
       <h3 className={styles.sectionTitle}>즉시구매 상품</h3>
       {products.filter(product => product.type === '즉시').map(product => (
         <div
@@ -64,6 +70,7 @@ const SellerDetail = () => {
         </div>
       ))}
 
+      {/*예약구매 상품란*/}
       <h3 className={styles.sectionTitle}>예약구매 상품</h3>
       {products.filter(product => product.type === '예약').map(product => (
         <div

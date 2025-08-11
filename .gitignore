@@ -5,4 +5,9 @@
 .DS_Store
 
 # 환경변수 파일들 (모든 위치 포함)
-.env*z
+
+.env*
+
+mongo/
+
+node_modules/

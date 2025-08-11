@@ -9,7 +9,7 @@ const MenuDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -57,10 +57,10 @@ const MenuDetail = () => {
 
   return (
     <div className={styles.wrapper}>
+      {/*뒤로가기 버튼*/}
       <button onClick={() => navigate(-1)} className={styles.backButton}>
         &lt; 뒤로가기
       </button>
-
       <div className={styles.imageBox}>
         {product.images && product.images.length > 0 ? (
           <div style={{ position: 'relative' }}>
@@ -158,9 +158,11 @@ const MenuDetail = () => {
         <p className={styles.reserveEnd}>예약 마감: {product.reserve_end}</p>
       )}
 
+      {/*채팅하기 버튼*/}
       <button className={styles.chatButton}>채팅하기</button>
     </div>
   );
 };
 
+{/*스타일은 styles 폴더의 MenuDetail.module.css 파일 확인*/}
 export default MenuDetail;

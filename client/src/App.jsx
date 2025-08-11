@@ -7,7 +7,7 @@ import Signup1 from './pages/signup1';
 import Signup2 from './pages/signup2';
 import Signup3 from './pages/signup3';
 import Signup4 from './pages/signup4';
-import Signup5 from './pages/signup5';
+//import Signup5 from './pages/signup5';
 import Home from './pages/home';
 import SellerDetail from './pages/seller_detail';
 import MenuDetail from './pages/menu_detail';
@@ -55,7 +55,6 @@ const AppRoutes = () => {
         <Route path="/signup2" element={<Signup2 />} />
         <Route path="/signup3" element={<Signup3 />} />
         <Route path="/signup4" element={<Signup4 />} />
-        <Route path="/signup5" element={<Signup5 />} />
         <Route path="/home" element={<Home />} />
         <Route path="/seller_detail/:sellerId" element={<SellerDetail />} />
         <Route path="/menu/:menuId" element={<MenuDetail />} />

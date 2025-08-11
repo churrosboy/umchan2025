@@ -14,7 +14,8 @@ export const users = [
         reserve_cnt: 0,
         profile_img: '../images/seller1-1.jpeg',
         main_img: [
-            null
+            '../images/seller1-1.jpeg',
+            '../images/seller1-1.jpeg'
         ],
         phone_num: '010-0000-0000',
         disc: '진심을 담아 정성껏 만들겠습니다.',
