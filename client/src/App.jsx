@@ -31,6 +31,7 @@ import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import ReviewPost from './pages/review_post';
 import ItemRegister from './pages/item_register';
+import Chat from './pages/chat';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -79,6 +80,7 @@ const AppRoutes = () => {
         <Route path="/recipe_detail/:recipeId" element={<RecipeDetail />} />
         <Route path="/review_post" element={<ReviewPost />} />
         <Route path="/item_register" element={<ItemRegister />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>
