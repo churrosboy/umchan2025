@@ -1,6 +1,7 @@
 // routes/user.js
 import express from 'express';
 import { users } from '../models/user_model.js'; // ✅ 모델 import
+import { Int32, Double } from 'mongodb';
 
 const router = express.Router();
 
@@ -22,27 +23,24 @@ router.post('/', async (req, res) => {
     }
 
     const userDoc = {
-      id: String(uid),                       // 🔒 string 강제
-      nickname: String(nickname),           // 🔒 string 강제
-      phone_number: String(phone_number),   // 🔒 string 강제
-      address: String(address),             // 🔒 string 강제
+      id: String(uid),
+      nickname: typeof nickname === 'string' ? nickname : '',
+      phone_number: String(phone_number),
+      address: String(address),
       location: {
-        type: "Point",                      // 🔒 정확한 문자열 (대소문자 구분됨)
-        coordinates: [
-          parseFloat(longitude),            // 📍 double
-          parseFloat(latitude)              // 📍 double
-        ]
+        type: "Point",
+        coordinates: [ new Double(longitude), new Double(latitude) ]   // ✅ double
       },
-      is_auth: true,
-      item_num: 0,
-      recipe_num: 0,
-      review_num: 0,
-      avg_rating: 0.0,
-      review_cnt: 0,
-      like_cnt: 0,
+      is_auth: false,                   // is_auth는 bool 허용
+      item_num: new Int32(0),          // ✅ int
+      recipe_num: new Int32(0),        // ✅ int
+      review_num: new Int32(0),        // ✅ int
+      avg_rating: new Double(0.0),     // ✅ double
+      review_cnt: new Int32(0),        // ✅ int
+      like_cnt: new Int32(0),          // ✅ int
       thumbnail_list: [],
-      instant_cnt: 0,
-      reserve_cnt: 0,
+      instant_cnt: new Int32(0),       // ✅ int
+      reserve_cnt: new Int32(0),       // ✅ int
       profile_image: "",
       intro: ""
     };

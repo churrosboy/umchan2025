@@ -13,10 +13,10 @@ if (!uri) {
 async function connect() {
   try {
     console.log('✅ MongoDB 연결 시도 중...');
-    await mongoose.connect(uri, {
-      dbName: 'momchance'
-    });
-    console.log('✅ Mongoose 연결 성공!');
+    await client.connect();
+    console.log('✅ MongoDB 연결 성공!');
+    const db = client.db('umchan'); // DB 이름은 상황에 맞게 변경 가능
+    return { db, client };
   } catch (err) {
     console.error('❌ Mongoose 연결 실패:', err);
     throw err;
