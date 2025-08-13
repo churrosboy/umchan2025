@@ -76,7 +76,7 @@
     "multer": "^2.0.2",
     "negotiator": "^0.6.3",
     "nodemon": "^3.1.10",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
     "normalize-path": "^3.0.0",
     "object-assign": "^4.1.1",
     "object-inspect": "^1.13.4",

@@ -4,6 +4,7 @@ import { HiOutlineSearch } from 'react-icons/hi';
 import { sellers } from '../data/sellers';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeList = () => {
     const navigate = useNavigate();
@@ -18,9 +19,9 @@ const RecipeList = () => {
             try {
                 setLoading(true);
                 const url = keyword 
-                    ? `http://localhost:4000/api/recipes?keyword=${keyword}` // 검색어가 있을 경우
-                    : 'http://localhost:4000/api/recipes'; // 검색어가 없을 경우
-                
+                    ? `${API_URL}/api/recipes?keyword=${keyword}` // 검색어가 있을 경우
+                    : `${API_URL}/api/recipes`; // 검색어가 없을 경우
+
                 const response = await fetch(url);
                 
                 if (!response.ok) {
@@ -54,7 +55,7 @@ const RecipeList = () => {
         const willBeLiked = !liked[id];
 
         try {
-            const response = await fetch(`http://localhost:4000/api/recipes/${id}/like`, {
+            const response = await fetch(`${API_URL}/api/recipes/${id}/like`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

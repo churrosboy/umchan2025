@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const SellerList = () => {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ const SellerList = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:4000/api/users/search/product?keyword=${keyword}`);
+                const response = await fetch(`${API_URL}/api/users/search/product?keyword=${keyword}`);
                 const data = await response.json();
                 setSeller_result(data);
             } catch (err) {

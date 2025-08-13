@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
+const API_URL = process.env.REACT_APP_API_URL;
 
-const socket = io('http://localhost:4000'); // WebSocket 서버 주소
+const socket = io(`${API_URL}`); // WebSocket 서버 주소
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);

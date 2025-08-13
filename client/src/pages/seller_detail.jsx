@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 import styles from '../styles/SellerDetail.module.css'; //스타일 가져오는 부분
+const API_URL = process.env.REACT_APP_API_URL;
 
 const SellerDetail = () => {
   const { sellerId } = useParams(); //홈화면에서 선택된 판매자의 Id를 가져오는 부분
@@ -16,8 +17,8 @@ const SellerDetail = () => {
       setLoading(true);
       try {
         const [userRes, productRes] = await Promise.all([
-          fetch(`http://localhost:4000/api/users/${sellerId}`),
-          fetch(`http://localhost:4000/api/products/user/${sellerId}`)
+          fetch(`${API_URL}/api/users/${sellerId}`),
+          fetch(`${API_URL}/api/products/user/${sellerId}`)
         ]);
         
         if (userRes.ok) {

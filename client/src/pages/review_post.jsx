@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const ReviewPost = () => {
   const navigate = useNavigate();
@@ -26,8 +27,8 @@ const ReviewPost = () => {
       if (imageFile) { // 실제 파일 객체를 저장해둬야 함
         const formData = new FormData();
         formData.append('image', imageFile);
-        
-        const imageResponse = await fetch('/api/upload', {
+
+        const imageResponse = await fetch(`${API_URL}/api/upload`, {
           method: 'POST',
           body: formData,
         });
@@ -49,7 +50,7 @@ const ReviewPost = () => {
       };
 
       // 3. 리뷰 데이터를 서버에 전송
-      await fetch('/api/reviews', {
+      await fetch(`${API_URL}/api/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(review),
