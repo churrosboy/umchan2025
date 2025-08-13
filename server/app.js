@@ -18,6 +18,6 @@ app.use('/api/users', userRouter); // ✅ user router mount
 app.use('/api/geocode', geocodeRouter);
 app.use("/api/sellers", sellerRoutes);
 
-app.listen(5050, () => {
-  console.log('✅ 서버 실행: http://localhost:5050');
+app.listen(4000, () => {
+  console.log('✅ 서버 실행: http://localhost:4000');
 });
