@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/MenuDetail.module.css';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const MenuDetail = () => {
-  const { menuId } = useParams(); // menuId = item_id
+  const { menuId } = useParams(); //이전 화면에서 선택된 메뉴Id를 가져오는 부분
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,102 +62,14 @@ const MenuDetail = () => {
       <button onClick={() => navigate(-1)} className={styles.backButton}>
         &lt; 뒤로가기
       </button>
-      <div className={styles.imageBox}>
-        {product.images && product.images.length > 0 ? (
-          <div style={{ position: 'relative' }}>
-            <img 
-              src={`http://localhost:4000${product.images[currentImageIndex]}`} 
-              alt={`${product.name} ${currentImageIndex + 1}`}
-              style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-            />
-            
-            {/* 이미지가 2개 이상일 때만 버튼 표시 */}
-            {product.images.length > 1 && (
-              <>
-                <button 
-                  onClick={prevImage}
-                  style={{
-                    position: 'absolute',
-                    left: '10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '40px',
-                    height: '40px',
-                    cursor: 'pointer',
-                    fontSize: '18px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  &#8249;
-                </button>
-                
-                <button 
-                  onClick={nextImage}
-                  style={{
-                    position: 'absolute',
-                    right: '10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '40px',
-                    height: '40px',
-                    cursor: 'pointer',
-                    fontSize: '18px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  &#8250;
-                </button>
-                
-                {/* 이미지 인디케이터 (점) */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  display: 'flex',
-                  gap: '5px'
-                }}>
-                  {product.images.map((_, index) => (
-                    <div
-                      key={index}
-                      onClick={() => setCurrentImageIndex(index)}
-                      style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        backgroundColor: index === currentImageIndex ? 'white' : 'rgba(255, 255, 255, 0.5)',
-                        cursor: 'pointer'
-                      }}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        ) : (
-          '상세사진 영역'
-        )}
-      </div>
 
-      <h2 className={styles.name}>{product.name}</h2>
-      <p className={styles.price}>{Number(product.price).toLocaleString()}원</p>
-      <p className={styles.desc}>{product.info}</p>
-      <p className={styles.type}>판매 방식: {product.type}</p>
-      {product.reserve_end !== '0' && (
-        <p className={styles.reserveEnd}>예약 마감: {product.reserve_end}</p>
-      )}
+      {/*메뉴 이미지*/}
+      <div className={styles.imageBox}>상세사진 영역</div>
+
+      {/*메뉴 정보란*/}
+      <h2 className={styles.name}>{menu.name}</h2>
+      <p className={styles.price}>{menu.price.toLocaleString()}원</p>
+      <p className={styles.desc}>{menu.desc}</p>
 
       {/*채팅하기 버튼*/}
       <button className={styles.chatButton}>채팅하기</button>
@@ -165,5 +77,5 @@ const MenuDetail = () => {
   );
 };
 
-{/*스타일은 styles 폴더의 MenuDetail.module.css 파일 확인*/}
 export default MenuDetail;
+/*스타일은 styles 폴더의 MenuDetail.module.css 파일 확인*/

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { recipes } from '../data/recipes';
+import { sellers } from '../data/sellers';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 const API_URL = process.env.REACT_APP_API_URL;
@@ -83,14 +85,11 @@ const RecipeDetail = () => {
 
     return (
         <div style={styles.recipeWrapper}>
-            <div style={styles.recipeHeader}>
-                <button style={styles.backBtn} onClick={goBack}>{'←'}</button>
-                <h2 style={{ margin: 0, fontSize: '18px' }}>
-                    {sellerName}
-                    <span style={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span>
-                </h2>
-                <div style={styles.spacer} />
-            </div>
+        <div style={styles.recipeHeader}>
+            <button style={styles.backBtn} onClick={goBack}>{'←'}</button>
+            <h2 style={{ margin: 0, fontSize: '18px' }}>{sellerName}<span style={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span></h2>
+            <div style={styles.spacer} />
+        </div>
 
             {/* 메인 이미지 */}
             {recipe.thumbnail && (
@@ -107,105 +106,88 @@ const RecipeDetail = () => {
                 </div>
             )}
 
-            <div style={styles.recipeInfo}>
-                <div style={styles.recipeTitle}>
-                    <h3 style={styles.recipeName}>{recipe.title}</h3>
-                    <span style={styles.rating}>⭐ {recipe.rating} ({recipe.reviews || 0})</span>
-                    <span style={styles.likes}>💚 {recipe.hearts || 0}</span>
-                </div>
-                <p style={{ margin: '8px 0 16px', color: '#666', fontSize: '15px' }}>
-                    {recipe.desc}
-                </p>
-                <div style={styles.recipeMeta}>
-                    <p style={styles.metaTitle}>재료</p>
-                    <div style={styles.ingredientGrid}>
-                        {recipe.ingredients?.map((ingredient, idx) => (
-                            <div key={idx} style={styles.ingredientItem}>
-                                <span style={styles.ingredientName}>{ingredient.name}</span>
-                                <span style={styles.ingredientAmount}>{ingredient.amount}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        <div style={styles.recipeInfo}>
+            <div style={styles.recipeTitle}>
+                <h3 style={styles.recipeName}>{recipe.title}</h3>
+                <span style={styles.rating}>
+                    <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/>
+                    {recipe.rating} ({recipe.reviews || 0})</span>
+                <span style={styles.likes}>
+                    <Heart width={19} height={19} style={{ verticalAlign: 'middle' }}/>
+                    {recipe.hearts || 0}</span>
             </div>
-
-            <hr style={styles.hr} />
-
-            {recipe.steps?.map((step) => (
-                <div style={styles.recipeStep} key={step.step_num}>
-                    <div style={styles.stepHeader}>
-                        <div style={styles.stepNumberBadge}>{step.step_num}</div>
-                        <h4 style={styles.stepTitle}>단계 {step.step_num}</h4>
-                    </div>
-                    <div style={styles.stepContent}>
-                        <div style={styles.stepImageContainer}>
-                            <img
-                                src={step.img}
-                                alt={`단계 ${step.step_num} 이미지`}
-                                style={styles.stepImage}
-                                onError={(e) => {
-                                    console.error('단계 이미지 로드 실패:', e.target.src);
-                                    e.target.style.display = 'none';
-                                }}
-                            />
+            
+            <p style={{ margin: '8px 0 16px', color: '#666', fontSize: '15px' }}>
+                {recipe.desc}
+            </p>
+            
+            <div style={styles.recipeMeta}>
+                <p style={styles.metaTitle}>재료</p>
+                <div style={styles.ingredientGrid}>
+                    {recipe.ingredients.map((ingredient, idx) => (
+                        <div key={idx} style={styles.ingredientItem}>
+                            <span style={styles.ingredientName}>{ingredient.name}</span>
+                            <span style={styles.ingredientAmount}>{ingredient.amount}</span>
                         </div>
-                        <p style={styles.stepText}>{step.text}</p>
-                    </div>
-                </div>
-            ))}
-
-            {/* 댓글 섹션 */}
-            <div style={styles.commentsSection}>
-                <h4 style={styles.commentsTitle}>댓글</h4>
-                <form
-                    onSubmit={e => {
-                        e.preventDefault();
-                        handleAddComment(recipe.recipe_id);
-                    }}
-                    style={styles.commentForm}
-                >
-                    <input
-                        type="text"
-                        value={commentInputs[recipe.recipe_id] || ""}
-                        onChange={e => handleCommentInput(recipe.recipe_id, e.target.value)}
-                        placeholder="댓글을 입력하세요"
-                        style={styles.commentInput}
-                        required
-                    />
-                    <button type="submit" style={styles.commentSubmit}>
-                        등록
-                    </button>
-                </form>
-                <div style={styles.commentsList}>
-                    {(comments[recipe.recipe_id] || []).length === 0 ? (
-                        <div style={styles.noComment}>아직 댓글이 없습니다.</div>
-                    ) : (
-                        comments[recipe.recipe_id]?.map((c, idx) => (
-                            <div key={idx} style={styles.commentItem}>
-                                <div style={styles.commentHeader}>
-                                    <span style={styles.commentWriter}>{c.user_id || c.writer || "익명"}</span>
-                                    <span style={styles.commentDate}>
-                                        {c.timestamp ? new Date(c.timestamp).toLocaleDateString('ko-KR', {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        }) : c.created_at ? new Date(c.created_at).toLocaleDateString('ko-KR', {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        }) : "방금 전"}
-                                    </span>
-                                </div>
-                                <div style={styles.commentContent}>{typeof c.text === "string" && c.text.trim() ? c.text : (typeof c.content === "string" && c.content.trim() ? c.content : "(내용 없음)")}</div>
-                            </div>
-                        ))
-                    )}
+                    ))}
                 </div>
             </div>
+        </div>
+
+        <hr style={styles.hr} />
+
+        {recipe.steps.map((step) => (
+            <div style={styles.recipeStep} key={step.step_num}>
+                <div style={styles.stepHeader}>
+                    <div style={styles.stepNumberBadge}>{step.step_num}</div>
+                    <h4 style={styles.stepTitle}>단계 {step.step_num}</h4>
+                </div>
+                
+                <div style={styles.stepContent}>
+                    <div style={styles.stepImageContainer}>
+                        <img 
+                            src={step.img} 
+                            alt={`단계 ${step.step_num} 이미지`} 
+                            style={styles.stepImage} 
+                        />
+                    </div>
+                    <p style={styles.stepText}>{step.text}</p>
+                </div>
+            </div>
+        ))}
+
+        <div style={styles.commentsSection}>
+            <h4 style={styles.commentsTitle}>댓글</h4>
+            <form onSubmit={handleSubmitComment} style={styles.commentForm}>
+                    <div style={styles.commentInputGroup}>
+                        <div style={styles.nameInput}>사용자이름</div>
+                        <input
+                            type="text"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="댓글을 입력하세요"
+                            style={styles.commentInput}
+                            required
+                        />
+                        <button type="submit" style={styles.commentSubmit}>
+                            등록
+                        </button>
+                    </div>
+                </form>
+            {recipe.comments && recipe.comments.length > 0 ? (
+                recipe.comments.map((comment, idx) => (
+                    <div style={styles.comment} key={idx}>
+                        <span style={styles.commentWriter}>{comment.writer}</span>
+                        <span style={styles.commentDate}>
+                            {new Date(comment.timestamp).toLocaleDateString()}
+                        </span>
+                        <span style={styles.commentContent}>{comment.content}</span>
+                    </div>
+                ))
+            ) : (
+                <p>아직 댓글이 없습니다.</p>
+            )}
+        </div>
         </div>
     );
 };
@@ -390,92 +372,88 @@ const styles = {
     },
     commentsSection: {
         marginTop: '32px',
-        padding: '28px 20px',
-        //background: 'linear-gradient(135deg, #f8fafc 0%, #ffd45cff 100%)',
-        borderRadius: '16px',
-        boxShadow: '0 4px 16px rgba(60,80,120,0.10)',
-        //border: '1px solid #fffa75ff',
+        padding: '20px',
+        backgroundColor: '#f9f9f9',
+        borderRadius: '8px',
+        paddingBottom: '150px',
     },
     commentsTitle: {
-        fontSize: '20px',
-        fontWeight: 700,
-        marginBottom: '18px',
-        color: '#000000ff',
-        letterSpacing: '-1px',
+        fontSize: '18px',
+        fontWeight: '600',
+        marginBottom: '16px',
+        color: '#444'
     },
-    commentForm: {
-        display: 'flex',
-        gap: '10px',
-        marginBottom: '20px',
-        alignItems: 'center',
-    },
-    commentInput: {
-        flex: 1,
-        fontSize: '15px',
-        padding: '10px 14px',
-        borderRadius: '8px',
-        border: '1.5px solid #ffd261ff',
-        outline: 'none',
-        background: '#ffffffff',
-        transition: 'border 0.2s',
-    },
-    commentSubmit: {
-        padding: '10px 20px',
-        fontSize: '15px',
-        background: 'linear-gradient(90deg, #ffe565ff 0%, #fed650ff 100%)',
-        color: '#fff',
-        border: 'none',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        fontWeight: 600,
-        boxShadow: '0 2px 8px rgba(60,80,120,0.08)',
-        transition: 'background 0.2s',
-    },
-    commentsList: {
-        marginTop: '8px',
-    },
-    commentItem: {
-        background: 'rgba(255, 255, 255, 1)',
-        borderRadius: '8px',
-        padding: '12px 16px',
-        marginBottom: '10px',
-        boxShadow: '0 1px 4px rgba(60,80,120,0.04)',
-        border: '1px solid #0000004e',
-        transition: 'box-shadow 0.2s',
-    },
-    commentHeader: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginBottom: '4px',
+    comment: {
+        padding: '12px 0',
+        borderBottom: '1px solid #eee'
     },
     commentWriter: {
-        fontWeight: 600,
-        color: '#ffd54dff',
-        fontSize: '14px',
-        letterSpacing: '-0.5px',
-    },
-    commentDate: {
-        fontSize: '12px',
-        color: '#9ca3af',
+        fontWeight: '600',
+        marginRight: '10px',
+        color: '#333'
     },
     commentContent: {
-        fontSize: '15px',
-        color: '#374151',
-        marginTop: '2px',
-        wordBreak: 'break-all',
-        lineHeight: 1.6,
+        display: 'block',
+        margin: '6px 0',
+        lineHeight: '1.5'
     },
-    noComment: {
-        color: '#ffef5eff',
-        fontSize: '15px',
-        textAlign: 'center',
-        marginTop: '16px',
+    commentDate: {
+        float: 'right',
+        fontSize: '0.8rem',
+        color: '#888'
     },
     noResult: {
         textAlign: 'center',
         padding: '40px',
         fontSize: '16px',
         color: '#666'
+    },
+    commentForm: {
+        marginBottom: '24px',
+        backgroundColor: '#fff',
+        padding: '16px',
+        borderRadius: '8px',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.06)'
+    },
+    commentInputGroup: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px'
+    },
+    nameInput: {
+        padding: '10px 12px',
+        fontSize: '14px',
+        width: '150px'
+    },
+    commentInput: {
+        flex: 1,
+        padding: '10px 12px',
+        borderRadius: '6px',
+        border: '1px solid #ddd',
+        fontSize: '14px',
+        marginBottom: '10px'
+    },
+    commentSubmit: {
+        padding: '10px 20px',
+        backgroundColor: '#eecb88',
+        color: '#fff',
+        border: 'none',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        fontWeight: '600',
+        fontSize: '14px',
+        alignSelf: 'flex-end',
+        transition: 'background-color 0.2s',
+        ':hover': {
+            backgroundColor: '#e0b977'
+        }
+    },
+    commentsSection: {
+        marginTop: '32px',
+        padding: '20px',
+        backgroundColor: '#f9f9f9',
+        borderRadius: '8px',
+        marginBottom: '20px',
     },
 };
 

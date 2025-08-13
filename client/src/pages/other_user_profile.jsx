@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 const API_URL = process.env.REACT_APP_API_URL;
 
+import { sellers } from '../data/sellers';  //seller 데이터
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
+
 const OtherProfile = () => {
-    const { userId } = useParams();
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { userId } = useParams(); //이전 화면에서 선택된 seller의 Id 가져오는 부분
+    const user = sellers.find(u => u.id === Number(userId));    //가져온 Id를 통해 sellers에서 정보를 찾아 user에 데이터 저장
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -118,24 +120,22 @@ const OtherProfile = () => {
                 <div style={styles.profileImage}>👩‍🍳</div>
                 {/*닉네임과 평점, 관심 정보*/}
                 <div style={styles.profileNameRow}>
-                <div style={styles.profileName}>{user.nickname || user.name}</div>
-                <p>⭐ {user.avg_rating || user.rating} ({user.review_cnt || user.reviews}) 💚 {user.like_cnt || user.hearts}</p>
+                <div style={styles.profileName}>{user.name}</div>
+                <p>
+                    <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                    {user.rating} ({user.reviews})
+                    <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                    {user.hearts}</p>
                 </div>
-                <div style={styles.profileDesc}>{user.disc || '진심을 담아 정성껏 만들겠습니다.'}</div>
+                {/*판매자의 한마디*/}
+                <div style={styles.profileDesc}>진심을 담아 정성껏 만들겠습니다.</div>
                 {/*판매자와 상호작용하는 버튼들*/}
                 <div style={styles.buttonGroup}>
                 <button style={styles.buttonYellow}>채팅하기</button>
-                <button 
-                  style={styles.buttonYellow}
-                  onClick={addToFavorites}
-                >
-                  관심 판매자 등록하기
-                </button>
+                <button style={styles.buttonYellow}>관심 판매자 등록하기</button>
                 </div>
-                <div style={styles.infoRow}>
-                  {new Date(user.createdAt || new Date()).toLocaleDateString()} 회원 가입 · 
-                  최근 로그인 {getTimeDiff(user.updatedAt || new Date())}
-                </div>
+                {/*회원가입 정보와 로그인 시간 부분인데 MVP에서는 구현하지 않기로 했던 것 같음*/}
+                <div style={styles.infoRow}>2025.06.01 회원 가입 · 최근 로그인 3시간 전</div>
             </div>
 
             {/*위의 함수들을 통해 이동하는 부분들.*/}
@@ -159,22 +159,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-    },
-    loading: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '18px',
-        color: '#666',
-    },
-    error: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        fontSize: '18px',
-        color: 'red',
     },
     container: {
         flex: 1,

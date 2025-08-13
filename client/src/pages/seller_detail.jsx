@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+
+import { sellers } from '../data/sellers';  //나중에 users에 담겨있을 내용들
+import styles from '../styles/SellerDetail.module.css'; //스타일 가져오는 부분
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 import styles from '../styles/SellerDetail.module.css'; //스타일 가져오는 부분
@@ -49,41 +52,42 @@ const SellerDetail = () => {
         &lt; 뒤로가기
       </button>
 
-      <h2 onClick={() => navigate(`/other_user_profile/${seller.id}`)}>{seller.nickname}</h2>
+      {/*판매자 닉네임 부분. 클릭 시 판매자의 프로필로 이동.*/}
+      <h2 onClick={() => navigate(`/other_user_profile/${seller.id}`)}>{seller.name}</h2>
       <p className={styles.info}>
-        <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/> 
-        {seller.avg_rating} ({seller.review_cnt})
+        <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/>
+        {seller.rating} ({seller.reviews})
         <Heart width={19} height={19} style={{ verticalAlign: 'middle' }}/>
-        {seller.like_cnt}
+        {seller.hearts}
       </p>
 
       {/*즉시구매 상품란/sellingType에 따라 표시되는 상품 구분*/}
       <h3 className={styles.sectionTitle}>즉시구매 상품</h3>
-      {products.filter(product => product.type === '즉시').map(product => (
-        <div
-          key={product.item_id}
-          className={styles.menuCard}
-          onClick={() => navigate(`/menu/${product.item_id}`)}
-        >
-          <strong>{product.name}</strong>
-          <p>{product.info}</p>
-          <p>{product.price}원</p>
-        </div>
-      ))}
+      {seller.sellingType === 'immediate' &&
+        seller.menus.map(menu => (
+          <div
+            key={menu.id}
+            className={styles.menuCard}
+            onClick={() => navigate(`/menu/${menu.id}`)}
+          >
+            <strong>{menu.name}</strong>
+            <p>{menu.desc}</p>
+          </div>
+        ))}
 
       {/*예약구매 상품란*/}
       <h3 className={styles.sectionTitle}>예약구매 상품</h3>
-      {products.filter(product => product.type === '예약').map(product => (
-        <div
-          key={product.item_id}
-          className={styles.menuCard}
-          onClick={() => navigate(`/menu/${product.item_id}`)}
-        >
-          <strong>{product.name}</strong>
-          <p>{product.info}</p>
-          <p>{product.price}원</p>
-        </div>
-      ))}
+      {seller.sellingType === 'reservation' &&
+        seller.menus.map(menu => (
+          <div
+            key={menu.id}
+            className={styles.menuCard}
+            onClick={() => navigate(`/menu/${menu.id}`)}
+          >
+            <strong>{menu.name}</strong>
+            <p>{menu.desc}</p>
+          </div>
+        ))}
     </div>
   );
 };

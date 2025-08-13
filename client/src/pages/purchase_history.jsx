@@ -14,7 +14,7 @@ const Purchase_History = () => {
           <div style={styles.backButton}><span onClick={goBack}>
                 &lt; 뒤로가기
             </span></div>
-      </div> 
+      </div>
     </div>
   );
 };
