@@ -1,24 +1,25 @@
-const User = require("../models/Users");
-const Product = require("../models/Product");
+import User from "../models/Users.js";
+import Product from "../models/Product.js";
 
-exports.getUserById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const user = await User.findOne({ id: Number(id) });
+// 사용자 ID로 조회
+export async function getUserById(req, res) {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({ id: Number(id) });
 
-        if (!user) {
-            return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
-        }
-
-        res.status(200).json(user);
-    } catch (err) {
-        console.error("❌ 사용자 조회 실패:", err);
-        res.status(500).json({ error: "서버 오류" });
+    if (!user) {
+      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
     }
-};
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error("❌ 사용자 조회 실패:", err);
+    res.status(500).json({ error: "서버 오류" });
+  }
+}
 
 // 검색어에 해당하는 상품을 가진 인증된 사용자만 반환
-exports.searchUsersByProduct = async (req, res) => {
+export async function searchUsersByProduct(req, res) {
   try {
     const keyword = (req.query.keyword || '').toLowerCase();
     if (!keyword) return res.status(400).json([]);
@@ -44,4 +45,4 @@ exports.searchUsersByProduct = async (req, res) => {
   } catch (err) {
     res.status(500).json([]);
   }
-};
+}

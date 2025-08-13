@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HiPhoto, HiChevronRight, HiMiniXCircle} from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeRegister = () => {
   const navigate = useNavigate();
@@ -95,9 +96,14 @@ const RecipeRegister = () => {
         name: recipe.title,
         text: steps.map(s => s.desc).join('\n'),
         ingredients: recipe.ingredients,
+        steps: steps.map((step, idx) => ({
+          step_num: idx + 1,
+          text: step.desc,
+          img: '' // 파일이 없으므로 빈 문자열
+        }))
       };
       try {
-        const response = await fetch('http://localhost:4000/api/recipes', {
+        const response = await fetch(`${API_URL}/api/recipes`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
@@ -139,9 +145,8 @@ const RecipeRegister = () => {
       for (let pair of formData.entries()) {
         console.log(pair[0], ':', pair[1]);
       }
-
       try {
-        const response = await fetch('http://localhost:4000/api/recipes', {
+        const response = await fetch(`${API_URL}/api/recipes`, {
           method: 'POST',
           body: formData,
         });

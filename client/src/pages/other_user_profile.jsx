@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const OtherProfile = () => {
     const { userId } = useParams();
@@ -12,8 +13,8 @@ const OtherProfile = () => {
         const fetchUserData = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`http://localhost:4000/api/users/${userId}`);
-                
+                const response = await fetch(`${API_URL}/api/users/${userId}`);
+
                 if (!response.ok) {
                     throw new Error('사용자 정보를 불러오는데 실패했습니다.');
                 }
@@ -58,7 +59,7 @@ const OtherProfile = () => {
     // 관심 판매자 등록
     const addToFavorites = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/api/users/${userId}/heart`, {
+            const response = await fetch(`${API_URL}/api/users/${userId}/heart`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

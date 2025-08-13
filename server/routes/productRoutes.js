@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import { createProduct, getAllProducts, getProductsByUserId, getProductById } from '../controllers/productController.js';
+
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const { createProduct, getAllProducts, getProductsByUserId, getProductById } = require('../controllers/productController');
 
 // 이미지 업로드 설정
 const storage = multer.diskStorage({
@@ -24,6 +25,7 @@ router.get('/', getAllProducts);
 // 특정 사용자의 상품 조회
 router.get('/user/:userId', getProductsByUserId);
 
+// 특정 상품 조회
 router.get('/:itemId', getProductById);
 
-module.exports = router;
+export default router;

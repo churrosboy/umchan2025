@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/MenuDetail.module.css';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const MenuDetail = () => {
   const { menuId } = useParams(); // menuId = item_id
@@ -14,8 +15,8 @@ const MenuDetail = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:4000/api/products/${menuId}`);
-        
+        const response = await fetch(`${API_URL}/api/products/${menuId}`);
+
         if (!response.ok) {
           throw new Error('상품을 찾을 수 없습니다.');
         }
@@ -65,7 +66,7 @@ const MenuDetail = () => {
         {product.images && product.images.length > 0 ? (
           <div style={{ position: 'relative' }}>
             <img 
-              src={`http://localhost:4000${product.images[currentImageIndex]}`} 
+              src={`${API_URL}${product.images[currentImageIndex]}`} 
               alt={`${product.name} ${currentImageIndex + 1}`}
               style={{ width: '100%', height: '200px', objectFit: 'cover' }}
             />

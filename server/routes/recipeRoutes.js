@@ -1,9 +1,17 @@
-// 레시피 라우트 정의
-const express = require('express');
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import {
+  createRecipe,
+  getRecipes,
+  getRecipeById,
+  toggleLike,
+  getRecipesWithUserInfo,
+  getRecipeComments,
+  addComment
+} from '../controllers/recipeController.js';
+
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
-const recipeController = require('../controllers/recipeController');
 
 // 이미지 업로드 설정
 const storage = multer.diskStorage({
@@ -14,25 +22,27 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
-
 const upload = multer({ storage });
 
-// 해결 방법 1: upload.any() 사용 (모든 필드명 허용)
-router.post('/', upload.any(), recipeController.createRecipe);
+// 레시피 등록
+router.post('/', upload.any(), createRecipe);
 
 // 전체 레시피 목록 조회
-router.get('/', recipeController.getRecipes);
+router.get('/', getRecipes);
 
 // 특정 레시피 조회
-router.get('/:recipeId', recipeController.getRecipeById);
+router.get('/:recipeId', getRecipeById);
 
-router.patch("/:recipeId/like", recipeController.toggleLike);
+// 레시피 좋아요 토글
+router.patch("/:recipeId/like", toggleLike);
 
 // 사용자 ID로 등록된 레시피 조회
-router.get("/user/:userId", recipeController.getRecipesWithUserInfo);
+router.get("/user/:userId", getRecipesWithUserInfo);
 
-router.get("/:recipeId/comments", recipeController.getRecipeComments);
+// 레시피 댓글 조회
+router.get("/:recipeId/comments", getRecipeComments);
 
-router.post("/:recipeId/comment", recipeController.addComment);
+// 레시피 댓글 추가
+router.post("/:recipeId/comment", addComment);
 
-module.exports = router;
+export default router;

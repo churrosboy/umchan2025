@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import History from "../models/History.js";
+
 const router = express.Router();
-const History = require("../models/History");
 
 // 검색 기록 추가
 router.post("/add", async (req, res) => {
@@ -46,7 +47,6 @@ router.get("/list", async (req, res) => {
 
 // 연관 검색어 조회
 router.get("/suggestions", async (req, res) => {
-  //console.log("📥 연관 검색어 요청 수신:", req.query);
   try {
     const { keyword } = req.query;
     
@@ -61,7 +61,6 @@ router.get("/suggestions", async (req, res) => {
       .limit(5)
       .select('keyword count lastSearchedAt');
     
-    //console.log("✅ 연관 검색어 조회 성공:", suggestions);
     res.status(200).json(suggestions);
   } catch (err) {
     console.error("❌ 연관 검색어 조회 실패:", err);
@@ -69,4 +68,4 @@ router.get("/suggestions", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

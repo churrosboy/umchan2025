@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import { v4 as uuidv4 } from 'uuid';
 
 const commentSchema = new mongoose.Schema({
   writer: String,
@@ -36,9 +37,9 @@ const recipeSchema = new mongoose.Schema({
 // recipe_id 자동 생성
 recipeSchema.pre('save', function(next) {
   if (!this.recipe_id) {
-    this.recipe_id = 'recipe_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    this.recipe_id = 'recipe_' + uuidv4();
   }
   next();
 });
 
-module.exports = mongoose.model("Recipe", recipeSchema);
+export default mongoose.model("RecipeDev", recipeSchema);

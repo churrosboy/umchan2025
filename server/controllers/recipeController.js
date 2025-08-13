@@ -1,43 +1,42 @@
-const Recipe = require("../models/Recipe");
-const { v4: uuidv4 } = require("uuid"); // UUID로 recipe_id 생성
+import Recipe from "../models/Recipe.js";
 
-exports.getRecipes = async (req, res) => {
+// 레시피 목록 조회
+export async function getRecipes(req, res) {
   try {
-    const { keyword } = req.query; // 클라이언트에서 전달된 검색어
+    const { keyword } = req.query;
     let query = {};
 
-    // 검색어가 있으면 제목으로 필터링
     if (keyword && keyword.trim() !== "") {
-      query.title = { $regex: keyword, $options: 'i' }; // 대소문자 구분 없이 검색
+      query.title = { $regex: keyword, $options: 'i' };
     }
 
-    // MongoDB에서 레시피 데이터 가져오기
     const recipes = await Recipe.find(query);
-
-    res.status(200).json(recipes); // 클라이언트로 데이터 반환
+    res.status(200).json(recipes);
   } catch (err) {
     console.error("❌ 레시피 조회 실패:", err);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}
 
-exports.getRecipeById = async (req, res) => {
+// 레시피 상세 조회
+export async function getRecipeById(req, res) {
   try {
-    const { recipeId } = req.params; // URL에서 recipeId 가져오기
-    const recipe = await Recipe.findOne({ recipe_id: recipeId }); // recipe_id로 조회
+    const { recipeId } = req.params;
+    const recipe = await Recipe.findOne({ recipe_id: recipeId });
 
     if (!recipe) {
       return res.status(404).json({ error: "레시피를 찾을 수 없습니다." });
     }
 
-    res.status(200).json(recipe); // 레시피 반환
+    res.status(200).json(recipe);
   } catch (err) {
     console.error("❌ 레시피 조회 실패:", err);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}
 
-exports.createRecipe = async (req, res) => {
+// 레시피 등록
+export async function createRecipe(req, res) {
   try {
     console.log('=== Recipe 등록 요청 ===');
     console.log('Request body:', req.body);
@@ -98,20 +97,37 @@ exports.createRecipe = async (req, res) => {
     
     // ingredients 파싱
     let parsedIngredients = [];
-    try {
-      if (ingredients) {
+    if (typeof ingredients === 'string') {
+      try {
         parsedIngredients = JSON.parse(ingredients);
-        console.log('✅ Parsed ingredients:', parsedIngredients);
+      } catch (err) {
+        parsedIngredients = [];
       }
-    } catch (err) {
-      console.error('❌ Ingredients parsing error:', err);
-      // 파싱 실패해도 빈 배열로 진행
-      parsedIngredients = [];
+    } else if (Array.isArray(ingredients)) {
+      parsedIngredients = ingredients;
     }
     
-    // steps 필터링 (텍스트가 있는 단계만)
-    const validSteps = steps.filter(s => s && s.text && s.text.trim());
+    let validSteps = [];
+    if (Array.isArray(req.body.steps)) {
+      console.log('✅ Steps array found:', req.body.steps);
+      validSteps = req.body.steps.filter(
+        s => s && typeof s.text === 'string' && s.text.trim()
+      );
+    } else {
+      console.log('❌ No steps array found, req.body:', req.body);
+      validSteps = [];
+    }
+    
     console.log('✅ Valid steps:', validSteps);
+    
+    // 반드시 steps가 1개 이상 있어야 함
+    if (!validSteps.length) {
+      console.log('❌ No valid steps found!');
+      return res.status(400).json({ 
+        success: false, 
+        error: "조리 단계가 최소 1개 이상 필요합니다." 
+      });
+    }
     
     const recipeData = {
       user_id: parseInt(user_id) || 123,
@@ -164,12 +180,13 @@ exports.createRecipe = async (req, res) => {
       details: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
   }
-};
+}
 
-exports.toggleLike = async (req, res) => {
+// 레시피 좋아요 토글
+export async function toggleLike(req, res) {
   try {
-    const { recipeId } = req.params; // URL에서 recipeId 가져오기
-    const { liked } = req.body; // 클라이언트에서 전달된 좋아요 상태
+    const { recipeId } = req.params;
+    const { liked } = req.body;
 
     const recipe = await Recipe.findOne({ recipe_id: recipeId });
 
@@ -177,7 +194,6 @@ exports.toggleLike = async (req, res) => {
       return res.status(404).json({ error: "레시피를 찾을 수 없습니다." });
     }
 
-    // 좋아요 상태 업데이트
     recipe.like_cnt = liked ? recipe.like_cnt + 1 : recipe.like_cnt - 1;
     await recipe.save();
 
@@ -186,42 +202,40 @@ exports.toggleLike = async (req, res) => {
     console.error("❌ 좋아요 상태 변경 실패:", err);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}
 
-exports.getRecipesByUserId = async (req, res) => {
+// 사용자 ID로 레시피 조회
+export async function getRecipesByUserId(req, res) {
   try {
-    const { user_id } = req.query; // 클라이언트에서 전달된 사용자 ID
+    const { user_id } = req.query;
 
     if (!user_id) {
       return res.status(400).json({ error: "user_id 쿼리 파라미터가 필요합니다." });
     }
 
-    // MongoDB에서 사용자 ID로 레시피 데이터 가져오기
     const recipes = await Recipe.find({ user_id: Number(user_id) });
 
     if (!recipes.length) {
       return res.status(404).json({ error: "사용자가 등록한 레시피를 찾을 수 없습니다." });
     }
 
-    res.status(200).json(recipes); // 클라이언트로 데이터 반환
+    res.status(200).json(recipes);
   } catch (err) {
     console.error("❌ 사용자 ID로 레시피 조회 실패:", err);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}
 
-exports.getRecipesWithUserInfo = async (req, res) => {
+// 사용자 정보 포함 레시피 조회
+export async function getRecipesWithUserInfo(req, res) {
   try {
     const { userId } = req.params;
-
-    console.log("userId:", userId); // 디버깅용 로그
-    console.log("Matching user_id:", userId); // 디버깅용 로그
 
     const recipes = await Recipe.aggregate([
       { $match: { user_id: Number(userId) } },
       {
         $lookup: {
-          from: "users", // users 컬렉션 이름
+          from: "users",
           localField: "user_id",
           foreignField: "id",
           as: "user_info"
@@ -238,9 +252,10 @@ exports.getRecipesWithUserInfo = async (req, res) => {
     console.error("❌ 레시피 조회 실패:", err);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}
 
-exports.getRecipeComments = async (req, res) => {
+// 레시피 댓글 조회
+export async function getRecipeComments(req, res) {
   try {
     const { recipeId } = req.params;
     const recipe = await Recipe.findOne({ recipe_id: recipeId });
@@ -252,9 +267,10 @@ exports.getRecipeComments = async (req, res) => {
     console.error("❌ 댓글 조회 실패:", err);
     res.status(500).json([]);
   }
-};
+}
 
-exports.addComment = async (req, res) => {
+// 레시피 댓글 추가
+export async function addComment(req, res) {
   try {
     const { recipeId } = req.params;
     const { writer, content } = req.body;
@@ -268,7 +284,6 @@ exports.addComment = async (req, res) => {
       return res.status(404).json({ error: "레시피를 찾을 수 없습니다." });
     }
 
-    // 댓글 객체 생성
     const comment = {
       writer,
       content,
@@ -284,5 +299,5 @@ exports.addComment = async (req, res) => {
     console.error("❌ 댓글 추가 실패:", err);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}
 

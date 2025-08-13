@@ -13,7 +13,6 @@ import SellerDetail from './pages/seller_detail';
 import MenuDetail from './pages/menu_detail';
 import OtherProfile from './pages/other_user_profile';
 import SellerAuth from './pages/seller_auth';
-import SellerItem from './pages/seller_item(del)';
 import RecipeList from './pages/user_recipe_list';
 import ReviewList from './pages/user_review_list';
 import Profile from './pages/profile';
@@ -60,7 +59,6 @@ const AppRoutes = () => {
         <Route path="/menu/:menuId" element={<MenuDetail />} />
         <Route path="/other_user_profile/:userId" element={<OtherProfile />} />
         <Route path="/seller_auth/:userId" element={<SellerAuth />} />
-        <Route path="/seller_item/:userId" element={<SellerItem />} />
         <Route path="/user_recipe_list/:userId" element={<RecipeList />} />
         <Route path="/user_review_list/:userId" element={<ReviewList />} />
         <Route path="/profile" element={<Profile />} />

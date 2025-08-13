@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema({
   item_id: { type: String, required: true, unique: true },
-  user_id: { type: String, required: true, ref: 'User' },
+  user_id: { type: Number, required: true, ref: 'User' },
   name: { type: String, required: true },
   type: { type: String, enum: ['즉시', '예약'], required: true },
   images: [{ type: String }], // 이미지 URL 리스트
@@ -12,4 +12,6 @@ const ProductSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Product', ProductSchema);
+const Product = mongoose.model('ProductDev', ProductSchema);
+
+export default Product;

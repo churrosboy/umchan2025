@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/SellerDetail.module.css';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const SellerDetail = () => {
   const { sellerId } = useParams();
@@ -15,8 +16,8 @@ const SellerDetail = () => {
       setLoading(true);
       try {
         const [userRes, productRes] = await Promise.all([
-          fetch(`http://localhost:4000/api/users/${sellerId}`),
-          fetch(`http://localhost:4000/api/products/user/${sellerId}`)
+          fetch(`${API_URL}/api/users/${sellerId}`),
+          fetch(`${API_URL}/api/products/user/${sellerId}`)
         ]);
         
         if (userRes.ok) {

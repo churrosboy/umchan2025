@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import debounce from 'lodash.debounce';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const Search = () => {
   const [keyword, setKeyword] = useState('');
@@ -21,7 +22,7 @@ const Search = () => {
 
   const fetchHistory = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/history/list');
+      const response = await fetch(`${API_URL}/api/history/list`);
       const data = await response.json();
       setHistory(data);
     } catch (err) {
@@ -31,7 +32,7 @@ const Search = () => {
 
   const saveHistory = async (keyword) => {
     try {
-      await fetch('http://localhost:4000/api/history/add', {
+      await fetch(`${API_URL}/api/history/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +53,7 @@ const Search = () => {
     
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:4000/api/history/suggestions?keyword=${encodeURIComponent(value)}`);
+      const response = await fetch(`${API_URL}/api/history/suggestions?keyword=${encodeURIComponent(value)}`);
       const data = await response.json();
       setSuggestions(data);
     } catch (err) {

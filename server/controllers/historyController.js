@@ -1,7 +1,7 @@
-const History = require("../models/History");
+import History from "../models/History.js";
 
 // 검색 기록 추가
-exports.addHistory = async (req, res) => {
+export async function addHistory(req, res) {
   try {
     const { keyword } = req.body;
 
@@ -24,10 +24,10 @@ exports.addHistory = async (req, res) => {
     console.error("❌ 검색 기록 추가 실패:", err);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}
 
 // 검색 기록 조회
-exports.getHistory = async (req, res) => {
+export async function getHistory(req, res) {
   try {
     const history = await History.find().sort({ lastSearchedAt: -1 });
     res.status(200).json(history);
@@ -35,4 +35,4 @@ exports.getHistory = async (req, res) => {
     console.error("❌ 검색 기록 조회 실패:", err);
     res.status(500).json({ error: "서버 오류" });
   }
-};
+}

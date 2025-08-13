@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeDetail = () => {
     const { recipeId } = useParams();
@@ -15,7 +16,7 @@ const RecipeDetail = () => {
         const fetchRecipe = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:4000/api/recipes/${recipeId}`);
+                const response = await fetch(`${API_URL}/api/recipes/${recipeId}`);
                 if (response.ok) {
                     const data = await response.json();
                     setRecipe(data);
@@ -33,7 +34,7 @@ const RecipeDetail = () => {
     // 댓글 목록 불러오기
     const fetchComments = async (recipeId) => {
         try {
-            const response = await fetch(`http://localhost:4000/api/recipes/${recipeId}/comments`);
+            const response = await fetch(`${API_URL}/api/recipes/${recipeId}/comments`);
             if (response.ok) {
                 const data = await response.json();
                 setComments(prev => ({ ...prev, [recipeId]: data }));
@@ -59,7 +60,7 @@ const RecipeDetail = () => {
         const content = commentInputs[recipeId];
         if (!content) return;
         try {
-            await fetch(`http://localhost:4000/api/recipes/${recipeId}/comment`, {
+            await fetch(`${API_URL}/api/recipes/${recipeId}/comment`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ writer: 123, content }), // 나중에 로그인한 유저의 이름으로 writer 설정하기!!
@@ -93,7 +94,7 @@ const RecipeDetail = () => {
             {recipe.thumbnail && (
                 <div style={styles.recipeImage}>
                     <img
-                        src={`http://localhost:4000${recipe.thumbnail}`}
+                        src={`${API_URL}${recipe.thumbnail}`}
                         alt={recipe.title}
                         style={{ width: '100%', height: '200px', objectFit: 'cover' }}
                         onError={(e) => {
