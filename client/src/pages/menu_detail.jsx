@@ -1,21 +1,60 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { sellers } from '../data/sellers';  //나중에는 users에서 관리할 데이터
-import styles from '../styles/MenuDetail.module.css'; //스타일을 불러오는 부분
+import styles from '../styles/MenuDetail.module.css';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const MenuDetail = () => {
   const { menuId } = useParams(); //이전 화면에서 선택된 메뉴Id를 가져오는 부분
   const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_URL}/api/products/${menuId}`);
 
-  let menu = null;  //메뉴 데이터를 받아놓을 변수
-  sellers.forEach(s => {  //sellers의 데이터에서 메뉴의 데이터 가져오는 함수 -> menu에 저장
-    s.menus.forEach(m => {
-      if (m.id === Number(menuId)) menu = m;
-    });
-  });
+        if (!response.ok) {
+          throw new Error('상품을 찾을 수 없습니다.');
+        }
+        
+        const data = await response.json();
+        setProduct(data);
+        setCurrentImageIndex(0); // 새 상품 로드 시 첫 번째 이미지로 리셋
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // menu에 저장된거 없으면 메뉴 없음
-  if (!menu) return <div>메뉴를 찾을 수 없습니다.</div>;
+    if (menuId) {
+      fetchProduct();
+    }
+  }, [menuId]);
+
+  const nextImage = () => {
+    if (product?.images && product.images.length > 1) {
+      setCurrentImageIndex((prev) => 
+        prev === product.images.length - 1 ? 0 : prev + 1
+      );
+    }
+  };
+
+  const prevImage = () => {
+    if (product?.images && product.images.length > 1) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? product.images.length - 1 : prev - 1
+      );
+    }
+  };
+
+  if (loading) return <div className={styles.wrapper}>로딩 중...</div>;
+  if (error) return <div className={styles.wrapper}>에러: {error}</div>;
+  if (!product) return <div className={styles.wrapper}>메뉴를 찾을 수 없습니다.</div>;
 
   return (
     <div className={styles.wrapper}>
@@ -38,5 +77,5 @@ const MenuDetail = () => {
   );
 };
 
-{/*스타일은 styles 폴더의 MenuDetail.module.css 파일 확인*/}
 export default MenuDetail;
+/*스타일은 styles 폴더의 MenuDetail.module.css 파일 확인*/

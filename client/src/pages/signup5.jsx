@@ -1,4 +1,4 @@
-/*import React from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup5 = () => {
@@ -60,4 +60,4 @@ const styles = {
   },
 };
 
-export default Signup5;*/
+export default Signup5;

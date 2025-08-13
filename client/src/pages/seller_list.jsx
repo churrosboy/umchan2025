@@ -4,27 +4,32 @@ import { sellers } from '../data/sellers';
 import { products } from '../data/products';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const SellerList = () => {
     const navigate = useNavigate();
 
     const { keyword } = useParams();
 
-    const product_result = products.filter(product => product.name.toLowerCase().includes(keyword.toLowerCase()));
+    const [seller_result, setSeller_result] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const seller_result = sellers.map(seller => {
-        const matchingProducts = product_result.filter(product => 
-            product.sellerId === seller.id
-        );
-        
-        if (matchingProducts.length > 0) {
-            return {
-                ...seller,
-                matchingProducts: matchingProducts
-            };
-        }
-        return null;
-    }).filter(Boolean);
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_URL}/api/users/search/product?keyword=${keyword}`);
+                const data = await response.json();
+                setSeller_result(data);
+            } catch (err) {
+                setSeller_result([]);
+            }
+            setLoading(false);
+        };
+        fetchData();
+    }, [keyword]);
+
+    if (loading) return <div style={styles.searchPage}>로딩 중...</div>;
 
     if (!seller_result.length) return <div style={styles.searchPage}>판매자를 찾을 수 없습니다.</div>;
 

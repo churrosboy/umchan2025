@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 import { sellers } from '../data/sellers';  //seller 데이터
 import { ReactComponent as Star } from '../Icons/Star01.svg';
@@ -10,7 +11,32 @@ const OtherProfile = () => {
     const user = sellers.find(u => u.id === Number(userId));    //가져온 Id를 통해 sellers에서 정보를 찾아 user에 데이터 저장
     const navigate = useNavigate();
 
-    if (!user) return <div>사용자를 찾을 수 없습니다.</div>;
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`${API_URL}/api/users/${userId}`);
+                
+                if (!response.ok) {
+                    throw new Error('사용자 정보를 불러오는데 실패했습니다.');
+                }
+                
+                const userData = await response.json();
+                setUser(userData);
+                setError(null);
+            } catch (err) {
+                console.error('❌ 사용자 정보 조회 실패:', err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchUserData();
+    }, [userId]);
+
+    if (loading) return <div style={styles.loading}>로딩 중...</div>;
+    if (error || !user) return <div style={styles.error}>사용자를 찾을 수 없습니다.</div>;
 
     //판매자 위생인증 페이지 이동.Id 전달
     const goToSellerAuth = () => {
@@ -35,6 +61,47 @@ const OtherProfile = () => {
     //뒤로가기 함수
     const goBack = () => {
         navigate(-1);
+    };
+    
+    // 관심 판매자 등록
+    const addToFavorites = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/users/${userId}/heart`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('관심 판매자 등록에 실패했습니다.');
+            }
+            
+            const updatedUser = await response.json();
+            setUser(updatedUser);
+            alert('관심 판매자로 등록되었습니다!');
+        } catch (err) {
+            console.error('❌ 관심 판매자 등록 실패:', err);
+            alert('관심 판매자 등록에 실패했습니다.');
+        }
+    };
+    
+    // 시간 차이 계산
+    const getTimeDiff = (date) => {
+        const now = new Date();
+        const lastLogin = new Date(date);
+        const diffMs = now - lastLogin;
+        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        
+        if (diffHrs < 1) {
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            return `${diffMins}분 전`;
+        } else if (diffHrs < 24) {
+            return `${diffHrs}시간 전`;
+        } else {
+            const diffDays = Math.floor(diffHrs / 24);
+            return `${diffDays}일 전`;
+        }
     };
 
     return (

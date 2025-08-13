@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HiPhoto, HiChevronRight, HiMiniXCircle} from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeRegister = () => {
   const navigate = useNavigate();
@@ -80,6 +81,91 @@ const RecipeRegister = () => {
 
   const updateFile = (id, file) => {
     setSteps(prev => prev.map(step => step.id === id ? { ...step, file } : step));
+  };
+
+  // 레시피 등록 핸들러 (파일 포함)
+  const handleSubmit = async () => {
+    // 유효성 검사: 제목, 재료, 단계 설명 모두 비어있으면 등록 불가
+    if (!recipe.title.trim()) {
+      alert('메뉴 이름을 입력하세요.');
+      return;
+    }
+    if (!recipe.ingredients.length || recipe.ingredients.some(ing => !ing.name.trim() || !ing.amount.trim())) {
+      alert('모든 재료명과 양을 입력하세요.');
+      return;
+    }
+    if (!steps.length || steps.some(step => !step.desc.trim())) {
+      alert('모든 조리 순서 설명을 입력하세요.');
+      return;
+    }
+
+    // 파일이 없으면 JSON으로 전송
+    if (!recipe.file && steps.every(step => !step.file)) {
+      const data = {
+        user_id: 123,
+        name: recipe.title,
+        text: steps.map(s => s.desc).join('\n'),
+        ingredients: recipe.ingredients,
+      };
+      try {
+        const response = await fetch(`${API_URL}/api/recipes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (response.ok) {
+          alert('레시피 등록 성공!');
+          navigate('/profile');
+        } else {
+          alert('레시피 등록 실패');
+        }
+      } catch (err) {
+        alert('에러 발생');
+      }
+    } else {
+      // 파일이 하나라도 있으면 FormData로 전송
+      const formData = new FormData();
+      formData.append('user_id', 123);
+      formData.append('name', recipe.title);
+      formData.append('text', steps.map(s => s.desc).join('\n'));
+      formData.append('ingredients', JSON.stringify(recipe.ingredients));
+      
+      // 메인 이미지
+      if (recipe.file) {
+        console.log('Adding main image:', recipe.file.name);
+        formData.append('mainImage', recipe.file);
+      }
+      
+      // 단계별 이미지
+      steps.forEach((step, idx) => {
+        if (step.file) {
+          console.log(`Adding step ${idx} image:`, step.file.name);
+          formData.append(`stepImage${idx}`, step.file);
+        }
+        formData.append(`stepDesc${idx}`, step.desc);
+      });
+
+      // FormData 내용 확인
+      console.log('FormData contents:');
+      for (let pair of formData.entries()) {
+        console.log(pair[0], ':', pair[1]);
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/recipes`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (response.ok) {
+          alert('레시피 등록 성공!');
+          navigate('/profile');
+        } else {
+          alert('레시피 등록 실패');
+        }
+      } catch (err) {
+        alert('에러 발생');
+      }
+    }
   };
 
   return (

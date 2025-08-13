@@ -1,17 +1,48 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  HiPlusCircle
-} from 'react-icons/hi2';
-import { users } from '../data/users';
-import { recipes } from '../data/recipes';
+import { HiPlusCircle } from 'react-icons/hi2';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const MyRecipe = () => {
     const { userId } = useParams();
-    const user = users.find(u => u.id === Number(userId));
-    const recipeList = recipes.filter(recipe => recipe.user_id === Number(userId));
     const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [recipeList, setRecipeList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+
+                // 사용자 정보와 레시피를 함께 가져오기
+                const response = await fetch(`${API_URL}/api/recipes/user/${userId}`);
+                if (!response.ok) throw new Error('데이터를 가져오는 데 실패했습니다.');
+                const data = await response.json();
+
+                if (data.length > 0) {
+                    setUser(data[0].user_info[0]); // 첫 번째 레시피의 사용자 정보
+                    setRecipeList(data); // 레시피 목록
+                } else {
+                    setUser(null);
+                    setRecipeList([]);
+                }
+
+                setError(null);
+            } catch (err) {
+                console.error(err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [userId]);
+
+    if (loading) return <div>로딩 중...</div>;
+    if (error) return <div>{error}</div>;
     if (!user) return <div>사용자를 찾을 수 없습니다.</div>;
 
     const goBack = () => {

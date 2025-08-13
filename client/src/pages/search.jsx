@@ -3,6 +3,7 @@ import debounce from 'lodash.debounce';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { search } from '../data/search';
 import { useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const Search = () => {
   const [keyword, setKeyword] = useState('');
@@ -16,8 +17,51 @@ const Search = () => {
     }
   }, []);
 
-  const highlightMatch = (item, keyword) => {
-    const text = item.keyword;
+  const fetchHistory = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/history/list`);
+      const data = await response.json();
+      setHistory(data);
+    } catch (err) {
+      console.error('❌ 검색 기록 조회 실패:', err);
+    }
+  };
+
+  const saveHistory = async (keyword) => {
+    try {
+      await fetch(`${API_URL}/api/history/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ keyword }),
+      });
+      await fetchHistory(); // 저장 후 검색 기록 갱신
+    } catch (err) {
+      console.error('❌ 검색 기록 저장 실패:', err);
+    }
+  };
+
+  const fetchSuggestions = async (value) => {
+    if (!value.trim()) {
+      setSuggestions([]);
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/history/suggestions?keyword=${encodeURIComponent(value)}`);
+      const data = await response.json();
+      setSuggestions(data);
+    } catch (err) {
+      console.error('❌ 연관 검색어 조회 실패:', err);
+      setSuggestions([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const highlightMatch = (text, keyword) => {
     const lowerText = text.toLowerCase();
     const lowerKeyword = keyword.toLowerCase();
     const index = lowerText.indexOf(lowerKeyword);

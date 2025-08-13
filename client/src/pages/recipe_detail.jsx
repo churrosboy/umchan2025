@@ -4,40 +4,85 @@ import { recipes } from '../data/recipes';
 import { sellers } from '../data/sellers';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeDetail = () => {
     const { recipeId } = useParams();
     const navigate = useNavigate();
-    const [comment, setComment] = useState(''); // 댓글 입력 상태
+    const [recipe, setRecipe] = useState(null);
+    const [sellerName, setSellerName] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [commentInputs, setCommentInputs] = useState({});
+    const [comments, setComments] = useState({});
 
-    const recipe = recipes.find(r => r.id === Number(recipeId));
-    if (!recipe) {
-        return <div style={styles.noResult}>레시피를 찾을 수 없습니다.</div>;
-    }
+    // 레시피 데이터 불러오기 (백엔드에서)
+    useEffect(() => {
+        const fetchRecipe = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_URL}/api/recipes/${recipeId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setRecipe(data);
+                    // 판매자 정보도 백엔드에서 받아온다고 가정
+                    setSellerName(data.sellerName || '알 수 없음');
+                }
+            } catch (err) {
+                setRecipe(null);
+            }
+            setLoading(false);
+        };
+        fetchRecipe();
+    }, [recipeId]);
 
-    const seller = sellers.find(s => s.id === recipe.user_id);
-    const sellerName = seller ? seller.name : '알 수 없음';
+    // 댓글 목록 불러오기
+    const fetchComments = async (recipeId) => {
+        try {
+            const response = await fetch(`${API_URL}/api/recipes/${recipeId}/comments`);
+            if (response.ok) {
+                const data = await response.json();
+                setComments(prev => ({ ...prev, [recipeId]: data }));
+            }
+        } catch (err) {
+            console.error("댓글 불러오기 실패:", err);
+        }
+    };
 
-    recipe.steps = recipe.steps.sort((a, b) => a.step_num - b.step_num);
-    recipe.comments = recipe.comments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    useEffect(() => {
+        if (recipe) fetchComments(recipe.recipe_id);
+    }, [recipe]);
 
     const goBack = () => {
         navigate(-1);
     };
 
-    const handleSubmitComment = (e) => {
-        e.preventDefault();
-        if (!comment.trim()) return;
-
-        const newComment = {
-            writer: '사용자이름',
-            content: comment,
-            timestamp: new Date().toISOString()
-        };
-        
-        console.log('새 댓글:', newComment);
+    const handleCommentInput = (recipeId, value) => {
+        setCommentInputs(prev => ({ ...prev, [recipeId]: value }));
     };
-    
+
+    const handleAddComment = async (recipeId) => {
+        const content = commentInputs[recipeId];
+        if (!content) return;
+        try {
+            await fetch(`${API_URL}/api/recipes/${recipeId}/comment`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ writer: 123, content }), // 나중에 로그인한 유저의 이름으로 writer 설정하기!!
+            });
+            setCommentInputs(prev => ({ ...prev, [recipeId]: "" }));
+            await fetchComments(recipeId);
+        } catch (err) {
+            console.error("댓글 등록 실패:", err);
+        }
+    };
+
+    if (loading) {
+        return <div style={styles.noResult}>레시피 정보를 불러오는 중입니다...</div>;
+    }
+    if (!recipe) {
+        return <div style={styles.noResult}>레시피를 찾을 수 없습니다.</div>;
+    }
+
     return (
         <div style={styles.recipeWrapper}>
         <div style={styles.recipeHeader}>
@@ -46,13 +91,20 @@ const RecipeDetail = () => {
             <div style={styles.spacer} />
         </div>
 
-        <div style={styles.recipeImage}>
-            <img 
-                src={recipe.thumbnail} 
-                alt="레시피 대표 이미지" 
-                style={styles.image} 
-            />
-        </div>
+            {/* 메인 이미지 */}
+            {recipe.thumbnail && (
+                <div style={styles.recipeImage}>
+                    <img
+                        src={`${API_URL}${recipe.thumbnail}`}
+                        alt={recipe.title}
+                        style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                        onError={(e) => {
+                            console.error('메인 이미지 로드 실패:', e.target.src);
+                            e.target.style.display = 'none';
+                        }}
+                    />
+                </div>
+            )}
 
         <div style={styles.recipeInfo}>
             <div style={styles.recipeTitle}>
