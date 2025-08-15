@@ -16,8 +16,8 @@ router.get('/', async (req, res) => {
   try {
     const response = await fetch(url, {
       headers: {
-        'x-ncp-apigw-api-key-id': process.env.REACT_APP_NAVER_CLIENT_ID,
-        'x-ncp-apigw-api-key': process.env.REACT_APP_NAVER_CLIENT_SECRET,
+        'x-ncp-apigw-api-key-id': process.env.NAVER_CLIENT_ID,
+        'x-ncp-apigw-api-key': process.env.NAVER_CLIENT_SECRET,
         'Accept': 'application/json'
       },
     });
