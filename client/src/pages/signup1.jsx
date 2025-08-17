@@ -8,10 +8,18 @@ const Signup1 = () => {
   const [email, setEmail] = useState('');
 
   const handleNext = () => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
     if (!name || !email) {
       alert('이름과 이메일을 모두 입력해주세요.');
       return;
     }
+
+    if (!emailRegex.test(email)) {
+      alert('올바른 이메일 형식이 아닙니다.');
+      return;
+    }
+
     navigate('/signup2', { state: { name, email } });
   };
 

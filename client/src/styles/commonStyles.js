@@ -10,7 +10,7 @@ export const commonStyles = {
   },
   // 중앙의 흰색 박스
   container: {
-    width: '90%',
+    width: '80%',
     maxWidth: '360px',
     backgroundColor: '#fff',
     borderRadius: '20px',
@@ -29,7 +29,7 @@ export const commonStyles = {
     marginBottom: '15px',
     border: '1px solid #ccc',
     borderRadius: '10px',
-    fontSize: '14px',
+    fontSize: '16px',
     boxSizing: 'border-box',
   },
   button: {

@@ -59,11 +59,11 @@ const styles = {
     marginBottom: '15px',
   },
   phoneInput: {
-    width: '30%',
+    width: '20%',
     padding: '12px',
     border: '1px solid #ccc',
     borderRadius: '10px',
-    fontSize: '14px',
+    fontSize: '16px',
     textAlign: 'center',
   },
   separator: {

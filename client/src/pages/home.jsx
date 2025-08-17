@@ -194,15 +194,6 @@ const Home = () => {
           )}
           {!selectedSeller ? (
             <>
-              <div className={styles.searchBarContainer}>
-                <input
-                  type="text"
-                  placeholder="가게 이름을 검색하세요"
-                  className={styles.searchInput}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
               <div className={styles.filterButtons}>
                 <button onClick={() => setFilter('immediate')} className={styles.filterButton}>즉시</button>
                 <button onClick={() => setFilter('reservation')} className={styles.filterButton}>예약</button>
