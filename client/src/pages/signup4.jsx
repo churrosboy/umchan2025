@@ -6,11 +6,37 @@ import { auth } from '../firebase';
 const Signup4 = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // 이전 모든 단계에서 취합된 데이터를 state에서 가져옴
   const { name, email, password, phone } = location.state || {};
 
+  // 우편번호 state 추가
+  const [postcode, setPostcode] = useState('');
   const [address, setAddress] = useState('');
   const [detailAddress, setDetailAddress] = useState('');
+
+  // Daum 주소 찾기 로직
+  const handleAddressSearch = () => {
+    new window.daum.Postcode({
+      oncomplete: (data) => {
+        let fullAddress = data.address;
+        let extraAddress = '';
+
+        if (data.addressType === 'R') {
+          if (data.bname !== '') {
+            extraAddress += data.bname;
+          }
+          if (data.buildingName !== '') {
+            extraAddress += extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
+          }
+          fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+        }
+
+        setPostcode(data.zonecode);
+        setAddress(fullAddress);
+        // 상세 주소 입력란으로 포커스를 이동시켜 사용자 편의성 증대
+        document.getElementById('detailAddress').focus(); 
+      },
+    }).open();
+  };
 
   const getCoordinatesFromAddress = async (fullAddress) => {
     console.log("📍 주소 변환 시작:", fullAddress);
@@ -71,19 +97,33 @@ const Signup4 = () => {
     }
   };
 
+  // 👇 화면에 렌더링될 JSX
   return (
     <div style={styles.wrapper}>
       <div style={styles.container}>
         <h2 style={styles.title}>🏠 주소를 입력해주세요</h2>
+
+        <div style={styles.addressContainer}>
+          <input
+            style={{...styles.input, flex: 1, marginRight: '10px'}}
+            type="text"
+            placeholder="우편번호"
+            value={postcode}
+            readOnly // 사용자가 직접 수정하지 못하게 설정
+          />
+          {/* 주소 찾기 버튼에 onClick 이벤트 연결 */}
+          <button style={styles.addressButton} onClick={handleAddressSearch}>주소 찾기</button>
+        </div>
+
         <input
           style={styles.input}
           type="text"
           placeholder="주소"
           value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          readOnly // 사용자가 직접 수정하지 못하게 설정
         />
-        <button style={styles.button}>주소 찾기</button>
         <input
+          id="detailAddress" // 포커스를 위해 id 추가
           style={styles.input}
           type="text"
           placeholder="상세 주소"
@@ -96,7 +136,6 @@ const Signup4 = () => {
   );
 };
 
-// ... (styles 코드는 기존과 동일)
 const styles = {
   wrapper: {
     display: 'flex',
@@ -139,6 +178,25 @@ const styles = {
     cursor: 'pointer',
     marginBottom: '10px',
   },
+  addressContainer: {
+    display: 'flex',
+    width: '96%',
+    margin: '0 auto 15px auto',
+  },
+  addressButton: {
+    width: '30%',
+    padding: '12px',
+    backgroundColor: '#ccc',
+    border: 'none',
+    borderRadius: '10px',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    cursor: 'pointer',
+    marginBottom: '15px',
+  }
 };
 
 export default Signup4;
+
+
+
