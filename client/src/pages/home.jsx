@@ -16,6 +16,7 @@ const Home = () => {
   const [startHeight, setStartHeight] = useState(window.innerHeight * 0.35);
   const [selectedSeller, setSelectedSeller] = useState(null);
   const [sellers, setSellers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
   
   // --- 추가된 State ---
   const [map, setMap] = useState(null); // 지도 인스턴스를 저장할 state
@@ -193,6 +194,15 @@ const Home = () => {
           )}
           {!selectedSeller ? (
             <>
+              <div className={styles.searchBarContainer}>
+                <input
+                  type="text"
+                  placeholder="가게 이름을 검색하세요"
+                  className={styles.searchInput}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
               <div className={styles.filterButtons}>
                 <button onClick={() => setFilter('immediate')} className={styles.filterButton}>즉시</button>
                 <button onClick={() => setFilter('reservation')} className={styles.filterButton}>예약</button>
