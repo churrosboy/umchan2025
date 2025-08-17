@@ -1,28 +1,46 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Signup2 = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { name, email } = location.state || {}; // 이전 페이지 데이터 받기
 
-const handleNext = () => {
-  const password = document.querySelectorAll('input[type="password"]')[0].value;
-  const confirm = document.querySelectorAll('input[type="password"]')[1].value;
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  if (password !== confirm) {
-    alert('비밀번호가 일치하지 않습니다');
-    return;
-  }
+  const handleNext = () => {
+    if (password !== confirmPassword) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    if (!password) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+    // 이전 데이터와 현재 데이터를 합쳐서 다음 페이지로 전달
+    navigate('/signup3', { state: { name, email, password } });
+  };
 
-  localStorage.setItem('password', password);
-  navigate('/signup3');
-};
   return (
-    <div style={styles.wrapper}>  {/*배경*/}
-      <div style={styles.container}>  {/*요소들 담은 박스*/}
-        <h2 style={styles.title}>🙈 비밀번호를 설정해주세요</h2>  {/*제목*/}
-        <input style={styles.input} type="password" placeholder="비밀번호" /> {/*비밀번호 입력란*/}
-        <input style={styles.input} type="password" placeholder="비밀번호 확인" />  {/*비밀번호 확인 입력란*/}
-        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음 페이지로 이동하는 함수*/}
+    <div style={styles.wrapper}>
+      <div style={styles.container}>
+        <h2 style={styles.title}>🙈 비밀번호를 설정해주세요</h2>
+        <input
+          style={styles.input}
+          type="password"
+          placeholder="비밀번호"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input
+          style={styles.input}
+          type="password"
+          placeholder="비밀번호 확인"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button style={styles.button} onClick={handleNext}>다음</button>
       </div>
     </div>
   );

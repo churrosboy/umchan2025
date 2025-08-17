@@ -1,27 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup1 = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
-  {/*다음 페이지로 이동하는 함수*/}
   const handleNext = () => {
-    const email = document.querySelector('input[type="email"]').value;
-    const name = document.querySelector('input[type="text"]').value;
-
-    localStorage.setItem('email', email);
-    localStorage.setItem('name', name);
-
-    navigate('/signup2');
+    if (!name || !email) {
+      alert('이름과 이메일을 모두 입력해주세요.');
+      return;
+    }
+    // 다음 페이지로 state를 통해 데이터 전달
+    navigate('/signup2', { state: { name, email } });
   };
 
   return (
-    <div style={styles.wrapper}>  {/*배경*/}
-      <div style={styles.container}>  {/*요소들 담은 박스*/}
-        <h2 style={styles.title}>✏️ 회원정보를 입력해 주세요</h2> {/*제목*/}
-        <input style={styles.input} type="text" placeholder="이름" /> {/*이름 입력란*/}
-        <input style={styles.input} type="email" placeholder="이메일" /> {/*이메일 입력란*/}
-        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음 페이지로 이동하는 함수(onClick={클릭하면 함수 실행})*/}
+    <div style={styles.wrapper}>
+      <div style={styles.container}>
+        <h2 style={styles.title}>✏️ 회원정보를 입력해 주세요</h2>
+        <input
+          style={styles.input}
+          type="text"
+          placeholder="이름"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          style={styles.input}
+          type="email"
+          placeholder="이메일"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <button style={styles.button} onClick={handleNext}>다음</button>
       </div>
     </div>
   );
@@ -67,16 +79,6 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '15px',
     cursor: 'pointer',
-  },
-  signupText: {
-    marginTop: '20px',
-    fontSize: '14px',
-    color: '#666',
-  },
-  link: {
-    color: '#fcd265',
-    fontWeight: 'bold',
-    textDecoration: 'none',
   },
 };
 

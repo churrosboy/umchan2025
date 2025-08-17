@@ -1,69 +1,49 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase'; 
+import { auth } from '../firebase';
 
 const Signup4 = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  // 이전 모든 단계에서 취합된 데이터를 state에서 가져옴
+  const { name, email, password, phone } = location.state || {};
 
-const getCoordinatesFromAddress = async (address) => {
-  console.log("📍 주소 변환 시작:", address);
+  const [address, setAddress] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
 
-  try {
-    const response = await fetch(`/api/geocode?address=${encodeURIComponent(address)}`);
-    console.log("📦 응답 status:", response.status);
-
-    const contentType = response.headers.get('content-type');
-    console.log("📦 응답 Content-Type:", contentType);
-
-    let data;
-
-    if (contentType && contentType.includes('application/json')) {
+  const getCoordinatesFromAddress = async (fullAddress) => {
+    console.log("📍 주소 변환 시작:", fullAddress);
+    try {
+      const response = await fetch(`/api/geocode?address=${encodeURIComponent(fullAddress)}`);
       const data = await response.json();
-      console.log("📦 응답 데이터:", data);
-
       if (data.addresses && data.addresses.length > 0) {
         const { x, y } = data.addresses[0];
         return [parseFloat(x), parseFloat(y)];
       } else {
-        throw new Error("❌ 주소 검색 결과 없음");
+        throw new Error("주소 검색 결과가 없습니다.");
       }
-    } else {
-      const text = await response.text();
-      try{
-        data = JSON.parse(text);
-      } catch (err){
-        console.error("❌ JSON 파싱 실패:", text);
-        throw new Error("서버 응답이 JSON이 아닙니다");
-      }
+    } catch (err) {
+      console.error("❌ 주소 변환 실패:", err);
+      throw err;
     }
-  } catch (err) {
-    console.error("❌ fetch 실패:", err);
-    throw new Error("좌표 요청 중 오류 발생");
-  }
-};
+  };
 
   const handleSubmit = async () => {
-    const email = localStorage.getItem('email');
-    const password = localStorage.getItem('password');
-    const phone = localStorage.getItem('phone');
-    const nickname = localStorage.getItem('nickname'); // 예: 닉네임도 입력 받았다면
-    const address = document.querySelectorAll('input[type="text"]')[0].value;
+    if (!address) {
+      alert('주소를 입력해주세요.');
+      return;
+    }
+
+    const fullAddress = `${address} ${detailAddress}`;
 
     try {
       // 1. Firebase 계정 생성
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const uid = userCredential.user.uid;
 
-      console.log("checkpoint 1");
       // 2. 주소 → 좌표 변환
-      const [longitude, latitude] = await getCoordinatesFromAddress(address);
-
-      console.log("📍 fetch 요청 시작");
-
-      console.log("보낼 데이터:", {
-        uid, nickname, phone, address, longitude, latitude
-      });
+      const [longitude, latitude] = await getCoordinatesFromAddress(fullAddress);
 
       // 3. MongoDB에 사용자 정보 저장
       const response = await fetch('/api/users', {
@@ -71,18 +51,20 @@ const getCoordinatesFromAddress = async (address) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           uid: String(uid),
-          nickname: String(nickname || ''),
+          nickname: String(name), // name을 nickname으로 사용
           phone_number: String(phone),
-          address: String(address),
+          address: String(fullAddress),
           longitude: parseFloat(longitude),
-          latitude: parseFloat(latitude)
+          latitude: parseFloat(latitude),
         }),
       });
 
-      console.log('📦 서버 응답 status:', response.status);
+      if (!response.ok) {
+        throw new Error('서버에 사용자 정보를 저장하는 데 실패했습니다.');
+      }
 
       alert('🎉 회원가입이 완료되었습니다!');
-      localStorage.clear();
+      
       navigate('/');
     } catch (error) {
       alert('회원가입 실패: ' + error.message);
@@ -93,29 +75,28 @@ const getCoordinatesFromAddress = async (address) => {
     <div style={styles.wrapper}>
       <div style={styles.container}>
         <h2 style={styles.title}>🏠 주소를 입력해주세요</h2>
-        <input style={styles.input} type="text" placeholder="주소" />
+        <input
+          style={styles.input}
+          type="text"
+          placeholder="주소"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
         <button style={styles.button}>주소 찾기</button>
-        <input style={styles.input} type="text" placeholder="상세 주소" />
+        <input
+          style={styles.input}
+          type="text"
+          placeholder="상세 주소"
+          value={detailAddress}
+          onChange={(e) => setDetailAddress(e.target.value)}
+        />
         <button style={styles.button} onClick={handleSubmit}>회원가입</button>
       </div>
     </div>
   );
 };
 
-//  {/*다음 페이지로 이동하는 함수*/}
-//  const handleNext = () => {
-//    navigate('/signup5');
-//  };
-//
-//  return (
-//    <div style={styles.wrapper}>  {/*배경*/}
-//      <div style={styles.container}>  {/*요소들 담은 박스*/}
-//        <h2 style={styles.title}>🏠 주소를 입력해주세요</h2>  {/*제목*/}
-//        <input style={styles.input} type="text" placeholder="주소" /> {/*주소 입력란*/}
-//        <button style={styles.button}>주소 찾기</button>  {/*주소 찾기 버튼, 기능X*/}
-//        <input style={styles.input} type="text" placeholder="상세 주소" />  {/*상세 주소 입력란*/}
-//        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음 페이지로 이동하는 함수*/}
-
+// ... (styles 코드는 기존과 동일)
 const styles = {
   wrapper: {
     display: 'flex',

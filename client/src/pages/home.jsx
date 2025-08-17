@@ -16,7 +16,7 @@ const Home = () => {
   const [startHeight, setStartHeight] = useState(window.innerHeight * 0.35);
   const [selectedSeller, setSelectedSeller] = useState(null);
   const [sellers, setSellers] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   
   // --- 추가된 State ---
   const [map, setMap] = useState(null); // 지도 인스턴스를 저장할 state
