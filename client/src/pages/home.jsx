@@ -11,26 +11,34 @@ const Home = () => {
   const mapRef = useRef(null);
   const navigate = useNavigate();
   const [filter, setFilter] = useState('all');
+  
+  // --- 패널 높이 관련 State ---
   const [panelHeight, setPanelHeight] = useState(window.innerHeight * 0.35);
   const [startY, setStartY] = useState(null);
   const [startHeight, setStartHeight] = useState(window.innerHeight * 0.35);
+  // 이전 패널 높이를 추적하기 위한 ref 추가
+  const prevPanelHeight = useRef(window.innerHeight * 0.35);
+
   const [selectedSeller, setSelectedSeller] = useState(null);
   const [sellers, setSellers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   
-  // --- 추가된 State ---
-  const [map, setMap] = useState(null); // 지도 인스턴스를 저장할 state
-  const [markers, setMarkers] = useState([]); // 현재 표시된 마커들을 저장할 state
+  const [map, setMap] = useState(null);
+  const [markers, setMarkers] = useState([]);
 
-  // 필터가 적용된 판매자 목록 (이 부분은 마커 생성 로직과 직접적인 관련이 없어졌습니다)
   const filtered = sellers.filter(s => filter === 'all' || s.sellingType === filter);
   
-  // 서버로부터 판매자 데이터 가져오기
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
   useEffect(() => {
     const fetchSellers = async () => {
       try {
         const res = await axios.get('/api/sellers');
-        console.log("✅ 받아온 sellers:", res.data); 
         setSellers(res.data);
       } catch (err) {
         console.error('❌ 판매자 데이터 가져오기 실패:', err);
@@ -39,7 +47,7 @@ const Home = () => {
     fetchSellers();
   }, []);
 
-  // 1. 지도 초기화 (최초 렌더링 시 한 번만 실행)
+  // 1. 지도 초기화
   useEffect(() => {
     const script = document.createElement('script');
     script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${naverMapKey}`;
@@ -57,7 +65,7 @@ const Home = () => {
             zoom: 15,
           });
 
-          setMap(mapInstance); // 생성된 지도 인스턴스를 state에 저장
+          setMap(mapInstance);
 
           window.naver.maps.Event.addListener(mapInstance, 'click', () => {
             setSelectedSeller(null);
@@ -70,25 +78,21 @@ const Home = () => {
         }
       );
     };
-  }, []); // 의존성 배열 [] -> 최초 1회만 실행
+  }, []);
 
-  // 2. 마커 생성 및 뷰포트 관리 (지도와 판매자 데이터가 준비되면 실행)
+  // 2. 마커 생성 및 뷰포트 관리
   useEffect(() => {
     if (!map || sellers.length === 0) return;
 
     const updateMarkers = () => {
-      const bounds = map.getBounds(); // 현재 지도 뷰포트 범위
-
-      // 기존 마커들 삭제
+      const bounds = map.getBounds();
       markers.forEach(marker => marker.setMap(null));
       const newMarkers = [];
 
       sellers.forEach((seller) => {
         if (!seller.lat || !seller.lng) return;
-
         const sellerPosition = new window.naver.maps.LatLng(seller.lat, seller.lng);
 
-        // 판매자 위치가 현재 뷰포트 범위 안에 있을 때만 마커 생성
         if (bounds.hasLatLng(sellerPosition)) {
           const marker = new window.naver.maps.Marker({
             position: sellerPosition,
@@ -98,55 +102,47 @@ const Home = () => {
 
           window.naver.maps.Event.addListener(marker, 'click', () => {
             setSelectedSeller(seller);
-            
-            const newPanelHeight = 340; // 마커 클릭 시 설정될 패널 높이
+            const newPanelHeight = 340;
             setPanelHeight(newPanelHeight);
 
-            // 1. 마커의 지리 좌표를 화면 픽셀 좌표로 변환
             const projection = map.getProjection();
             const sellerPoint = projection.fromLatLngToPoint(sellerPosition);
-
-            // 2. 패널 높이의 절반만큼 y 좌표를 아래로 이동시켜 새로운 중심 픽셀 좌표를 계산
+            
+            // 패널 높이의 절반만큼 y 좌표를 위로 이동시켜 새로운 중심 픽셀 좌표를 계산
+            // (화면 좌표계는 위가 0, 아래가 + 이므로, 위로 올리려면 y값을 빼야 합니다)
             const newCenterPoint = new window.naver.maps.Point(
               sellerPoint.x,
-              sellerPoint.y + newPanelHeight / 2
+              sellerPoint.y - newPanelHeight / 2 
             );
 
-            // 3. 계산된 새로운 중심 픽셀 좌표를 다시 지리 좌표로 변환
             const newCenterLatLng = projection.fromPointToLatLng(newCenterPoint);
-
-            // 4. 보정된 새로운 중심으로 지도를 이동
             map.panTo(newCenterLatLng);
           });
           newMarkers.push(marker);
         }
       });
-      setMarkers(newMarkers); // 새로 생성된 마커 목록을 state에 저장
+      setMarkers(newMarkers);
     };
     
-    updateMarkers(); // 최초 마커 업데이트
-
-    // 지도 드래그/줌이 멈추면(idle) 마커 업데이트
+    updateMarkers();
     const idleListener = window.naver.maps.Event.addListener(map, 'idle', updateMarkers);
 
-    // 컴포넌트 unmount 시 이벤트 리스너 제거 (메모리 누수 방지)
     return () => {
       window.naver.maps.Event.removeListener(idleListener);
     };
 
-  }, [map, sellers]); // map 인스턴스나 sellers 데이터가 변경될 때마다 실행
-
-  // 패널 높이에 따른 바디 스크롤 잠금/해제
+  }, [map, sellers]);
+  
+  // 3. 패널 높이 변경에 따른 지도 중심 이동
   useEffect(() => {
-    if (panelHeight > 100) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, [panelHeight]);
+    if (!map) return;
+    const diff = panelHeight - prevPanelHeight.current;
+    map.panBy(new window.naver.maps.Point(0, diff / 1.5));
+
+    prevPanelHeight.current = panelHeight;
+
+  }, [panelHeight, map]);
+
 
   const handleTouchStart = (e) => {
     setStartY(e.touches[0].clientY);
@@ -163,16 +159,22 @@ const Home = () => {
   };
 
   const handleTouchEnd = () => {
+    if (startY === null) return; // 이미 끝났으면 중복 실행 방지
+    const currentY = panelHeight;
     const maxHeight = window.innerHeight - 132;
+    
+    let finalHeight = currentY;
+
     if (panelHeight > maxHeight * 0.85) {
-      setPanelHeight(maxHeight);
+      finalHeight = maxHeight;
     } else if (panelHeight < 150) {
-      setPanelHeight(100);
-    } else {
-      setPanelHeight(panelHeight);
+      finalHeight = 100;
     }
+    
+    setPanelHeight(finalHeight);
     setStartY(null);
   };
+
 
   return (
     <div className={styles.wrapper}>
