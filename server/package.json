@@ -1,7 +1,6 @@
 {
   "name": "server",
   "version": "1.0.0",
-<<<<<<< HEAD
   "main": "server.js",
   "type": "module",
   "dependencies": {
@@ -121,10 +120,6 @@
     "webidl-conversions": "^7.0.0",
     "whatwg-url": "^14.2.0"
   },
-=======
-  "main": "app.js",
-  "type": "module",
->>>>>>> 09ecb15f443a03fc5c8336505d9a9d60b5736859
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
@@ -132,12 +127,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "mongodb": "^6.18.0",
-    "node-fetch": "^3.3.2"
-  }
+  "description": ""
 }
