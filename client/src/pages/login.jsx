@@ -19,7 +19,7 @@ const Login = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/home');
     } catch (error) {
-      alert('로그인 실패: ' + error.message);
+      alert('로그인 실패');
     }
   };
 

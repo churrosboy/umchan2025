@@ -1,6 +1,8 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { users } from '../data/users';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase'; 
 
 const Setting = () => {
     const { userId } = useParams();
@@ -16,6 +18,16 @@ const Setting = () => {
       navigate('/UpdateProfile/' + userId);
     }
 
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            navigate('/');
+        } catch (error) {
+            console.error("로그아웃 실패: ", error);
+            alert("로그아웃 중 문제가 발생했습니다.");
+        }
+    }
+
     return (
         <div style={styles.wrapper}>
           <div style={styles.container}>
@@ -28,7 +40,7 @@ const Setting = () => {
             <button style={styles.button}>채팅설정</button>
             <button style={styles.button}>앱 설정</button>
             <div style={styles.margin}></div>
-            <button style={styles.button} onClick={() => navigate(`/`)}>로그아웃</button>
+            <button style={styles.button} onClick={handleLogout}>로그아웃</button>
             <button style={styles.button}>탈퇴하기</button>
             <div style={styles.margin}></div>
           </div>
