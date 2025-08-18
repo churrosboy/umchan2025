@@ -7,7 +7,7 @@ import userRoutes from './routes/userRoutes.js';
 import historyRoutes from './routes/historyRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import geocodeRouter from './routes/geocode.js';
-import sellerRoutes from './routes/sellers.js';
+//import sellerRoutes from './routes/sellers.js';
 
 dotenv.config();
 const app = express();
@@ -28,7 +28,7 @@ app.use('/api/history', historyRoutes);
 app.use('/api/products', productRoutes);
 
 app.use('/api/geocode', geocodeRouter);
-app.use("/api/sellers", sellerRoutes);
+//app.use("/api/sellers", sellerRoutes);
 
 const PORT = process.env.PORT || 4000;
 connect()

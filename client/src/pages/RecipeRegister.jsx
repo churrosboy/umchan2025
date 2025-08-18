@@ -131,13 +131,22 @@ const RecipeRegister = () => {
         formData.append('mainImage', recipe.file);
       }
       
-      // 단계별 이미지
+      // 단계별 이미지와 설명을 배열로 저장
+      const stepsData = steps.map((step, idx) => ({
+        step_num: idx + 1,
+        text: step.desc,
+        img: ''
+      }));
+
+      // FormData에 steps 배열 추가
+      formData.append('steps', JSON.stringify(stepsData));
+
+      // 단계별 이미지 파일 추가
       steps.forEach((step, idx) => {
         if (step.file) {
           console.log(`Adding step ${idx} image:`, step.file.name);
           formData.append(`stepImage${idx}`, step.file);
         }
-        formData.append(`stepDesc${idx}`, step.desc);
       });
 
       // FormData 내용 확인

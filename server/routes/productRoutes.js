@@ -1,7 +1,12 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
+import { fileURLToPath } from 'url'; // 추가
 import { createProduct, getAllProducts, getProductsByUserId, getProductById } from '../controllers/productController.js';
+
+// ES 모듈에서 __dirname 구현 - 추가된 부분
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 

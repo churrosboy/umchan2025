@@ -83,6 +83,7 @@ export async function createRecipe(req, res) {
     
     // stepDescN 처리
     console.log('📝 단계 설명 처리 시작');
+    /*
     Object.keys(req.body).forEach(key => {
       if (/^stepDesc\d+$/.test(key)) {
         const idx = parseInt(key.replace('stepDesc', ''));
@@ -92,6 +93,18 @@ export async function createRecipe(req, res) {
         console.log(`📝 Step ${idx} description:`, steps[idx].text);
       }
     });
+    */
+   /*
+    if (Array.isArray(req.body.steps)) {
+      console.log('✅ Steps array found:', req.body.steps);
+      validSteps = req.body.steps.filter(
+        s => s && typeof s.text === 'string' && s.text.trim()
+      );
+    } else {
+      console.log('❌ No steps array found, req.body:', req.body);
+      validSteps = [];
+    }
+      */
     
     console.log('Generated steps before filter:', steps);
     
@@ -108,13 +121,27 @@ export async function createRecipe(req, res) {
     }
     
     let validSteps = [];
-    if (Array.isArray(req.body.steps)) {
-      console.log('✅ Steps array found:', req.body.steps);
-      validSteps = req.body.steps.filter(
-        s => s && typeof s.text === 'string' && s.text.trim()
-      );
+
+    if(req.body.steps) {
+      try {
+        // 클라이언트에서 전달된 steps 배열을 파싱
+        const parsedSteps = JSON.parse(req.body.steps);
+
+        // 유효한 단계만 필터링
+        validSteps = parsedSteps.filter(step => step.text && step.text.trim()).map((step, idx) => ({
+          ...step,
+          step_num: idx + 1, // 단계 번호 추가
+          img: steps[idx] ? `${steps[idx].img}` : '' // 이미지 경로 처리
+        }));
+
+        console.log('✅ Parsed and validated steps:', validSteps);
+
+      } catch (err) {
+        console.error('❌ Steps parsing error:', err);
+        return res.status(400).json({ success: false, error: 'Invalid steps format' });
+      }
     } else {
-      console.log('❌ No steps array found, req.body:', req.body);
+      console.log('❌ No steps array found in request body');
       validSteps = [];
     }
     

@@ -8,11 +8,8 @@ const userSchema = new mongoose.Schema({
   recipe_num: { type: Number, default: 0 },
   review_num: { type: Number, default: 0 },
   location: {
-    type: "Point",                      // 🔒 정확한 문자열 (대소문자 구분됨)
-    coordinates: [
-      parseFloat(longitude),            // 📍 double
-      parseFloat(latitude)              // 📍 double
-    ]
+    type: { type: String, default: "Point" },
+    coordinates: { type: [Number], default: [0, 0] } // [경도, 위도]
   },
   avg_rating: { type: Number, default: 0 },
   review_cnt: { type: Number, default: 0 },

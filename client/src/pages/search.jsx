@@ -4,6 +4,45 @@ import { HiOutlineSearch } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 const API_URL = process.env.REACT_APP_API_URL;
 
+const KEY = 'recentSearches';
+const MAX = 10;
+
+function hasLocalStorage() {
+  try {
+    return typeof window !== 'undefined' && 'localStorage' in window && window.localStorage !== null;
+  } catch {
+    return false;
+  }
+}
+function getRecent() {
+  if (!hasLocalStorage()) return [];
+  try {
+    return JSON.parse(window.localStorage.getItem(KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+function saveRecent(list) {
+  if (!hasLocalStorage()) return;
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(list));
+  } catch {}
+}
+function addRecent(term) {
+  if (!term || !term.trim()) return;
+  const t = term.trim();
+  const list = getRecent();
+  const i = list.indexOf(t);
+  if (i !== -1) list.splice(i, 1);
+  list.unshift(t);
+  if (list.length > MAX) list.length = MAX;
+  saveRecent(list);
+}
+function removeRecent(term) {
+  const list = getRecent().filter(x => x !== term);
+  saveRecent(list);
+}
+
 const Search = () => {
   const [keyword, setKeyword] = useState('');
   const [filtered, setFiltered] = useState([]);
@@ -22,11 +61,14 @@ const Search = () => {
 
   const fetchHistory = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/history/list`);
-      const data = await response.json();
+      const data = getRecent().map(keyword => ({
+        keyword,
+        lastSearchedAt: new Date().toISOString()
+      }));
       setHistory(data);
     } catch (err) {
       console.error('❌ 검색 기록 조회 실패:', err);
+      setHistory([]);
     }
   };
 
@@ -39,7 +81,17 @@ const Search = () => {
         },
         body: JSON.stringify({ keyword }),
       });
-      await fetchHistory(); // 저장 후 검색 기록 갱신
+    } catch (err) {
+      console.error('❌ 검색 기록 저장 실패:', err);
+    }
+    try {
+      addRecent(keyword);
+      // UI 갱신
+      const data = getRecent().map(k => ({
+        keyword: k,
+        lastSearchedAt: new Date().toISOString()
+      }));
+      setHistory(data);
     } catch (err) {
       console.error('❌ 검색 기록 저장 실패:', err);
     }
@@ -175,7 +227,7 @@ const Search = () => {
               >
                 <span style={styles.historyKeyword}>{item.keyword}</span>
                 <span style={styles.historyMeta}>
-                  {new Date(item.lastSearchedAt).toLocaleDateString()} ({item.count}회)
+                  {new Date(item.lastSearchedAt).toLocaleDateString()}
                 </span>
               </li>
             ))}
