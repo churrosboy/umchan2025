@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/MenuDetail.module.css';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const MenuDetail = () => {
-  const { menuId } = useParams(); // menuId = item_id
+  const { menuId } = useParams(); //이전 화면에서 선택된 메뉴Id를 가져오는 부분
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -58,6 +58,7 @@ const MenuDetail = () => {
 
   return (
     <div className={styles.wrapper}>
+      {/*뒤로가기 버튼*/}
       <button onClick={() => navigate(-1)} className={styles.backButton}>
         &lt; 뒤로가기
       </button>
@@ -164,4 +165,5 @@ const MenuDetail = () => {
   );
 };
 
+{/*스타일은 styles 폴더의 MenuDetail.module.css 파일 확인*/}
 export default MenuDetail;

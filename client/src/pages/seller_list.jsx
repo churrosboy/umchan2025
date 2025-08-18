@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 const API_URL = process.env.REACT_APP_API_URL;
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 
 const SellerList = () => {
     const navigate = useNavigate();
+
     const { keyword } = useParams();
 
     const [seller_result, setSeller_result] = useState([]);
@@ -35,35 +38,40 @@ const SellerList = () => {
                 <p style={styles.resultCount}>{seller_result.length}개의 가게를 찾았습니다</p>
             </div>
 
-            {/* 판매자 리스트 */}
-            <div style={styles.sellerList}>
-                {seller_result.map((seller) => (
-                    <div style={styles.sellerCard} key={seller.id} onClick={() => navigate(`/seller_detail/${seller.id}`)}>
-                        <div style={styles.thumbnail}>{seller.main_img && seller.main_img[0] ? (<img src={seller.main_img[0]} alt={seller.nickname} style={styles.thumbnailImg} />) : ('이미지 없음')}</div>
-                        <div style={styles.sellerInfo}>
-                            <div style={styles.top}>
-                                <span style={styles.name}>{seller.nickname}</span>
-                                <span style={styles.rating}>⭐ {seller.avg_rating} ({seller.review_cnt})</span>
-                                <span style={styles.likes}>💚 {seller.like_cnt}</span>
-                            </div>
-                            <div style={styles.matchingProducts}>
-                                {seller.matchingProducts.slice(0, 2).map((product, idx) => (
-                                    <span key={product.item_id} style={styles.matchingProduct}>
-                                        {product.name}
-                                        {idx < Math.min(seller.matchingProducts.length, 2) - 1 && idx < 1 ? ', ' : ''}
-                                    </span>
-                                ))}
-                                {seller.matchingProducts.length > 2 && (
-                                    <span style={styles.moreProducts}>
-                                        {` 외 ${seller.matchingProducts.length - 2}개`}
-                                    </span>
-                                )}
-                            </div>
-                            <div style={styles.distance}>거래장소가 00m 이내에요!</div>
-                        </div>
-                    </div>
-                ))}
+        {/* 판매자 리스트 */}
+        <div style={styles.sellerList}>
+            {seller_result.map((seller) => (
+            <div style={styles.sellerCard} key={seller.id} onClick={() => navigate(`/seller_detail/${seller.id}`)}>
+                <div style={styles.thumbnail}>{seller.images ? (<img src={seller.images[0]} alt={seller.name} style={styles.thumbnailImg} />) : ('이미지 없음')}</div>
+                <div style={styles.sellerInfo}>
+                <div style={styles.top}>
+                    <span style={styles.name}>{seller.name}</span>
+                    <span style={styles.rating}>
+                      <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                      {seller.rating} ({seller.reviews})</span>
+                    <span style={styles.likes}>
+                      <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                      {seller.hearts}</span>
+                </div>
+                <div style={styles.matchingProducts}>
+                    {seller.matchingProducts.slice(0, 2).map((product, idx) => (
+                        <span key={product.id} style={styles.matchingProduct}>
+                            {product.name}
+                            {idx < Math.min(seller.matchingProducts.length, 2) - 1 && idx < 1 ? ', ' : ''}
+                        </span>
+                    ))}
+                    {seller.matchingProducts.length > 2 && (
+                        <span style={styles.moreProducts}>
+                            {` 외 ${seller.matchingProducts.length - 2}개`}
+                        </span>
+                    )}
+                </div>
+                <div style={styles.distance}>거래장소가 00m 이내에요!</div>
+                </div>
             </div>
+            ))}
+        </div>
+
         </div>
     );
 };

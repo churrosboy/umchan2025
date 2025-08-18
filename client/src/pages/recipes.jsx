@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, {useState} from "react";
 import { useParams, useNavigate } from 'react-router-dom';
+import { recipes } from '../data/recipes';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { sellers } from '../data/sellers';
+import { ReactComponent as Star } from '../Icons/Star01.svg';
+import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeList = () => {
     const navigate = useNavigate();
-    const { keyword } = useParams(); // URL에서 검색어 가져오기
+    const { keyword } = useParams();    //화면에 띄울 레시피들을 관리하기 위한 키워드(검색 전 - all, 검색 후 - 검색어)
     const [liked, setLiked] = useState({});
     const [recipeList, setRecipeList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -49,7 +52,7 @@ const RecipeList = () => {
         navigate('/search_recipe');
     };
 
-    const handleHeartClick = async (id) => {
+    const handleHeartClick = (id) => {
         const willBeLiked = !liked[id];
 
         try {
@@ -118,37 +121,40 @@ const RecipeList = () => {
                 />
                 </div>
             </div>
-        
-            {keyword && (
+
+            {keyword !== 'all' && (
                 <div style={styles.sectionTitleBar}>
-                    <h3 style={styles.resultTitle}>
-                        "{keyword}" 검색 결과
-                    </h3>
+                    <h3 style={styles.resultTitle}>"{keyword}" 검색 결과</h3>
                     <p style={styles.resultCount}>{recipeList.length}개의 레시피를 찾았습니다</p>
                 </div>
             )}
-
-            {!keyword && (
+            
+            {keyword === 'all' && (
                 <div style={styles.sectionTitleBar}>
-                    <h3 style={styles.resultTitle}>
-                        {recipeList.length}개의 등록된 레시피
-                    </h3>
+                    <h3 style={styles.resultTitle}>등록된 레시피</h3>
+                    <p style={styles.resultCount}>전체 {recipeList.length}개</p>
                 </div>
             )}
 
             <div style={styles.recipeSection}>
                 {recipeList.map(item => (
-                <div style={styles.recipeCard} key={item.recipe_id}>
-                    <div style={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}></div>
-                    <div style={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
+                <div style={styles.recipeCard} key={item.id}>
+                    <div style={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.id}`)}></div>
+                    <div style={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.id}`)}>
                     <div style={styles.recipeTitle}>
-                        {item.title}
-                        <span style={styles.likes}> 💚{item.like_cnt}</span>
+                        <span>{item.user_name}</span>{item.title}
+                        <span style={styles.rating}>
+                            <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
+                            {item.rating}</span>
+                        <span style={styles.likes}>
+                            <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
+                        {item.hearts}</span>
                     </div>
                     <div style={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
+                    <div style={styles.recipeDesc}>{item.desc}</div>
                 </div>
-                    <div style={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.recipe_id)}}>
-                        {liked[item.recipe_id] ? '❤️' : '♡'}
+                    <div style={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.id)}}>
+                        {liked[item.id] ? '❤️' : '♡'}
                     </div>
                 </div>
                 ))}
@@ -227,11 +233,23 @@ const styles = {
         minHeight: "100vh",
         background: "#fff",
     },
+    rating: {
+        color: '#f5a623',
+    },
     likes: {
         marginLeft: 'auto',
         fontSize: '13px',
         color: '#23a34a',
     },
+    noResult: {
+        width: '100%',
+        maxWidth: '500px',
+        margin: '0 auto',
+        fontFamily: 'sans-serif',
+        background: '#fff',
+        paddingBottom: '60px', /* for nav */
+        paddingTop: '100px', /* for nav */
+  },
 };
 
 export default RecipeList;
