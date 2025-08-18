@@ -7,13 +7,12 @@ import Signup1 from './pages/signup1';
 import Signup2 from './pages/signup2';
 import Signup3 from './pages/signup3';
 import Signup4 from './pages/signup4';
-//import Signup5 from './pages/signup5';
+import Signup5 from './pages/signup5';
 import Home from './pages/home';
 import SellerDetail from './pages/seller_detail';
 import MenuDetail from './pages/menu_detail';
 import OtherProfile from './pages/other_user_profile';
 import SellerAuth from './pages/seller_auth';
-import SellerItem from './pages/seller_item';
 import RecipeList from './pages/user_recipe_list';
 import ReviewList from './pages/user_review_list';
 import Profile from './pages/profile';
@@ -30,6 +29,7 @@ import Recipes from './pages/recipes';
 import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import ReviewPost from './pages/review_post';
+import ItemRegister from './pages/item_register';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -53,12 +53,12 @@ const AppRoutes = () => {
         <Route path="/signup2" element={<Signup2 />} />
         <Route path="/signup3" element={<Signup3 />} />
         <Route path="/signup4" element={<Signup4 />} />
+        <Route path="/signup5" element={<Signup5 />} />
         <Route path="/home" element={<Home />} />
         <Route path="/seller_detail/:sellerId" element={<SellerDetail />} />
         <Route path="/menu/:menuId" element={<MenuDetail />} />
         <Route path="/other_user_profile/:userId" element={<OtherProfile />} />
         <Route path="/seller_auth/:userId" element={<SellerAuth />} />
-        <Route path="/seller_item/:userId" element={<SellerItem />} />
         <Route path="/user_recipe_list/:userId" element={<RecipeList />} />
         <Route path="/user_review_list/:userId" element={<ReviewList />} />
         <Route path="/profile" element={<Profile />} />
@@ -72,9 +72,11 @@ const AppRoutes = () => {
         <Route path="/search" element={<Search />} />
         <Route path="/seller_list/:keyword" element={<SellerList />} />
         <Route path="/recipes/:keyword" element={<Recipes />} />
+        <Route path="/recipes" element={<Recipes />} />
         <Route path="/search_recipe" element={<SearchRecipe />} />
         <Route path="/recipe_detail/:recipeId" element={<RecipeDetail />} />
         <Route path="/review_post" element={<ReviewPost />} />
+        <Route path="/item_register" element={<ItemRegister />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>
