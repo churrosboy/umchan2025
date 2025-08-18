@@ -1,10 +1,13 @@
 import React from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { HiPlusCircle } from 'react-icons/hi2';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const MyRecipe = () => {
     const { userId } = useParams();
+    const user = users.find(u => u.id === Number(userId));
+    const recipeList = recipes.filter(recipe => recipe.user_id === Number(userId));
     const user = users.find(u => u.id === Number(userId));
     const recipeList = recipes.filter(recipe => recipe.user_id === Number(userId));
     const navigate = useNavigate();
@@ -74,8 +77,31 @@ const MyRecipe = () => {
                 <div style={styles.headerTitle}>레시피 공유하기</div>
             </div>
         </div>
+        <div style={styles.header}>
+            <div style={styles.backButton} onClick={goBack}>←</div>
+            <div style={styles.headerTitle}>{user.name}</div>
+            <div style={styles.headerSpacer}></div>
+        </div>
+        <div style={styles.sectionTitleBar}>등록한 레시피</div>
+        <div style={styles.recipeSection}>
+            {recipeList.map(item => (
+              <div style={styles.recipeCard} key={item.id} onClick={() => navigate(`/recipe/${item.id}`)}>
+                <div style={styles.recipeImage}></div>
+                <div style={styles.recipeInfo}>
+                <div style={styles.recipeTitle}>{item.title}</div>
+                <div style={styles.recipeDesc}>{item.desc}</div>
+              </div>
+              <div style={styles.editIcon}>🖋️</div>
+            </div>
+            ))}
+            <div style={styles.recipeCard}>
+                <HiPlusCircle size={22} />
+                <div style={styles.headerTitle}>레시피 공유하기</div>
+            </div>
+        </div>
         </div>
     );
+}
 }
 
 const styles = {

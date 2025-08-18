@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -89,6 +90,11 @@ const RecipeDetail = () => {
             <h2 style={{ margin: 0, fontSize: '18px' }}>{sellerName}<span style={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span></h2>
             <div style={styles.spacer} />
         </div>
+        <div style={styles.recipeHeader}>
+            <button style={styles.backBtn} onClick={goBack}>{'←'}</button>
+            <h2 style={{ margin: 0, fontSize: '18px' }}>{sellerName}<span style={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span></h2>
+            <div style={styles.spacer} />
+        </div>
 
             {/* 메인 이미지 */}
             {recipe.thumbnail && (
@@ -132,9 +138,56 @@ const RecipeDetail = () => {
                 </div>
             </div>
         </div>
+        <div style={styles.recipeInfo}>
+            <div style={styles.recipeTitle}>
+                <h3 style={styles.recipeName}>{recipe.title}</h3>
+                <span style={styles.rating}>
+                    <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/>
+                    {recipe.rating} ({recipe.reviews || 0})</span>
+                <span style={styles.likes}>
+                    <Heart width={19} height={19} style={{ verticalAlign: 'middle' }}/>
+                    {recipe.hearts || 0}</span>
+            </div>
+            
+            <p style={{ margin: '8px 0 16px', color: '#666', fontSize: '15px' }}>
+                {recipe.desc}
+            </p>
+            
+            <div style={styles.recipeMeta}>
+                <p style={styles.metaTitle}>재료</p>
+                <div style={styles.ingredientGrid}>
+                    {recipe.ingredients.map((ingredient, idx) => (
+                        <div key={idx} style={styles.ingredientItem}>
+                            <span style={styles.ingredientName}>{ingredient.name}</span>
+                            <span style={styles.ingredientAmount}>{ingredient.amount}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
 
         <hr style={styles.hr} />
+        <hr style={styles.hr} />
 
+        {recipe.steps.map((step) => (
+            <div style={styles.recipeStep} key={step.step_num}>
+                <div style={styles.stepHeader}>
+                    <div style={styles.stepNumberBadge}>{step.step_num}</div>
+                    <h4 style={styles.stepTitle}>단계 {step.step_num}</h4>
+                </div>
+                
+                <div style={styles.stepContent}>
+                    <div style={styles.stepImageContainer}>
+                        <img 
+                            src={step.img} 
+                            alt={`단계 ${step.step_num} 이미지`} 
+                            style={styles.stepImage} 
+                        />
+                    </div>
+                    <p style={styles.stepText}>{step.text}</p>
+                </div>
+            </div>
+        ))}
         {recipe.steps.map((step) => (
             <div style={styles.recipeStep} key={step.step_num}>
                 <div style={styles.stepHeader}>
@@ -172,7 +225,38 @@ const RecipeDetail = () => {
                             등록
                         </button>
                     </div>
+        <div style={styles.commentsSection}>
+            <h4 style={styles.commentsTitle}>댓글</h4>
+            <form onSubmit={handleSubmitComment} style={styles.commentForm}>
+                    <div style={styles.commentInputGroup}>
+                        <div style={styles.nameInput}>사용자이름</div>
+                        <input
+                            type="text"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="댓글을 입력하세요"
+                            style={styles.commentInput}
+                            required
+                        />
+                        <button type="submit" style={styles.commentSubmit}>
+                            등록
+                        </button>
+                    </div>
                 </form>
+            {recipe.comments && recipe.comments.length > 0 ? (
+                recipe.comments.map((comment, idx) => (
+                    <div style={styles.comment} key={idx}>
+                        <span style={styles.commentWriter}>{comment.writer}</span>
+                        <span style={styles.commentDate}>
+                            {new Date(comment.timestamp).toLocaleDateString()}
+                        </span>
+                        <span style={styles.commentContent}>{comment.content}</span>
+                    </div>
+                ))
+            ) : (
+                <p>아직 댓글이 없습니다.</p>
+            )}
+        </div>
             {recipe.comments && recipe.comments.length > 0 ? (
                 recipe.comments.map((comment, idx) => (
                     <div style={styles.comment} key={idx}>

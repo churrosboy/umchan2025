@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { recipes } from '../data/recipes';
+import { recipes } from '../data/recipes';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { sellers } from '../data/sellers';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
@@ -9,6 +10,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeList = () => {
     const navigate = useNavigate();
+    const { keyword } = useParams();    //화면에 띄울 레시피들을 관리하기 위한 키워드(검색 전 - all, 검색 후 - 검색어)
     const { keyword } = useParams();    //화면에 띄울 레시피들을 관리하기 위한 키워드(검색 전 - all, 검색 후 - 검색어)
     const [liked, setLiked] = useState({});
     const [recipeList, setRecipeList] = useState([]);
@@ -52,6 +54,7 @@ const RecipeList = () => {
         navigate('/search_recipe');
     };
 
+    const handleHeartClick = (id) => {
     const handleHeartClick = (id) => {
         const willBeLiked = !liked[id];
 

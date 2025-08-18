@@ -8,6 +8,7 @@ import Signup2 from './pages/signup2';
 import Signup3 from './pages/signup3';
 import Signup4 from './pages/signup4';
 //import Signup5 from './pages/signup5';
+//import Signup5 from './pages/signup5';
 import Home from './pages/home';
 import SellerDetail from './pages/seller_detail';
 import MenuDetail from './pages/menu_detail';

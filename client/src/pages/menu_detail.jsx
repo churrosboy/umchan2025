@@ -59,6 +59,7 @@ const MenuDetail = () => {
   return (
     <div className={styles.wrapper}>
       {/*뒤로가기 버튼*/}
+      {/*뒤로가기 버튼*/}
       <button onClick={() => navigate(-1)} className={styles.backButton}>
         &lt; 뒤로가기
       </button>
@@ -165,5 +166,6 @@ const MenuDetail = () => {
   );
 };
 
+{/*스타일은 styles 폴더의 MenuDetail.module.css 파일 확인*/}
 {/*스타일은 styles 폴더의 MenuDetail.module.css 파일 확인*/}
 export default MenuDetail;

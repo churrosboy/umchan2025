@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import debounce from 'lodash.debounce';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { search } from '../data/search';
+import { search } from '../data/search';
 import { useNavigate } from 'react-router-dom';
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -138,6 +139,15 @@ const Search = () => {
   };
 
   const debouncedSearch = debounce((value) => {
+    if (!value.trim()) return setFiltered([]);
+
+    var val = value.trim();
+
+    if(value.length >= 2) {
+      val = value.slice(0, value.length - 1);
+    }
+
+    const result = search.filter(item => item.keyword.toLowerCase().includes(val.toLowerCase()));
     if (!value.trim()) return setFiltered([]);
 
     var val = value.trim();

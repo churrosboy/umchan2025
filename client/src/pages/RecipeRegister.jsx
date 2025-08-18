@@ -13,6 +13,9 @@ const RecipeRegister = () => {
     ingredients: [
       {name: '', amount: ''}
     ] ,
+    ingredients: [
+      {name: '', amount: ''}
+    ] ,
     file: null
   });
 
@@ -25,6 +28,7 @@ const RecipeRegister = () => {
       ...prev,
       ingredients: [
         ...prev.ingredients,
+        {name: '', amount: ''}
         {name: '', amount: ''}
       ]
     }));
@@ -60,8 +64,18 @@ const RecipeRegister = () => {
   };
 
   const updateIngredientAmount = (index, value) => {
+  const updateIngredientName = (index, value) => {
     setRecipes(prev => {
       const next = [...prev.ingredients];
+      next[index] = {...prev, name: value};
+      return { ...prev, ingredients: next};
+    });
+  };
+
+  const updateIngredientAmount = (index, value) => {
+    setRecipes(prev => {
+      const next = [...prev.ingredients];
+      next[index] = {...prev, amount: value};
       next[index] = {...prev, amount: value};
       return { ...prev, ingredients: next };
     });
