@@ -132,4 +132,38 @@ router.patch(
   }
 );
 
+// ✅ is_auth 토글 (true <-> false)
+router.patch("/toggle-auth", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ error: "No token" });
+
+    const decoded = await admin.auth().verifyIdToken(token);
+    const userId = decoded.uid;
+
+    const { db } = await connect();
+    const users = db.collection("users");
+
+    const current = await users.findOne({ id: userId });
+    if (!current) return res.status(404).json({ error: "User not found" });
+
+    const currentVal = Boolean(current.is_auth);
+    const nextVal = !currentVal;
+
+    await users.updateOne(
+      { id: userId },
+      { $set: { is_auth: nextVal, updatedAt: new Date() } }
+    );
+
+    const updated = await users.findOne({ id: userId });
+    res.json({ user: updated });
+  } catch (err) {
+    console.error(err);
+    if (err.code === "auth/argument-error") {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+    res.status(500).json({ error: "Failed to toggle is_auth" });
+  }
+});
+
 export default router;

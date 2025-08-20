@@ -16,6 +16,7 @@ import axios from 'axios'; //axios 가져오기
 const Profile = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
+  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5050';
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -88,6 +89,38 @@ const Profile = () => {
   const goToMyRecipe = () => {
     navigate('/MyRecipe/' + userId);
   }
+
+  //테스트용 함수 (auth 상태 변경 함수)
+  const toggleAuth = async () => {
+    try {
+      const auth = getAuth();
+      const fbUser = auth.currentUser;
+      if (!fbUser) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+      const token = await fbUser.getIdToken();
+    
+      const { data } = await axios.patch(
+        `${API_BASE}/api/profile/toggle-auth`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    
+      const next = !!data?.user?.is_auth;
+    
+      // serverUser나 profile에 반영 (당신이 쓰는 쪽에 맞춰 하나만)
+      setUserData((p) => ({ ...p, is_auth: next }));
+      // setServerUser((u) => ({ ...u, is_auth: next }));  // serverUser를 쓰는 경우
+    
+      alert(`is_auth가 ${next ? 'true' : 'false'}로 변경되었습니다.`);
+    } catch (e) {
+      console.error(e);
+      alert('토글 실패');
+    }
+  };
+
+  //테스트용 함수 (auth 상태 변경 함수)
   
   return (
     <div style={styles.wrapper}>  {/*배경*/}
@@ -135,11 +168,28 @@ const Profile = () => {
         {/* 활동하기 카드 */}
         <div style={styles.activityCard}>
           <div style={styles.sectionTitle}>활동하기</div> {/*제목*/}
-          <button style={styles.button}>  {/*음식 판매 페이지로 이동하는 버튼. 음식 판매 페이지 아직 구현X*/}
-            <HiPlusCircle size={22} style={styles.leftIcon}/>
-            <span style={styles.buttonText}>내 음식 판매하기</span>
-            <HiChevronRight size={22} style={styles.rightIcon}/>
-          </button>
+            {userData.is_auth ? (
+              <button style={styles.button}>
+                <HiPlusCircle size={22} style={styles.leftIcon}/>
+                <span style={styles.buttonText}>내 음식 판매하기</span>
+                <HiChevronRight size={22} style={styles.rightIcon}/>
+              </button>
+            ) : (
+              <button style={styles.button}>
+                <HiPlusCircle size={22} style={styles.leftIcon}/>
+                <span style={styles.buttonText}>음식 판매 인증 요청하기</span>
+                <HiChevronRight size={22} style={styles.rightIcon}/>
+              </button>
+            )}
+
+            {/*테스트용 버튼!! */}
+            <button style={styles.button} onClick={toggleAuth}>
+              <HiPlusCircle size={22} style={styles.leftIcon}/>
+              <span style={styles.buttonText}>auth 상태 변경</span>
+              <HiChevronRight size={22} style={styles.rightIcon}/>
+            </button>
+            {/*테스트용 버튼!! */}
+
           <button style={styles.button} onClick={goToRecipeRegister}>  {/*레시피 공유 페이지로 이동하는 버튼, RecipeRegister로 이동하는 함수*/}
             <HiPencil size={22} style={styles.leftIcon}/>
             <span style={styles.buttonText}>레시피 공유하기</span>
@@ -150,11 +200,19 @@ const Profile = () => {
         {/* 나의 거래 카드 */}
         <div style={styles.transactionCard}>
           <div style={styles.sectionTitle}>나의 거래</div>  {/*제목*/}
+          { userData.is_auth ? (
           <button style={styles.button} onClick={goToSalesHistory}> {/*판매내역으로 이동하는 버튼, 아직 구현X*/}
             <HiTicket size={22} style={styles.leftIcon}/>
             <span style={styles.buttonText}>판매내역</span>
             <HiChevronRight size={22} style={styles.rightIcon}/>
           </button>
+          ) : (
+            <button style={styles.inactive_button}> {/*판매내역버튼 비활성화*/}
+              <HiTicket size={22} style={styles.leftIcon}/>
+              <span style={styles.buttonText}>판매내역</span>
+              <HiChevronRight size={22} style={styles.rightIcon}/>
+            </button>
+          )}
           <button style={styles.button} onClick={goToPurchaseHistory}>  {/*구매내역으로 이동하는 버튼, 아직 구현X*/}
             <HiShoppingBag size={22} style={styles.leftIcon}/>
             <span style={styles.buttonText}>구매내역</span>
@@ -272,6 +330,19 @@ const styles = {
   },
   button: {
     backgroundColor: '#FFD856',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+    borderRadius: '15px',
+    position: 'relative',
+    padding: '12px 40px',
+    textAlign: 'center',
+    fontSize: '16px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    border: 'none',
+    transition: 'background-color 0.2s ease',
+  },
+  inactive_button: {
+    backgroundColor: '#E1E1E1',
     boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
     borderRadius: '15px',
     position: 'relative',
