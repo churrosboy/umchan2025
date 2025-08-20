@@ -91,6 +91,8 @@ router.patch(
       // 텍스트 필드
       if (typeof body.nickname === "string") update.$set.nickname = body.nickname;
       if (typeof body.intro === "string") update.$set.intro = body.intro;
+      if (typeof body.address === "string") update.$set.address = body.address;
+      if (typeof body.phone_number === "string") update.$set.phone_number = body.phone_number;
 
       // 프로필 이미지
       const profileFile = files.profile_image?.[0];

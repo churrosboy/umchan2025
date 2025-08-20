@@ -21,7 +21,7 @@ import Setting from './pages/setting';
 import Sales_History from './pages/sales_history';
 import Purchase_History from './pages/purchase_history';
 import MyRecipe from './pages/my_recipe';
-import MyReview from './pages/my_review';
+import My_review from './pages/my_review';
 import RecipeRegister from './pages/RecipeRegister';
 import UpdateProfile from './pages/UpdateProfile';
 import Search from './pages/search';
@@ -67,7 +67,7 @@ const AppRoutes = () => {
         <Route path="/sales_history" element={<Sales_History />} />
         <Route path="/purchase_history" element={<Purchase_History />} />
         <Route path="/my_recipe/:userId" element={<MyRecipe />} />
-        <Route path="/my_review/:userId" element={<MyReview />} />
+        <Route path="/my_review" element={<My_review />} />
         <Route path="/RecipeRegister" element={<RecipeRegister />} />
         <Route path="/UpdateProfile" element={<UpdateProfile />} />
         <Route path="/search" element={<Search />} />

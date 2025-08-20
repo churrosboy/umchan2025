@@ -1,80 +1,27 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react"; 
+import { useNavigate, useParams } from "react-router-dom"; 
+import header from "../styles/PageHeader.module.css"; 
+import { users } from "../data/users"; 
+import InlineEditor from "../components/InlineProfileEditor"; 
 
 const Sales_History = () => {
+  const { userId } = useParams();
   const navigate = useNavigate();
 
-    const goBack = () => {
-        navigate(-1);
-    }
+  const user = users.find(u => u.id === Number(userId));
+  const goBack = () => { navigate(-1); }
   
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.container}>
-          <div style={styles.backButton}><span onClick={goBack}>
-                &lt; 뒤로가기
-            </span></div>
-      </div>
-    </div>
-  );
-};
-
-const styles = {
-  wrapper: {
-    backgroundColor: '#f9f9f9',
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'start',
-    padding: '40px 0',
-    boxSizing: 'border-box',
-    fontFamily: 'Roboto, sans-serif'
-  },
-  container: {
-    width: '100%',
-    maxWidth: '375px',
-    backgroundColor: '#ffffff',
-    borderRadius: '20px',
-    padding: '20px',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px'
-  },
-  button: {
-    backgroundColor: '#FFD856',
-    borderRadius: '15px',
-    position: 'relative',
-    padding: '12px 40px',
-    textAlign: 'center',
-    fontSize: '16px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    border: 'none'
-  },
-  leftIcon: {
-    position: 'absolute',
-    left: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    fontSize: '20px'
-  },
-  rightIcon: {
-    position: 'absolute',
-    right: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    fontSize: '20px'
-  },
-  buttonText: {
-    display: 'block'
-  },
-  backButton: {
-        cursor: 'pointer',
-        fontSize: 18,
-        color: '#333',
-  },
+    <div className={header.wrapper}> 
+      <div className={header.container}>
+        <div className={header.header}> 
+          <div className={header.backButton} onClick={goBack}>←</div> 
+          <div className={header.title}>판매 내역</div> 
+          <div className={header.saveButton}>저장하기</div> 
+        </div>
+      </div> 
+    </div> 
+  ); 
 };
 
 export default Sales_History;

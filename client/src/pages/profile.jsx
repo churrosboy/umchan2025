@@ -81,7 +81,7 @@ const Profile = () => {
 
   {/*내가 작성한 리뷰 페이지로 이동, userId 넘겨줌*/}
   const goToMyReview = () => {
-    navigate('/MyReview/' + userId);
+    navigate('/My_review');
   }
 
   {/*내 레시피 페이지로 이동, userId 넘겨줌*/}
