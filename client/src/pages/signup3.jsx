@@ -1,153 +1,75 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
-import {RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-
+import React, { useState, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { commonStyles } from '../styles/commonStyles';
 
 const Signup3 = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const prevData = location.state || {};
 
-  /*
-  useEffect(() => {
-    if (!window.recaptchaVerifier) {
-      // The 'sign-in-button' is the ID of the button that triggers the SMS sending
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
-        'size': 'invisible',
-        'callback': (response) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber to proceed.
-          // In this case, you can call the send code function again or
-          // let the initial call proceed.
-          console.log("reCAPTCHA solved");
-        }
-      });
-    }
-  }, []); // Empty dependency array ensures this runs only once
-  
+  const [phone, setPhone] = useState({ part1: '', part2: '', part3: '' });
+  const inputRef2 = useRef(null);
+  const inputRef3 = useRef(null);
 
-  const handleSendCode = async () => {
-    const phoneNumber = document.querySelector('input[name="phone"]').value;
-    // Use the verifier instance created in useEffect
-    const appVerifier = window.recaptchaVerifier;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const sanitizedValue = value.replace(/[^0-9]/g, '');
 
-    try {
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-      window.confirmationResult = confirmationResult;
-      alert('인증번호가 전송되었습니다');
-    } catch (error) {
-      // Reset reCAPTCHA so user can try again
-      appVerifier.render().then(widgetId => {
-        window.grecaptcha.reset(widgetId);
-      });
-      alert('전송 실패: ' + error.message);
-    }
+    setPhone((prev) => ({ ...prev, [name]: sanitizedValue }));
+
+    if (name === 'part1' && sanitizedValue.length === 3) inputRef2.current.focus();
+    if (name === 'part2' && sanitizedValue.length === 4) inputRef3.current.focus();
   };
-  
 
-const handleVerifyCode = async () => {
-  const code = document.querySelector('input[name="code"]').value;
-  const phone = document.querySelector('input[name="phone"]').value;
-
-  try {
-    const result = await window.confirmationResult.confirm(code);
-    const user = result.user;
-
-    localStorage.setItem('phone', phone);
-    alert('인증 성공!');
-    navigate('/signup4');
-  } catch (error) {
-    alert('인증 실패: ' + error.message);
-  }
-};
-
-
-  return (
-    <div style={styles.wrapper}>
-      <div style={styles.container}>
-        <h2 style={styles.title}>✅ 본인인증을 진행해주세요</h2>
-        <input name="phone" style={styles.input} type="text" placeholder="휴대폰 번호" />
-        <button id="sign-in-button" style={styles.button} onClick={handleSendCode}>인증번호 받기</button>
-        <div id="recaptcha-container"></div>
-        <input name="code" style={styles.input} type="text" placeholder="인증번호 입력" />
-        <button style={styles.button} onClick={handleVerifyCode}>인증하기</button>
-      </div>
-    </div>
-  );
-  */
-
-  {/*다음 페이지로 이동하는 함수*/}
   const handleNext = () => {
-    const phone = document.querySelector('input[name="phone"]').value;
-    if (!phone) {
-      alert('휴대폰 번호를 입력해주세요.');
+    const { part1, part2, part3 } = phone;
+    if (part1.length < 3 || part2.length < 3 || part3.length < 4) {
+      alert('휴대폰 번호를 올바르게 입력해주세요.');
       return;
     }
-
-    localStorage.setItem('phone', phone);
-    navigate('/signup4');
+    const fullPhone = `${part1}-${part2}-${part3}`;
+    navigate('/signup4', { state: { ...prevData, phone: fullPhone } });
   };
 
   return (
     <div style={styles.wrapper}>
       <div style={styles.container}>
         <h2 style={styles.title}>📱 휴대폰 번호를 입력해주세요</h2>
-        <input name="phone" style={styles.input} type="text" placeholder="휴대폰 번호" />
+        <div style={styles.phoneContainer}>
+          <input name="part1" style={styles.phoneInput} type="tel" maxLength="3" value={phone.part1} onChange={handleChange} />
+          <span style={styles.separator}>-</span>
+          <input name="part2" ref={inputRef2} style={styles.phoneInput} type="tel" maxLength="4" value={phone.part2} onChange={handleChange} />
+          <span style={styles.separator}>-</span>
+          <input name="part3" ref={inputRef3} style={styles.phoneInput} type="tel" maxLength="4" value={phone.part3} onChange={handleChange} />
+        </div>
         <button style={styles.button} onClick={handleNext}>다음</button>
       </div>
     </div>
   );
-
 };
 
-/* <div style={styles.wrapper}>  {/*배경*/
-//      <div style={styles.container}>  {/*요소들 담은 박스*/}
-//        <h2 style={styles.title}>✅ 본인인증을 진행해주세요</h2>  {/*제목*/}
-//        <input style={styles.input} type="text" placeholder="휴대폰 번호" />  {/*휴대폰 번호 입력란*/}
-//        <button style={styles.button}>인증번호 받기</button>  {/*인증번호 받기 버튼, 아직 기능 X*/}
-//        <input style={styles.input} type="text" placeholder="인증번호 입력" />  {/*인증번호 입력란*/}
-//        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음페이지로 이동하는 함수*/} 
-
-
 const styles = {
-  wrapper: {
+  ...commonStyles,
+  button: { ...commonStyles.button, marginTop: '15px' },
+  phoneContainer: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f9f9f9',
-    fontFamily: 'Arial, sans-serif',
-  },
-  container: {
-    width: '90%',
-    maxWidth: '360px',
-    backgroundColor: '#fff',
-    borderRadius: '20px',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-    padding: '40px 20px',
-    textAlign: 'center',
-  },
-  title: {
-    fontSize: '22px',
-    marginBottom: '30px',
-    color: '#333',
-  },
-  input: {
-    width: '90%',
-    padding: '12px',
+    width: '100%',
     marginBottom: '15px',
+  },
+  phoneInput: {
+    width: '20%',
+    padding: '12px',
     border: '1px solid #ccc',
     borderRadius: '10px',
-    fontSize: '14px',
+    fontSize: '16px',
+    textAlign: 'center',
   },
-  button: {
-    width: '100%',
-    padding: '12px',
-    backgroundColor: '#fcd265',
-    border: 'none',
-    borderRadius: '10px',
+  separator: {
+    fontSize: '16px',
+    color: '#333',
     fontWeight: 'bold',
-    fontSize: '15px',
-    cursor: 'pointer',
-    marginBottom: '10px',
   },
 };
 

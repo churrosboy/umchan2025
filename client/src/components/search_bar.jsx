@@ -36,7 +36,7 @@ const SearchBar = () => {
             background: 'transparent',
             outline: 'none',
             flex: 1,
-            fontSize: 14,
+            fontSize: 16,
             color: '#333',
           }}
         />
