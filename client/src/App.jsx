@@ -30,6 +30,7 @@ import Recipes from './pages/recipes';
 import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import ReviewPost from './pages/review_post';
+import AccountMng from './pages/AccountMng';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -62,19 +63,20 @@ const AppRoutes = () => {
         <Route path="/user_recipe_list/:userId" element={<RecipeList />} />
         <Route path="/user_review_list/:userId" element={<ReviewList />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/setting/:userId" element={<Setting />} />
+        <Route path="/setting" element={<Setting />} />
         <Route path="/sales_history" element={<Sales_History />} />
         <Route path="/purchase_history" element={<Purchase_History />} />
         <Route path="/my_recipe/:userId" element={<MyRecipe />} />
         <Route path="/my_review/:userId" element={<MyReview />} />
         <Route path="/RecipeRegister" element={<RecipeRegister />} />
-        <Route path="/UpdateProfile/:userId" element={<UpdateProfile />} />
+        <Route path="/UpdateProfile" element={<UpdateProfile />} />
         <Route path="/search" element={<Search />} />
         <Route path="/seller_list/:keyword" element={<SellerList />} />
         <Route path="/recipes/:keyword" element={<Recipes />} />
         <Route path="/search_recipe" element={<SearchRecipe />} />
         <Route path="/recipe_detail/:recipeId" element={<RecipeDetail />} />
         <Route path="/review_post" element={<ReviewPost />} />
+        <Route path="/AccountMng/:userId" element={<AccountMng />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>

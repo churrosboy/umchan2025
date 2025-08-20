@@ -10,3 +10,5 @@
 mongo/
 
 node_modules/
+
+/server/serviceAccountKey.json

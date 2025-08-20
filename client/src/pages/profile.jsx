@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { users } from '../data/users'; 
 import {
@@ -9,22 +9,54 @@ import {
   HiTicket,
   HiShoppingBag,
   HiBookOpen
-} from 'react-icons/hi2'; {/*아이콘들*/}
-
+} from 'react-icons/hi2'; //아이콘들
+import { getAuth } from 'firebase/auth';  //firebase auth 가져오기
+import axios from 'axios'; //axios 가져오기
 
 const Profile = () => {
   const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const auth = getAuth(); //firebase auth 객체 가져오기
+      const user = auth.currentUser; //현재 로그인된 사용자 정보 가져오기
+
+      if (!user) {
+        alert('로그인이 필요합니다.');
+        navigate('/'); //로그인 페이지로 이동
+        return null; //로그인 안되어있으면 아무것도 렌더링하지 않음
+      }
+
+      // Firebase 토큰 발급
+      const token = await user.getIdToken();
+      console.log(token)
+
+      // API 요청 (토큰을 Authorization 헤더에 담음)
+      const res = await axios.get('/api/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserData(res.data.user); //서버에서 받은 유저 데이터 저장
+    };
+    fetchProfile();
+  }, [navigate]);
+
+  if (!userData) {
+    return <div>로딩 중...</div>; //유저 데이터가 없으면 로딩 중 메시지 표시
+  }
 
   /*const { userId } = useParams();
   const user = users.find(u => u.id === Number(userId));
   */
+
+  /*
   const userId = 10203; //임시 userId, 기능 확인용으로 숫자 바꿔봐도 됨(data/users 의 id 참고).
   const user = users.find(u => u.id === userId);  //user = userId와 일치하는 유저의 데이터를 담아둠
-
+  */
+  const userId = 10203; //임시 userId, 기능 확인용으로 숫자 바꿔봐도 됨(data/users 의 id 참고).
   {/*세팅 화면으로 이동하는 함수, userId를 같이 넘겨줌 --> Apps.jsx 참고*/}
   const goToSetting = () => {
-    navigate('/setting/' + userId);
+    navigate('/setting');
   };
 
 /*
@@ -66,9 +98,9 @@ const Profile = () => {
           {/*프로필 이미지 담은 컨테이너*/}
 
           <div style={styles.profileImageContainer}>
-          {user.profile_img ? (
+          {userData.profile_image ? (
             <img
-              src={user.profile_img}
+              src={userData.profile_image}
               alt="프로필 사진"
               style={styles.profileImage}
             />
@@ -78,15 +110,15 @@ const Profile = () => {
           </div>
           {/*프로필 정보 나열*/}
           <div style={styles.profileInfo}>
-            {user ? (
-              <div style={styles.profileName}>{user.nickname}</div>
+            {userData ? (
+              <div style={styles.profileName}>{userData.nickname}</div>
             ) : (
               <div style={styles.profileName}>사용자를 찾을 수 없습니다</div>
             )
             } {/*user 존재하면 닉네임 띄워줌*/}
             <div style={styles.ratingBadge}>
-              {user ? (
-                <div style={styles.ratingText}>{user.avg_rating}공기</div>
+              {userData ? (
+                <div style={styles.ratingText}>{userData.avg_rating}공기</div>
               ) : (
                 <div style={styles.ratingText}>error</div>
               )

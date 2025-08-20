@@ -18,7 +18,7 @@ async function connect() {
     console.log('✅ MongoDB 연결 시도 중...');
     await client.connect();
     console.log('✅ MongoDB 연결 성공!');
-    const db = client.db('momchance'); // DB 이름은 상황에 맞게 변경 가능
+    const db = client.db('umchan'); // DB 이름은 상황에 맞게 변경 가능
     return { db, client };
   } catch (err) {
     console.error('❌ MongoDB 연결 실패:', err);
