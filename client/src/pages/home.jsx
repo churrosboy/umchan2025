@@ -1,3 +1,4 @@
+// home.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,20 +12,16 @@ const Home = () => {
   const mapRef = useRef(null);
   const navigate = useNavigate();
   const [filter, setFilter] = useState('all');
-  
-  // --- 패널 높이 관련 State ---
   const [panelHeight, setPanelHeight] = useState(window.innerHeight * 0.35);
   const [startY, setStartY] = useState(null);
   const [startHeight, setStartHeight] = useState(window.innerHeight * 0.35);
-  // 이전 패널 높이를 추적하기 위한 ref 추가
-  const prevPanelHeight = useRef(window.innerHeight * 0.35);
-
   const [selectedSeller, setSelectedSeller] = useState(null);
   const [sellers, setSellers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
+
+  // 💡 패널 높이 useEffect를 위해 이전 높이를 저장할 ref
+  const prevPanelHeight = useRef(window.innerHeight * 0.35);
 
   const filtered = sellers.filter(s => filter === 'all' || s.sellingType === filter);
   
@@ -80,7 +77,7 @@ const Home = () => {
     };
   }, []);
 
-  // 2. 마커 생성 및 뷰포트 관리
+  // 2. 마커 생성 및 뷰포트 관리 (데이터 구조 최종 수정 버전)
   useEffect(() => {
     if (!map || sellers.length === 0) return;
 
@@ -90,14 +87,19 @@ const Home = () => {
       const newMarkers = [];
 
       sellers.forEach((seller) => {
-        if (!seller.lat || !seller.lng) return;
-        const sellerPosition = new window.naver.maps.LatLng(seller.lat, seller.lng);
+        if (!seller.location || !seller.location.coordinates || seller.location.coordinates.length < 2) {
+          return;
+        }
+
+        const lng = seller.location.coordinates[0];
+        const lat = seller.location.coordinates[1];
+        const sellerPosition = new window.naver.maps.LatLng(lat, lng);
 
         if (bounds.hasLatLng(sellerPosition)) {
           const marker = new window.naver.maps.Marker({
             position: sellerPosition,
             map,
-            title: seller.name,
+            title: seller.nickname,
           });
 
           window.naver.maps.Event.addListener(marker, 'click', () => {
@@ -108,11 +110,9 @@ const Home = () => {
             const projection = map.getProjection();
             const sellerPoint = projection.fromLatLngToPoint(sellerPosition);
             
-            // 패널 높이의 절반만큼 y 좌표를 위로 이동시켜 새로운 중심 픽셀 좌표를 계산
-            // (화면 좌표계는 위가 0, 아래가 + 이므로, 위로 올리려면 y값을 빼야 합니다)
             const newCenterPoint = new window.naver.maps.Point(
               sellerPoint.x,
-              sellerPoint.y - newPanelHeight / 2 
+              sellerPoint.y + newPanelHeight / 2 
             );
 
             const newCenterLatLng = projection.fromPointToLatLng(newCenterPoint);
@@ -130,19 +130,16 @@ const Home = () => {
     return () => {
       window.naver.maps.Event.removeListener(idleListener);
     };
-
   }, [map, sellers]);
-  
-  // 3. 패널 높이 변경에 따른 지도 중심 이동
+
+  // 💡 3. 패널 높이 변경에 따른 지도 중심 이동 (충돌 가능성 있는 부분)
   useEffect(() => {
     if (!map) return;
     const diff = panelHeight - prevPanelHeight.current;
-    map.panBy(new window.naver.maps.Point(0, diff / 1.5));
-
+    // panBy는 화면 픽셀 기준이므로 Point 객체를 사용하지 않아도 됩니다.
+    map.panBy(0, diff / 2); // 패널이 움직인 만큼의 절반만 지도를 이동
     prevPanelHeight.current = panelHeight;
-
   }, [panelHeight, map]);
-
 
   const handleTouchStart = (e) => {
     setStartY(e.touches[0].clientY);
@@ -159,22 +156,17 @@ const Home = () => {
   };
 
   const handleTouchEnd = () => {
-    if (startY === null) return; // 이미 끝났으면 중복 실행 방지
-    const currentY = panelHeight;
+    if (startY === null) return;
     const maxHeight = window.innerHeight - 132;
     
-    let finalHeight = currentY;
-
     if (panelHeight > maxHeight * 0.85) {
-      finalHeight = maxHeight;
+      setPanelHeight(maxHeight);
     } else if (panelHeight < 150) {
-      finalHeight = 100;
+      setPanelHeight(100);
     }
     
-    setPanelHeight(finalHeight);
     setStartY(null);
   };
-
 
   return (
     <div className={styles.wrapper}>
@@ -203,22 +195,24 @@ const Home = () => {
               </div>
               {filtered.map((seller) => (
                 <div
-                  key={seller.id}
+                  key={seller.id || seller._id}
                   className={styles.sellerItem}
-                  onClick={() => navigate(`/seller_detail/${seller.id}`)}
+                  onClick={() => navigate(`/seller_detail/${seller.id || seller._id}`)}
                 >
                   <div className={styles.sellerItemMain}>
-                    <div className={styles.name}>{seller.name}</div>
+                    <div className={styles.name}>{seller.nickname}</div>
                     <div className={styles.meta}>
                       <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
-                      {seller.rating} ({seller.reviews > 999 ? '999+' : seller.reviews})</div>
+                      {seller.avg_rating} ({seller.review_cnt > 999 ? '999+' : seller.review_cnt})
+                    </div>
                     <div className={styles.meta}>
                       <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
-                      {seller.hearts > 999 ? '999+' : seller.hearts}</div>
+                      {seller.like_cnt > 999 ? '999+' : seller.like_cnt}
+                    </div>
                   </div>
                   <div className={styles.address}>{seller.address}</div>
                   <div className={styles.thumbnailScroll}>
-                    {seller.images.map((img, idx) => (
+                    {seller.thumbnail_list && seller.thumbnail_list.map((img, idx) => (
                       <img
                         key={idx}
                         src={`/images${img}`}
@@ -232,18 +226,19 @@ const Home = () => {
             </>
           ) : (
             <div>
-              <h3 style={{ marginBottom: 5 }}>{selectedSeller.name}</h3>
+              <h3 style={{ marginBottom: 5 }}>{selectedSeller.nickname}</h3>
               <p>
                 <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
-                {selectedSeller.rating} ({selectedSeller.reviews})
+                {selectedSeller.avg_rating} ({selectedSeller.review_cnt})
                 <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
-                {selectedSeller.hearts}</p>
+                {selectedSeller.like_cnt}
+              </p>
               <p style={{ fontSize: 14, color: '#666' }}>{selectedSeller.intro}</p>
               <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>
                 {selectedSeller.address}
               </p>
               <div className={styles.thumbnailScroll}>
-                {selectedSeller.images.map((img, idx) => (
+                {selectedSeller.thumbnail_list && selectedSeller.thumbnail_list.map((img, idx) => (
                   <img
                     key={idx}
                     src={`/images${img}`}
