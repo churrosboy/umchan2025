@@ -15,7 +15,11 @@ const Setting = () => {
     }
 
     const goToUpdateProfile = () => {
-      navigate('/UpdateProfile/' + userId);
+      navigate('/UpdateProfile');
+    }
+
+    const goToAccountMng = () => {
+      navigate('/AccountMng/' + userId);
     }
 
     const handleLogout = async () => {
@@ -35,7 +39,7 @@ const Setting = () => {
                 &lt; 뒤로가기
             </span></div>
             <button style={styles.button} onClick={goToUpdateProfile}>프로필 수정</button>
-            <button style={styles.button}>계정 관리</button>
+            <button style={styles.button} onClick={goToAccountMng}>계정 관리</button>
             <button style={styles.button}>알림설정</button>
             <button style={styles.button}>채팅설정</button>
             <button style={styles.button}>앱 설정</button>

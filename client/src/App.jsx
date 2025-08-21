@@ -19,7 +19,7 @@ import Setting from './pages/setting';
 import Sales_History from './pages/sales_history';
 import Purchase_History from './pages/purchase_history';
 import MyRecipe from './pages/my_recipe';
-import MyReview from './pages/my_review';
+import My_review from './pages/my_review';
 import RecipeRegister from './pages/RecipeRegister';
 import UpdateProfile from './pages/UpdateProfile';
 import Search from './pages/search';
@@ -28,6 +28,8 @@ import Recipes from './pages/recipes';
 import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import ReviewPost from './pages/review_post';
+import AccountMng from './pages/AccountMng';
+import AuthReq from './pages/AuthReq'; // 위생인증 요청 페이지
 import ItemRegister from './pages/item_register';
 import SellerItem from './pages/seller_item'; 
 
@@ -66,11 +68,11 @@ const AppRoutes = () => {
         <Route path="/user_recipe_list/:userId" element={<ProtectedRoute><RecipeList /></ProtectedRoute>} />
         <Route path="/user_review_list/:userId" element={<ProtectedRoute><ReviewList /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/setting/:userId" element={<ProtectedRoute><Setting /></ProtectedRoute>} />
+        <Route path="/setting" element={<ProtectedRoute><Setting /></ProtectedRoute>} />
         <Route path="/sales_history" element={<ProtectedRoute><Sales_History /></ProtectedRoute>} />
         <Route path="/purchase_history" element={<ProtectedRoute><Purchase_History /></ProtectedRoute>} />
         <Route path="/my_recipe/:userId" element={<ProtectedRoute><MyRecipe /></ProtectedRoute>} />
-        <Route path="/my_review/:userId" element={<ProtectedRoute><MyReview /></ProtectedRoute>} />
+        <Route path="/my_review" element={<ProtectedRoute><My_review /></ProtectedRoute>} />
         <Route path="/RecipeRegister" element={<ProtectedRoute><RecipeRegister /></ProtectedRoute>} />
         <Route path="/UpdateProfile/:userId" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
         <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
@@ -81,6 +83,8 @@ const AppRoutes = () => {
         <Route path="/recipe_detail/:recipeId" element={<ProtectedRoute><RecipeDetail /></ProtectedRoute>} />
         <Route path="/review_post" element={<ProtectedRoute><ReviewPost /></ProtectedRoute>} />
         <Route path="/item_register" element={<ProtectedRoute><ItemRegister /></ProtectedRoute>} />
+        <Route path="/AccountMng/:userId" element={<ProtectedRoute><AccountMng /></ProtectedRoute>} />
+        <Route path="/AuthReq" element={<ProtectedRoute><AuthReq /></ProtectedRoute>} /> {/* 위생인증 요청 페이지 */}
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>
