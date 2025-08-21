@@ -28,13 +28,10 @@ import Recipes from './pages/recipes';
 import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import ReviewPost from './pages/review_post';
-<<<<<<< HEAD
 import AccountMng from './pages/AccountMng';
 import AuthReq from './pages/AuthReq'; // 위생인증 요청 페이지
-=======
 import ItemRegister from './pages/item_register';
 import SellerItem from './pages/seller_item'; 
->>>>>>> origin/main
 
 // components
 import NavigationBar from './components/navigation_bar';
