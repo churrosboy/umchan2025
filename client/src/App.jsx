@@ -31,6 +31,7 @@ import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import ReviewPost from './pages/review_post';
 import AccountMng from './pages/AccountMng';
+import AuthReq from './pages/AuthReq'; // 위생인증 요청 페이지
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -77,6 +78,7 @@ const AppRoutes = () => {
         <Route path="/recipe_detail/:recipeId" element={<RecipeDetail />} />
         <Route path="/review_post" element={<ReviewPost />} />
         <Route path="/AccountMng/:userId" element={<AccountMng />} />
+        <Route path="/AuthReq" element={<AuthReq />} /> {/* 위생인증 요청 페이지 */}
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>

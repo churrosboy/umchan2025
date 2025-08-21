@@ -75,6 +75,10 @@ const Profile = () => {
     navigate('/Sales_History');
   }
 
+  const goToAuthReq = () => {
+    navigate('/AuthReq');
+  } //위생인증 요청 페이지로 이동하는 함수, AuthReq.jsx 참고
+
   {/*구매 내역 페이지로 이동(아직 구현X)*/}
   const goToPurchaseHistory = () => {
     navigate('/Purchase_History');
@@ -175,7 +179,7 @@ const Profile = () => {
                 <HiChevronRight size={22} style={styles.rightIcon}/>
               </button>
             ) : (
-              <button style={styles.button}>
+              <button style={styles.button} onClick={goToAuthReq}>
                 <HiPlusCircle size={22} style={styles.leftIcon}/>
                 <span style={styles.buttonText}>음식 판매 인증 요청하기</span>
                 <HiChevronRight size={22} style={styles.rightIcon}/>
