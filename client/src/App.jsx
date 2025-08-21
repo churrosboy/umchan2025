@@ -7,13 +7,11 @@ import Signup1 from './pages/signup1';
 import Signup2 from './pages/signup2';
 import Signup3 from './pages/signup3';
 import Signup4 from './pages/signup4';
-//import Signup5 from './pages/signup5';
 import Home from './pages/home';
 import SellerDetail from './pages/seller_detail';
 import MenuDetail from './pages/menu_detail';
 import OtherProfile from './pages/other_user_profile';
 import SellerAuth from './pages/seller_auth';
-import SellerItem from './pages/seller_item';
 import RecipeList from './pages/user_recipe_list';
 import ReviewList from './pages/user_review_list';
 import Profile from './pages/profile';
@@ -30,18 +28,24 @@ import Recipes from './pages/recipes';
 import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import ReviewPost from './pages/review_post';
+<<<<<<< HEAD
 import AccountMng from './pages/AccountMng';
 import AuthReq from './pages/AuthReq'; // 위생인증 요청 페이지
+=======
+import ItemRegister from './pages/item_register';
+import SellerItem from './pages/seller_item'; 
+>>>>>>> origin/main
 
 // components
 import NavigationBar from './components/navigation_bar';
 import SearchBar from './components/search_bar';
+import ProtectedRoute from './components/protected_route';
 
 const AppRoutes = () => {
   const location = useLocation();
   
   const hideNavigationBar = [
-    '/', '/signup1', '/signup2', '/signup3', '/signup4', '/signup5'
+    '/', '/signup1', '/signup2', '/signup3', '/signup4'
   ].includes(location.pathname);
 
   const showSearchBar = (location.pathname === '/home' || location.pathname.startsWith('/seller_list/'));
@@ -50,35 +54,40 @@ const AppRoutes = () => {
     <>
       {showSearchBar && <SearchBar />}
       <Routes>
+        {/* === 로그인 없이 접근 가능한 페이지 === */}
         <Route path="/" element={<Login />} />
         <Route path="/signup1" element={<Signup1 />} />
         <Route path="/signup2" element={<Signup2 />} />
         <Route path="/signup3" element={<Signup3 />} />
         <Route path="/signup4" element={<Signup4 />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/seller_detail/:sellerId" element={<SellerDetail />} />
-        <Route path="/menu/:menuId" element={<MenuDetail />} />
-        <Route path="/other_user_profile/:userId" element={<OtherProfile />} />
-        <Route path="/seller_auth/:userId" element={<SellerAuth />} />
-        <Route path="/seller_item/:userId" element={<SellerItem />} />
-        <Route path="/user_recipe_list/:userId" element={<RecipeList />} />
-        <Route path="/user_review_list/:userId" element={<ReviewList />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/setting" element={<Setting />} />
-        <Route path="/sales_history" element={<Sales_History />} />
-        <Route path="/purchase_history" element={<Purchase_History />} />
-        <Route path="/my_recipe/:userId" element={<MyRecipe />} />
-        <Route path="/my_review" element={<My_review />} />
-        <Route path="/RecipeRegister" element={<RecipeRegister />} />
-        <Route path="/UpdateProfile" element={<UpdateProfile />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/seller_list/:keyword" element={<SellerList />} />
-        <Route path="/recipes/:keyword" element={<Recipes />} />
-        <Route path="/search_recipe" element={<SearchRecipe />} />
-        <Route path="/recipe_detail/:recipeId" element={<RecipeDetail />} />
-        <Route path="/review_post" element={<ReviewPost />} />
-        <Route path="/AccountMng/:userId" element={<AccountMng />} />
-        <Route path="/AuthReq" element={<AuthReq />} /> {/* 위생인증 요청 페이지 */}
+
+        {/* === 로그인이 반드시 필요한 페이지 (ProtectedRoute로 감싸기) === */}
+        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/seller_detail/:sellerId" element={<ProtectedRoute><SellerDetail /></ProtectedRoute>} />
+        <Route path="/menu/:menuId" element={<ProtectedRoute><MenuDetail /></ProtectedRoute>} />
+        <Route path="/other_user_profile/:userId" element={<ProtectedRoute><OtherProfile /></ProtectedRoute>} />
+        <Route path="/seller_auth/:userId" element={<ProtectedRoute><SellerAuth /></ProtectedRoute>} />
+        {/* <Route path="/seller_item/:userId" element={<ProtectedRoute><SellerItem /></ProtectedRoute>} /> */}
+        <Route path="/user_recipe_list/:userId" element={<ProtectedRoute><RecipeList /></ProtectedRoute>} />
+        <Route path="/user_review_list/:userId" element={<ProtectedRoute><ReviewList /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/setting" element={<ProtectedRoute><Setting /></ProtectedRoute>} />
+        <Route path="/sales_history" element={<ProtectedRoute><Sales_History /></ProtectedRoute>} />
+        <Route path="/purchase_history" element={<ProtectedRoute><Purchase_History /></ProtectedRoute>} />
+        <Route path="/my_recipe/:userId" element={<ProtectedRoute><MyRecipe /></ProtectedRoute>} />
+        <Route path="/my_review" element={<ProtectedRoute><My_review /></ProtectedRoute>} />
+        <Route path="/RecipeRegister" element={<ProtectedRoute><RecipeRegister /></ProtectedRoute>} />
+        <Route path="/UpdateProfile/:userId" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
+        <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
+        <Route path="/seller_list/:keyword" element={<ProtectedRoute><SellerList /></ProtectedRoute>} />
+        <Route path="/recipes/:keyword" element={<ProtectedRoute><Recipes /></ProtectedRoute>} />
+        <Route path="/recipes" element={<ProtectedRoute><Recipes /></ProtectedRoute>} />
+        <Route path="/search_recipe" element={<ProtectedRoute><SearchRecipe /></ProtectedRoute>} />
+        <Route path="/recipe_detail/:recipeId" element={<ProtectedRoute><RecipeDetail /></ProtectedRoute>} />
+        <Route path="/review_post" element={<ProtectedRoute><ReviewPost /></ProtectedRoute>} />
+        <Route path="/item_register" element={<ProtectedRoute><ItemRegister /></ProtectedRoute>} />
+        <Route path="/AccountMng/:userId" element={<ProtectedRoute><AccountMng /></ProtectedRoute>} />
+        <Route path="/AuthReq" element={<ProtectedRoute><AuthReq /></ProtectedRoute>} /> {/* 위생인증 요청 페이지 */}
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>

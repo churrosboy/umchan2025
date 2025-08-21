@@ -4,14 +4,13 @@ import { sellers } from '../data/sellers';
 import { reviews } from '../data/reviews';
 
 const ReviewList = () => {
-    const { userId } = useParams(); //userId 가져오는 부분
-    const user = sellers.find(u => u.id === Number(userId));    //userId와 일치하는 데이터 저장
-    const reviewList = reviews.filter(review => review.seller_id === Number(userId));   //판매자에게 작성된 리뷰들 저장
+    const { userId } = useParams();
+    const user = sellers.find(u => u.id === Number(userId));
+    const reviewList = reviews.filter(review => review.seller_id === Number(userId));
     const navigate = useNavigate();
 
     if (!user) return <div>사용자를 찾을 수 없습니다.</div>;
     
-    //뒤로가기 함수
     const goBack = () => {
         navigate(-1);
     };
@@ -19,28 +18,24 @@ const ReviewList = () => {
     return (
         <div style={styles.wrapper}>
         <div style={styles.container}>
-            {/*헤더 - 뒤로가기 버튼, 제목(유저 닉네임)*/}
             <div style={styles.header}>
-                <div style={styles.backButton} onClick={goBack}>←</div>
-                <div style={styles.headerTitle}>{user.name}</div>
-                <div style={{ width: 18 }} />
+            <div style={styles.backButton} onClick={goBack}>←</div>
+            <div style={styles.headerTitle}>{user.name}</div>
+            <div style={{ width: 18 }} />
             </div>
-            {/*소제목*/}
             <div style={styles.sectionTitleBar}>받은 리뷰</div>
-            {/*내용*/}
             <div style={styles.scrollArea}>
-                {/*리뷰 리스트 - 클릭 시 레시피 페이지로 이동, 나중에는 레시피에 달린 리뷰인지 판매물품에 달린 리뷰인지에 따라 차등 적용*/}
-                {reviewList.map((review, idx) => (
-                    <div style={styles.reviewCard} key={review.id} onClick={() => navigate(`/recipe/${review.id}`)}>
-                        <div style={styles.reviewHeader}>
-                            <div style={styles.reviewerName}>{review.buyer_name}</div>
-                            <div style={styles.reviewRating}>{review.rating}</div>
-                        </div>
-                        <div style={styles.reviewContent}>
-                            {review.desc}
-                        </div>
-                    </div>
-                ))}
+            {reviewList.map((review, idx) => (
+                <div style={styles.reviewCard} key={review.id} onClick={() => navigate(`/recipe/${review.id}`)}>
+                <div style={styles.reviewHeader}>
+                    <div style={styles.reviewerName}>{review.buyer_name}</div>
+                    <div style={styles.reviewRating}>{review.rating}</div>
+                </div>
+                <div style={styles.reviewContent}>
+                    {review.desc}
+                </div>
+                </div>
+            ))}
             </div>
         </div>
         </div>

@@ -1,72 +1,84 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { commonStyles } from '../styles/commonStyles';
+
+import eyeOpenIcon from '../Icons/See.svg';
+import eyeClosedIcon from '../Icons/Hide.svg';
 
 const Signup2 = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { name, email } = location.state || {};
 
-const handleNext = () => {
-  const password = document.querySelectorAll('input[type="password"]')[0].value;
-  const confirm = document.querySelectorAll('input[type="password"]')[1].value;
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  if (password !== confirm) {
-    alert('비밀번호가 일치하지 않습니다');
-    return;
-  }
+  const handleNext = () => {
+    if (password !== confirmPassword) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    if (password.length < 6) {
+      alert('비밀번호는 6자리 이상이어야 합니다.');
+      return;
+    }
+    navigate('/signup3', { state: { name, email, password } });
+  };
 
-  localStorage.setItem('password', password);
-  navigate('/signup3');
-};
   return (
-    <div style={styles.wrapper}>  {/*배경*/}
-      <div style={styles.container}>  {/*요소들 담은 박스*/}
-        <h2 style={styles.title}>🙈 비밀번호를 설정해주세요</h2>  {/*제목*/}
-        <input style={styles.input} type="password" placeholder="비밀번호" /> {/*비밀번호 입력란*/}
-        <input style={styles.input} type="password" placeholder="비밀번호 확인" />  {/*비밀번호 확인 입력란*/}
-        <button style={styles.button} onClick={handleNext}>다음</button>  {/*다음 버튼, 다음 페이지로 이동하는 함수*/}
+    <div style={styles.wrapper}>
+      <div style={styles.container}>
+        <h2 style={styles.title}>
+          {showPassword ? '🙉' : '🙈'} 비밀번호를 설정해주세요
+        </h2>
+        <div style={styles.inputContainer}>
+          <input
+            style={styles.input}
+            type={showPassword ? 'text' : 'password'}
+            placeholder="비밀번호"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button onClick={() => setShowPassword(!showPassword)} style={styles.toggleButton}>
+            <img
+              src={showPassword ? eyeClosedIcon : eyeOpenIcon}
+              alt="비밀번호 보기"
+              style={{ width: '22px' }}
+            />
+          </button>
+        </div>
+        <div style={styles.inputContainer}>
+          <input
+            style={styles.input}
+            type={showPassword ? 'text' : 'password'}
+            placeholder="비밀번호 확인"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+        <button style={styles.button} onClick={handleNext}>다음</button>
       </div>
     </div>
   );
 };
 
 const styles = {
-  wrapper: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f9f9f9',
-    fontFamily: 'Arial, sans-serif',
-  },
-  container: {
-    width: '90%',
-    maxWidth: '360px',
-    backgroundColor: '#fff',
-    borderRadius: '20px',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-    padding: '40px 20px',
-    textAlign: 'center',
-  },
-  title: {
-    fontSize: '22px',
-    marginBottom: '30px',
-    color: '#333',
-  },
-  input: {
-    width: '90%',
-    padding: '12px',
-    marginBottom: '15px',
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    fontSize: '14px',
-  },
-  button: {
+  ...commonStyles,
+  inputContainer: {
+    position: 'relative',
     width: '100%',
-    padding: '12px',
-    backgroundColor: '#fcd265',
+  },
+  input: { // 공통 input 스타일을 덮어쓰기
+    ...commonStyles.input,
+    paddingRight: '45px',
+  },
+  toggleButton: {
+    position: 'absolute',
+    right: '10px',
+    top: '15px', // input의 padding과 맞춤
+    background: 'none',
     border: 'none',
-    borderRadius: '10px',
-    fontWeight: 'bold',
-    fontSize: '15px',
     cursor: 'pointer',
   },
 };

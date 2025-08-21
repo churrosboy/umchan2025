@@ -31,6 +31,6 @@ app.use("/api/sellers", sellerRoutes);
 app.use('/api/profile', profileRouter); // 프로필 라우터
 app.use('/api/sanitary', sanitaryRouter); // 위생인증 요청 라우터
 
-app.listen(5050, () => {
-  console.log('✅ 서버 실행: http://localhost:5050');
+app.listen(4000, () => {
+  console.log('✅ 서버 실행: http://localhost:4000');
 });

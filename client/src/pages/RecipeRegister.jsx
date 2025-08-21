@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HiPhoto, HiChevronRight, HiMiniXCircle} from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeRegister = () => {
   const navigate = useNavigate();
@@ -9,9 +10,7 @@ const RecipeRegister = () => {
   const [recipe, setRecipes] = useState({
     id: Date.now(),
     title: '',
-    ingredients: [
-      {name: '', amount: ''}
-    ] ,
+    ingredients: [{ name: '', amount: '' }] ,
     file: null
   });
 
@@ -24,7 +23,7 @@ const RecipeRegister = () => {
       ...prev,
       ingredients: [
         ...prev.ingredients,
-        {name: '', amount: ''}
+        { name: '', amount: '' }
       ]
     }));
   };
@@ -50,18 +49,10 @@ const RecipeRegister = () => {
     }));
   };
 
-  const updateIngredientName = (index, value) => {
+  const updateIngredient = (index, field, value) => {
     setRecipes(prev => {
       const next = [...prev.ingredients];
-      next[index] = {...prev, name: value};
-      return { ...prev, ingredients: next};
-    });
-  };
-
-  const updateIngredientAmount = (index, value) => {
-    setRecipes(prev => {
-      const next = [...prev.ingredients];
-      next[index] = {...prev, amount: value};
+      next[index] = { ...next[index], [field]: value };
       return { ...prev, ingredients: next };
     });
   };
@@ -80,6 +71,104 @@ const RecipeRegister = () => {
 
   const updateFile = (id, file) => {
     setSteps(prev => prev.map(step => step.id === id ? { ...step, file } : step));
+  };
+
+  // 레시피 등록 핸들러 (파일 포함)
+  const handleSubmit = async () => {
+    // 유효성 검사: 제목, 재료, 단계 설명 모두 비어있으면 등록 불가
+    if (!recipe.title.trim()) {
+      alert('메뉴 이름을 입력하세요.');
+      return;
+    }
+    if (!recipe.ingredients.length || recipe.ingredients.some(ing => !ing.name.trim() || !ing.amount.trim())) {
+      alert('모든 재료명과 양을 입력하세요.');
+      return;
+    }
+    if (!steps.length || steps.some(step => !step.desc.trim())) {
+      alert('모든 조리 순서 설명을 입력하세요.');
+      return;
+    }
+
+    // 파일이 없으면 JSON으로 전송
+    if (!recipe.file && steps.every(step => !step.file)) {
+      const data = {
+        user_id: 123,
+        name: recipe.title,
+        text: steps.map(s => s.desc).join('\n'),
+        ingredients: recipe.ingredients,
+        steps: steps.map((step, idx) => ({
+          step_num: idx + 1,
+          text: step.desc,
+          img: '' // 파일이 없으므로 빈 문자열
+        }))
+      };
+      try {
+        const response = await fetch(`${API_URL}/api/recipes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (response.ok) {
+          alert('레시피 등록 성공!');
+          navigate('/profile');
+        } else {
+          alert('레시피 등록 실패');
+        }
+      } catch (err) {
+        alert('에러 발생');
+      }
+    } else {
+      // 파일이 하나라도 있으면 FormData로 전송
+      const formData = new FormData();
+      formData.append('user_id', 123);
+      formData.append('name', recipe.title);
+      formData.append('text', steps.map(s => s.desc).join('\n'));
+      formData.append('ingredients', JSON.stringify(recipe.ingredients));
+      
+      // 메인 이미지
+      if (recipe.file) {
+        console.log('Adding main image:', recipe.file.name);
+        formData.append('mainImage', recipe.file);
+      }
+      
+      // 단계별 이미지와 설명을 배열로 저장
+      const stepsData = steps.map((step, idx) => ({
+        step_num: idx + 1,
+        text: step.desc,
+        img: ''
+      }));
+
+      // FormData에 steps 배열 추가
+      formData.append('steps', JSON.stringify(stepsData));
+
+      // 단계별 이미지 파일 추가
+      steps.forEach((step, idx) => {
+        if (step.file) {
+          console.log(`Adding step ${idx} image:`, step.file.name);
+          formData.append(`stepImage${idx}`, step.file);
+        }
+      });
+
+      // FormData 내용 확인
+      console.log('FormData contents:');
+      for (let pair of formData.entries()) {
+        console.log(pair[0], ':', pair[1]);
+      }
+      try {
+        const response = await fetch(`${API_URL}/api/recipes`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (response.ok) {
+          alert('레시피 등록 성공!');
+          navigate('/profile');
+        } else {
+          alert('레시피 등록 실패');
+        }
+      } catch (err) {
+        alert('에러 발생');
+      }
+    }
   };
 
   return (
@@ -128,40 +217,38 @@ const RecipeRegister = () => {
         {/* 재료 */}
         <div style={styles.inputSection}>
           <div style={styles.inputTitle}>재료</div>
-        
-        
-        {recipe.ingredients.map(({name ,amount}, idx) => (
+        {recipe.ingredients.map((ing, idx) => (
           <div key={idx} style={styles.stepWrapper}>
             <HiMiniXCircle style={styles.removeIcon} onClick={() => removeIngredient(idx)} />
-            <div style={styles.inputSectionIngredient}>
-            <input
-              type="text"
-              value={name}
-              onChange={e => updateIngredientName(idx, e.target.value)}
-              placeholder="재료를 입력하세요"
-              style={styles.inputFieldIngredient}
-            />
-            <input
-              type="text"
-              value={amount}
-              onChange={e => updateIngredientAmount(idx, e.target.value)}
-              placeholder="수량을 입력하세요"
-              style={styles.inputFieldIngredient}
-            />
+            <div style={styles.ingredientRow}>
+              <input
+                type="text"
+                value={ing.name}
+                onChange={e => updateIngredient(idx, 'name', e.target.value)}
+                placeholder="재료명 (예: 양파)"
+                style={{...styles.inputField, ...styles.ingredientNameField}}
+              />
+              <input
+                type="text"
+                value={ing.amount}
+                onChange={e => updateIngredient(idx, 'amount', e.target.value)}
+                placeholder="양 (예: 1개, 100g)"
+                style={{...styles.inputField, ...styles.ingredientAmountField}}
+              />
             </div>
           </div>
         ))}
-        
-        {/* 단계 추가 버튼 */}
+        {/* 재료 추가 버튼 */}
         <button style={styles.addButton} onClick={addIngredient}>+ 재료 추가</button>
+        </div>
+
+        {/* 설명 라벨 */}
+        <div style={styles.descriptionSection}>
+          <div style={styles.descriptionLabel}>조리 순서를 등록해주세요 :)</div>
         </div>
 
         {/* 동적 조리 단계 */}
         <div style={styles.stepsSection}>
-          {/* 설명 라벨 */}
-          <div style={styles.descriptionSection}>
-            <div style={styles.descriptionLabel}>조리 순서를 등록해주세요 :)</div>
-          </div>
           {steps.map((step, idx) => (
             <div key={step.id} style={styles.stepWrapper}>
               <HiMiniXCircle style={styles.removeIcon} onClick={() => removeStep(step.id)} />
@@ -192,15 +279,13 @@ const RecipeRegister = () => {
               </div>
             </div>
           ))}
-
-          {/* 단계 추가 버튼 */}
-          <button style={styles.addButton} onClick={addStep}>+ 단계 추가</button>
-          <div style={styles.margin2}></div>
         </div>
 
-
+        {/* 단계 추가 버튼 */}
+        <button style={styles.addButton} onClick={addStep}>+ 단계 추가</button>
+        <div style={styles.margin2}></div>
         {/* 다음 버튼 */}
-        <button style={styles.submitButton}>
+        <button style={styles.submitButton} onClick={handleSubmit}>
           다음<HiChevronRight style={styles.nextIcon} />
         </button>
         <div style={styles.margin}></div>
@@ -210,9 +295,9 @@ const RecipeRegister = () => {
 };
 
 const styles = {
-  page: { backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column',},
+  page: { minHeight: '100vh', backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column' },
   header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', background: '#fff', borderBottom: '1px solid #ddd', position: 'relative', zIndex: 1 },
-  backButton: { display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, cursor: 'pointer' },
+  backButton: { fontSize: 18, cursor: 'pointer' },
   headerTitle: { position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontWeight: 'bold', fontSize: 16 },
   headerSpacer: { width: 18 },
   container: { flex: 1, backgroundColor: '#fff', padding: '16px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' },
@@ -220,13 +305,15 @@ const styles = {
   uploadIcon: { color: '#888888' },
   uploadLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
   inputSection: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid #E6E6E6' },
-  inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'column', gap: '8px'},
+  inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'column', gap: '8px' },
+  ingredientRow: { display: 'flex', gap: '8px', alignItems: 'center' },
+  ingredientNameField: { flex: 2 },
+  ingredientAmountField: { flex: 1 },
   inputTitle: { fontSize: 16, fontWeight: 600, color: '#111111' },
   inputField: { height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
-  inputFieldIngredient: { flex: 1, borderRadius: 15, border: '0.5px solid #888888', fontSize: 14, padding: '12px' },
   descriptionSection: { padding: '0 12px' },
   descriptionLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
-  stepsSection: { display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px'},
+  stepsSection: { display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' },
   stepWrapper: { position: 'relative' },
   removeIcon: { position: 'absolute', top: '4px', right: '4px', fontSize: 16, color: '#888888', cursor: 'pointer' },
   stepCard: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #E6E6E6' },
@@ -234,8 +321,8 @@ const styles = {
   photoInput: { display: 'none' },
   photoPreview: { width: '100%', height: '100%', objectFit: 'cover' },
   stepIcon: { color: '#888888' },
-  stepInput: { flex: 1, height: 40, borderRadius: 15, border: '0.5px solid #888888', paddingLeft: '12px', fontSize: 14 },
-  addButton: { backgroundColor: '#fff', border: '1px solid #888888', borderRadius: 15, padding: '8px 12px', fontSize: 14, cursor: 'pointer', alignSelf: 'center' },
+  stepInput: { flex: 1, height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
+  addButton: { marginTop: '8px', backgroundColor: '#fff', border: '1px solid #888888', borderRadius: 15, padding: '8px 12px', fontSize: 14, cursor: 'pointer', alignSelf: 'center' },
   submitButton: { marginTop: 'auto', backgroundColor: '#FFD856', borderRadius: 15, padding: '12px', fontSize: 16, fontWeight: 600, color: '#111111', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none', gap: '8px' },
   nextIcon: { fontSize: 20, color: '#888888' },
   margin2: {padding: '4px'},
