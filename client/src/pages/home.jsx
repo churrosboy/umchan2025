@@ -26,8 +26,8 @@ const Home = () => {
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
 
-  const filtered = sellers.filter(s => filter === 'all' || s.sellingType === filter);
-  
+  const filtered = sellersInView.filter(s => filter === 'all' || s.sellingType === filter);
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -38,7 +38,7 @@ const Home = () => {
   useEffect(() => {
     const fetchSellers = async () => {
       try {
-        const res = await axios.get('/api/sellers');
+        const res = await axios.get('/api/users/sellers');
         setSellers(res.data);
       } catch (err) {
         console.error('❌ 판매자 데이터 가져오기 실패:', err);
@@ -46,6 +46,16 @@ const Home = () => {
     };
     fetchSellers();
   }, []);
+
+  const sellersInView = React.useMemo(() => {
+    if (!map) return sellers;
+    const bounds = map.getBounds();
+    return sellers.filter(seller => {
+      if (!seller.lat || !seller.lng) return false;
+      const sellerPosition = new window.naver.maps.LatLng(seller.lat, seller.lng);
+      return bounds.hasLatLng(sellerPosition);
+    });
+  }, [map, sellers]);
 
   // 1. 지도 초기화
   useEffect(() => {
@@ -208,17 +218,17 @@ const Home = () => {
                   onClick={() => navigate(`/seller_detail/${seller.id}`)}
                 >
                   <div className={styles.sellerItemMain}>
-                    <div className={styles.name}>{seller.name}</div>
+                    <div className={styles.name}>{seller.nickname}</div>
                     <div className={styles.meta}>
                       <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
-                      {seller.rating} ({seller.reviews > 999 ? '999+' : seller.reviews})</div>
+                      {seller.avg_rating} ({seller.review_cnt > 999 ? '999+' : seller.review_cnt})</div>
                     <div className={styles.meta}>
                       <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
-                      {seller.hearts > 999 ? '999+' : seller.hearts}</div>
+                      {seller.like_cnt > 999 ? '999+' : seller.like_cnt}</div>
                   </div>
                   <div className={styles.address}>{seller.address}</div>
                   <div className={styles.thumbnailScroll}>
-                    {seller.images.map((img, idx) => (
+                    {seller.main_img.map((img, idx) => (
                       <img
                         key={idx}
                         src={`/images${img}`}
@@ -232,18 +242,18 @@ const Home = () => {
             </>
           ) : (
             <div>
-              <h3 style={{ marginBottom: 5 }}>{selectedSeller.name}</h3>
+              <h3 style={{ marginBottom: 5 }}>{selectedSeller.nickname}</h3>
               <p>
                 <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>
-                {selectedSeller.rating} ({selectedSeller.reviews})
+                {selectedSeller.avg_rating} ({selectedSeller.review_cnt})
                 <Heart width={15} height={15} style={{ verticalAlign: 'middle' }}/>
-                {selectedSeller.hearts}</p>
-              <p style={{ fontSize: 14, color: '#666' }}>{selectedSeller.intro}</p>
+                {selectedSeller.like_cnt}</p>
+              <p style={{ fontSize: 14, color: '#666' }}>{selectedSeller.disc}</p>
               <p style={{ fontSize: 12, color: '#999', marginBottom: 10 }}>
                 {selectedSeller.address}
               </p>
               <div className={styles.thumbnailScroll}>
-                {selectedSeller.images.map((img, idx) => (
+                {selectedSeller.main_img.map((img, idx) => (
                   <img
                     key={idx}
                     src={`/images${img}`}
