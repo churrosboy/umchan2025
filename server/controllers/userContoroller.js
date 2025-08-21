@@ -46,3 +46,14 @@ export async function searchUsersByProduct(req, res) {
     res.status(500).json([]);
   }
 }
+
+export async function searchSellers(req, res) {
+  try {
+    const sellers = await User.find({
+      is_auth: true
+    });
+    res.json(sellers);
+  } catch (err) {
+    res.status(500).json([]);
+  }
+}

@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
   profile_img: { type: String },
   main_img: { type: [String], default: [null] },
   phone_num: { type: String },
+  address: { type: String },
   disc: { type: String },
 });
 
