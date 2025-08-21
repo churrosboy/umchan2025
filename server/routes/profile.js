@@ -1,20 +1,34 @@
 // routes/profile.js
 import express from "express";
-import admin from "../firebaseAdmin.js";   // firebase-admin 초기화
-import connect from "../connect.js";       // DB 연결
+import admin from "../firebaseAdmin.js";    // firebase-admin 초기화 (default export 가정)
+import connect from "../connect.js";        // mongoose 연결 함수 (idempotent)
+import mongoose from "mongoose";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 
 const router = express.Router();
 
-// 업로드 디렉토리 준비
-const uploadDir = path.resolve(process.cwd(), "uploads"); // 실행 CWD 기준 절대경로
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+/* ------------------ DB Helper (Mongoose 우선) ------------------ */
+async function getDB(req) {
+  // 1) app.js에서 미리 넣어둔 db가 있으면 사용
+  const fromLocals = req?.app?.locals?.db;
+  if (fromLocals && typeof fromLocals.collection === "function") return fromLocals;
+
+  // 2) 이미 mongoose가 연결된 경우
+  if (mongoose.connection?.db) return mongoose.connection.db;
+
+  // 3) 연결을 보장하고 다시 확인
+  await connect(); // 여러 번 호출되어도 안전해야 함
+  if (mongoose.connection?.db) return mongoose.connection.db;
+
+  throw new Error("DB not initialized: mongoose.connection.db is not available");
 }
 
-// multer 저장소 설정
+/* ------------------ 업로드 설정 ------------------ */
+const uploadDir = path.resolve(process.cwd(), "uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
@@ -23,44 +37,49 @@ const storage = multer.diskStorage({
       .basename(file.originalname, ext)
       .replace(/\s+/g, "_")
       .replace(/[^\w.-]/g, "");
-    cb(
-      null,
-      `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${base}${ext}`
-    );
+    cb(null, `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${base}${ext}`);
   },
 });
-
 const upload = multer({ storage });
 
-// 업로드 파일을 프론트에서 접근할 URL로 변환
 const fileUrl = (filename) => `/api/uploads/${filename}`;
+function parseBearer(req) {
+  const h = req.headers.authorization || "";
+  const m = h.match(/^Bearer\s+(.+)$/i);
+  return m ? m[1] : null;
+}
 
-// ✅ 프로필 조회
+/* ------------------ 프로필 조회 ------------------ */
 router.get("/", async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = parseBearer(req);
   if (!token) return res.status(401).json({ error: "No token" });
 
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
-    const userId = decoded.uid;
+    const { uid } = await admin.auth().verifyIdToken(token);
 
-    const { db } = await connect();
+    const db = await getDB(req);
     const users = db.collection("users");
 
-    const user = await users.findOne({ id: userId });
+    const user = await users.findOne({ id: uid });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     res.json({ user });
   } catch (err) {
-    console.error(err);
-    res.status(401).json({ error: "Invalid token" });
+    console.error("GET /profile error:", err);
+    if (err?.code === "auth/id-token-expired" || err?.code === "auth/argument-error") {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+    res.status(500).json({ error: "Failed to load profile" });
   }
 });
 
-// ✅ 프로필 저장(텍스트 + 파일 FormData)
-// 받아들일 필드:
-//  - 텍스트: nickname, intro, clear_profile_image, clear_thumbnail0/1/2 (문자열 'true'/'false')
-//  - 파일: profile_image(1개), thumbnail0/thumbnail1/thumbnail2 (각 1개씩)
+/* ------------------ 프로필 수정 (텍스트 + 파일) ------------------ */
+/*
+받아들일 필드:
+- 텍스트: nickname, intro, address, phone_number,
+         clear_profile_image, clear_thumbnail0/1/2 ('true'/'false')
+- 파일: profile_image(1), thumbnail0/1/2 (각 1)
+*/
 router.patch(
   "/",
   upload.fields([
@@ -71,22 +90,20 @@ router.patch(
   ]),
   async (req, res) => {
     try {
-      const token = req.headers.authorization?.split(" ")[1];
+      const token = parseBearer(req);
       if (!token) return res.status(401).json({ error: "No token" });
 
-      const decoded = await admin.auth().verifyIdToken(token);
-      const userId = decoded.uid;
+      const { uid } = await admin.auth().verifyIdToken(token);
 
-      const { db } = await connect();
+      const db = await getDB(req);
       const users = db.collection("users");
 
-      const current = await users.findOne({ id: userId });
+      const current = await users.findOne({ id: uid });
       if (!current) return res.status(404).json({ error: "User not found" });
 
-      const body = req.body;   // multer가 텍스트 필드를 파싱한 값
+      const body = req.body;
       const files = req.files || {};
-
-      const update = { $set: {} };
+      const update = { $set: { updatedAt: new Date() } };
 
       // 텍스트 필드
       if (typeof body.nickname === "string") update.$set.nickname = body.nickname;
@@ -102,7 +119,7 @@ router.patch(
         update.$set.profile_image = null;
       }
 
-      // 썸네일(3칸 고정) 갱신
+      // 썸네일 갱신(3칸)
       const curThumbs = Array.isArray(current.thumbnail_list)
         ? [...current.thumbnail_list]
         : [null, null, null];
@@ -115,16 +132,14 @@ router.patch(
         if (f) newThumbs[i] = fileUrl(f.filename);
         else if (clear) newThumbs[i] = null;
       }
-
       update.$set.thumbnail_list = newThumbs;
 
-      await users.updateOne({ id: userId }, update);
-
-      const updated = await users.findOne({ id: userId });
+      await users.updateOne({ id: uid }, update);
+      const updated = await users.findOne({ id: uid });
       res.json({ user: updated });
     } catch (err) {
-      console.error(err);
-      if (err.code === "auth/argument-error") {
+      console.error("PATCH /profile error:", err);
+      if (err?.code === "auth/argument-error" || err?.code === "auth/id-token-expired") {
         return res.status(401).json({ error: "Invalid token" });
       }
       res.status(500).json({ error: "Failed to update profile" });
@@ -132,34 +147,31 @@ router.patch(
   }
 );
 
-// ✅ is_auth 토글 (true <-> false)
+/* ------------------ is_auth 토글 ------------------ */
 router.patch("/toggle-auth", async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = parseBearer(req);
     if (!token) return res.status(401).json({ error: "No token" });
 
-    const decoded = await admin.auth().verifyIdToken(token);
-    const userId = decoded.uid;
+    const { uid } = await admin.auth().verifyIdToken(token);
 
-    const { db } = await connect();
+    const db = await getDB(req);
     const users = db.collection("users");
 
-    const current = await users.findOne({ id: userId });
+    const current = await users.findOne({ id: uid });
     if (!current) return res.status(404).json({ error: "User not found" });
 
-    const currentVal = Boolean(current.is_auth);
-    const nextVal = !currentVal;
-
+    const nextVal = !Boolean(current.is_auth);
     await users.updateOne(
-      { id: userId },
+      { id: uid },
       { $set: { is_auth: nextVal, updatedAt: new Date() } }
     );
 
-    const updated = await users.findOne({ id: userId });
+    const updated = await users.findOne({ id: uid });
     res.json({ user: updated });
   } catch (err) {
-    console.error(err);
-    if (err.code === "auth/argument-error") {
+    console.error("PATCH /profile/toggle-auth error:", err);
+    if (err?.code === "auth/argument-error" || err?.code === "auth/id-token-expired") {
       return res.status(401).json({ error: "Invalid token" });
     }
     res.status(500).json({ error: "Failed to toggle is_auth" });

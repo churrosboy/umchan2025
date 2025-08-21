@@ -16,7 +16,7 @@ import axios from 'axios'; //axios 가져오기
 const Profile = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
-  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:5050';
+  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:4000';
 
   useEffect(() => {
     const fetchProfile = async () => {
