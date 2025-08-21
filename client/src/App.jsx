@@ -74,7 +74,7 @@ const AppRoutes = () => {
         <Route path="/my_recipe/:userId" element={<ProtectedRoute><MyRecipe /></ProtectedRoute>} />
         <Route path="/my_review" element={<ProtectedRoute><My_review /></ProtectedRoute>} />
         <Route path="/RecipeRegister" element={<ProtectedRoute><RecipeRegister /></ProtectedRoute>} />
-        <Route path="/UpdateProfile/:userId" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
+        <Route path="/UpdateProfile" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
         <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
         <Route path="/seller_list/:keyword" element={<ProtectedRoute><SellerList /></ProtectedRoute>} />
         <Route path="/recipes/:keyword" element={<ProtectedRoute><Recipes /></ProtectedRoute>} />
