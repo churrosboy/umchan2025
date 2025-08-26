@@ -1,11 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HiPhoto, HiChevronRight, HiMiniXCircle } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const ItemRegister = () => {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
+  const [authUser, setAuthUser] = useState(null);
+  const [User, setUser] = useState(null);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsub = onAuthStateChanged(auth, async (fbUser) => {
+      if (!fbUser) {
+        alert('로그인이 필요합니다.');
+        navigate('/');
+        return;
+      }
+      
+      try {
+        setAuthUser(fbUser);
+        const token = await fbUser.getIdToken();
+        
+        // 서버에서 사용자 정보 가져오기
+        const res = await fetch('/api/profile', {
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          }
+        });
+        
+        const userData = await res.json();
+        if (!userData?.user) {
+          alert('사용자 정보를 찾을 수 없습니다.');
+          return;
+        }
+        
+        setUser(userData.user);
+      } catch (err) {
+        console.error('사용자 정보 불러오기 실패:', err);
+        alert('사용자 정보를 불러올 수 없습니다.');
+      }
+    });
+    
+    return () => unsub();
+  }, [navigate]);
 
   // 여러 이미지 업로드 지원
   const [images, setImages] = useState([]);
@@ -34,6 +73,11 @@ const ItemRegister = () => {
 
   // 등록
   const handleSubmit = async () => {
+    if (!User) {
+      alert('사용자 정보가 없습니다. 다시 로그인해주세요.');
+      navigate('/');
+      return;
+    }
     if (!item.name.trim()) {
       alert('상품명을 입력하세요.');
       return;
@@ -48,7 +92,7 @@ const ItemRegister = () => {
     }
     // FormData로 전송
     const formData = new FormData();
-    formData.append('user_id', '123'); // 실제 로그인 유저 ID로 변경
+    formData.append('user_id', User.id.toString()); // 실제 로그인 유저 ID로 변경
     formData.append('name', item.name);
     formData.append('type', item.type);
     formData.append('price', item.price);

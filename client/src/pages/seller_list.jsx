@@ -13,7 +13,7 @@ const SellerList = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`${API_URL}/api/users/search/product?keyword=${keyword}`);
+                const response = await fetch(`${API_URL}/api/users/search/product?keyword=${keyword}`); 
                 const data = await response.json();
                 setSeller_result(data);
             } catch (err) {

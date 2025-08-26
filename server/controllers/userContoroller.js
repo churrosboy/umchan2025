@@ -1,11 +1,11 @@
-import User from "../models/Users.js";
+import { users as User } from "../models/user_model.js";
 import Product from "../models/Product.js";
 
 // 사용자 ID로 조회
 export async function getUserById(req, res) {
   try {
     const { id } = req.params;
-    const user = await User.findOne({ id: Number(id) });
+    const user = await User.findOne({ id: String(id) });
 
     if (!user) {
       return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
@@ -27,17 +27,19 @@ export async function searchUsersByProduct(req, res) {
     // 1. 상품에서 검색어로 필터링
     const products = await Product.find({ name: { $regex: keyword, $options: 'i' } });
     if (!products.length) return res.json([]);
+    console.log("Matching products:", products);
 
     // 2. 해당 상품의 user_id 추출
     const userIds = [...new Set(products.map(p => p.user_id))];
+    console.log("User IDs from products:", userIds);
     // 3. 인증된 사용자만 조회
-    const users = await User.find({ id: { $in: userIds.map(id => Number(id)) }, is_auth: true });
+    const users = await User.find({ id: { $in: userIds.map(id => String(id)) }, is_auth: true }).toArray();
 
     // 4. 각 사용자별로 매칭된 상품 포함
     const result = users.map(user => {
       const matchingProducts = products.filter(p => String(p.user_id) === String(user.id));
       return {
-        ...user.toObject(),
+        ...user,
         matchingProducts
       };
     });
