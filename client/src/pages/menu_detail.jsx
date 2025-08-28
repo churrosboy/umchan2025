@@ -159,7 +159,7 @@ const MenuDetail = () => {
         <p className={styles.reserveEnd}>예약 마감: {product.reserve_end}</p>
       )}
 
-      <button className={styles.chatButton}>채팅하기</button>
+      <button className={styles.chatButton} onClick={() => navigate(`/chat/${product.user_id}`)}>채팅하기</button>
     </div>
   );
 };
