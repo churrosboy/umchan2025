@@ -33,6 +33,7 @@ import AuthReq from './pages/AuthReq'; // 위생인증 요청 페이지
 import ItemRegister from './pages/item_register';
 import SellerItem from './pages/seller_item';
 import ChatRoom from './pages/chatroom';
+import ChatList from './pages/chat_list';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -87,6 +88,7 @@ const AppRoutes = () => {
         <Route path="/AccountMng/:userId" element={<ProtectedRoute><AccountMng /></ProtectedRoute>} />
         <Route path="/AuthReq" element={<ProtectedRoute><AuthReq /></ProtectedRoute>} /> {/* 위생인증 요청 페이지 */}
         <Route path="/chat/:sellerId" element={<ChatRoom />} />
+        <Route path="/chats" element={<ChatList />} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>
