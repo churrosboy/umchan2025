@@ -102,7 +102,7 @@ const ItemRegister = () => {
       formData.append('images', img);
     });
     try {
-      const response = await fetch(`${API_URL}/api/products`, {
+      const response = await fetch(`/api/products`, {
         method: 'POST',
         body: formData,
       });

@@ -18,7 +18,7 @@ const RecipeDetail = () => {
         const fetchRecipe = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`${API_URL}/api/recipes/${recipeId}`);
+                const response = await fetch(`/api/recipes/${recipeId}`);
                 if (response.ok) {
                     const data = await response.json();
                     setRecipe(data);
@@ -41,7 +41,7 @@ const RecipeDetail = () => {
         if (!comment.trim()) return;
         
         try {
-            await fetch(`${API_URL}/api/recipes/${recipeId}/comment`, {
+            await fetch(`/api/recipes/${recipeId}/comment`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ writer: '사용자', content: comment }),
@@ -50,7 +50,7 @@ const RecipeDetail = () => {
             setComment("");
             
             // 댓글 추가 후 레시피 정보 다시 불러오기
-            const response = await fetch(`${API_URL}/api/recipes/${recipeId}`);
+            const response = await fetch(`/api/recipes/${recipeId}`);
             if (response.ok) {
                 const data = await response.json();
                 setRecipe(data);
@@ -80,7 +80,7 @@ const RecipeDetail = () => {
                 {recipe.thumbnail && (
                     <div style={styles.recipeImage}>
                         <img
-                            src={`${API_URL}${recipe.thumbnail}`}
+                            src={`${recipe.thumbnail}`}
                             alt={recipe.title}
                             style={{ width: '100%', height: '200px', objectFit: 'cover' }}
                             onError={(e) => {

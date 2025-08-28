@@ -15,7 +15,7 @@ const MenuDetail = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/api/products/${menuId}`);
+        const response = await fetch(`/api/products/${menuId}`);
 
         if (!response.ok) {
           throw new Error('상품을 찾을 수 없습니다.');
@@ -66,7 +66,7 @@ const MenuDetail = () => {
         {product.images && product.images.length > 0 ? (
           <div style={{ position: 'relative' }}>
             <img 
-              src={`${API_URL}${product.images[currentImageIndex]}`} 
+              src={`${product.images[currentImageIndex]}`} 
               alt={`${product.name} ${currentImageIndex + 1}`}
               style={{ width: '100%', height: '200px', objectFit: 'cover' }}
             />

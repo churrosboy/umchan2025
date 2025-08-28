@@ -103,7 +103,7 @@ const RecipeRegister = () => {
         }))
       };
       try {
-        const response = await fetch(`${API_URL}/api/recipes`, {
+        const response = await fetch(`/api/recipes`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
@@ -155,7 +155,7 @@ const RecipeRegister = () => {
         console.log(pair[0], ':', pair[1]);
       }
       try {
-        const response = await fetch(`${API_URL}/api/recipes`, {
+        const response = await fetch(`/api/recipes`, {
           method: 'POST',
           body: formData,
         });

@@ -74,7 +74,7 @@ const Search = () => {
 
   const saveHistory = async (keyword) => {
     try {
-      await fetch(`${API_URL}/api/history/add`, {
+      await fetch(`/api/history/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ const Search = () => {
     
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/history/suggestions?keyword=${encodeURIComponent(value)}`);
+      const response = await fetch(`/api/history/suggestions?keyword=${encodeURIComponent(value)}`);
       const data = await response.json();
       setSuggestions(data);
     } catch (err) {
