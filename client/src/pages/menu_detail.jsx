@@ -76,7 +76,7 @@ const MenuDetail = () => {
     try {
       const cartItem = {
         productId: product.id || menuId,
-        name: product.name,
+        name: product.name, // 메뉴 이름만 저장
         price: product.price,
         quantity: quantity,
         image: product.images?.[0] || null,
@@ -122,28 +122,9 @@ const MenuDetail = () => {
     navigate('/cart');
   };
 
-  // 바로 구매
-  const buyNow = () => {
-    if (!product) return;
-    
-    const orderItem = {
-      productId: product.id || menuId,
-      name: product.name,
-      price: product.price,
-      quantity: quantity,
-      image: product.images?.[0] || null,
-      sellerId: product.user_id,
-      type: product.type
-    };
-
-    // 주문 페이지로 이동 (단일 상품)
-    navigate('/order', { 
-      state: { 
-        items: [orderItem], 
-        totalPrice: product.price * quantity,
-        orderType: 'direct' // 바로구매 구분
-      } 
-    });
+  // 판매자와 채팅하기
+  const chatWithSeller = () => {
+    navigate(`/chat/${product.user_id}`);
   };
 
   if (loading) return <div className={styles.wrapper}>로딩 중...</div>;
@@ -260,30 +241,30 @@ const MenuDetail = () => {
         )}
       </div>
 
-      {/* 수량 선택 영역 */}
+      {/* 수량 선택 및 총 가격 */}
       <div className={styles.quantitySection}>
-        <span className={styles.quantityLabel}>수량:</span>
-        <div className={styles.quantityControls}>
-          <button 
-            onClick={() => handleQuantityChange(-1)}
-            className={styles.quantityButton}
-            disabled={quantity <= 1}
-          >
-            -
-          </button>
-          <span className={styles.quantity}>{quantity}</span>
-          <button 
-            onClick={() => handleQuantityChange(1)}
-            className={styles.quantityButton}
-          >
-            +
-          </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span className={styles.quantityLabel}>수량:</span>
+          <div className={styles.quantityControls}>
+            <button 
+              onClick={() => handleQuantityChange(-1)}
+              className={styles.quantityButton}
+              disabled={quantity <= 1}
+            >
+              -
+            </button>
+            <span className={styles.quantity}>{quantity}</span>
+            <button 
+              onClick={() => handleQuantityChange(1)}
+              className={styles.quantityButton}
+            >
+              +
+            </button>
+          </div>
         </div>
-      </div>
-
-      {/* 총 가격 표시 */}
-      <div className={styles.totalPrice}>
-        총 금액: {Number(product.price * quantity).toLocaleString()}원
+        <div className={styles.totalPrice}>
+          총 {Number(product.price * quantity).toLocaleString()}원
+        </div>
       </div>
 
       {/* 버튼 영역 */}
@@ -296,14 +277,8 @@ const MenuDetail = () => {
           {isAddingToCart ? '추가 중...' : '장바구니 담기'}
         </button>
         <button 
-          className={styles.buyButton} 
-          onClick={buyNow}
-        >
-          바로구매
-        </button>
-        <button 
           className={styles.chatButton} 
-          onClick={() => navigate(`/chat/${product.user_id}`)}
+          onClick={chatWithSeller}
         >
           채팅하기
         </button>

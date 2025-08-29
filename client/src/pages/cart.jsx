@@ -6,15 +6,33 @@ const API_URL = process.env.REACT_APP_API_URL;
 const Cart = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
+  const [groupedItems, setGroupedItems] = useState({});
+  const [sellerInfo, setSellerInfo] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, []);
+  // 판매자 정보 가져오기
+  const fetchSellerInfo = async (sellerId) => {
+    try {
+      const response = await fetch(`${API_URL}/api/users/${sellerId}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+    } catch (error) {
+      console.error(`판매자 ${sellerId} 정보 로드 실패:`, error);
+    }
+    return { nickname: `판매자 ${sellerId}` }; // 기본값
+  };
 
+  // 모든 판매자 정보 가져오기
+  const fetchAllSellerInfo = async (sellerIds) => {
+    const sellerInfoMap = {};
+    for (const sellerId of sellerIds) {
+      const info = await fetchSellerInfo(sellerId);
+      sellerInfoMap[sellerId] = info;
+    }
+    return sellerInfoMap;
+  };
 
   // 장바구니 개수 업데이트 이벤트 발송
   const updateCartCount = () => {
@@ -24,14 +42,35 @@ const Cart = () => {
     }));
   };
 
+  // 판매자별로 상품 그룹화
+  const groupItemsBySeller = (items) => {
+    const grouped = {};
+    items.forEach(item => {
+      const sellerId = item.sellerId;
+      if (!grouped[sellerId]) {
+        grouped[sellerId] = [];
+      }
+      grouped[sellerId].push(item);
+    });
+    return grouped;
+  };
+
   // 장바구니 데이터 로드
   useEffect(() => {
-    const loadCartItems = () => {
+    const loadCartItems = async () => {
       try {
         const savedCart = localStorage.getItem('cart');
         if (savedCart) {
           const parsedCart = JSON.parse(savedCart);
+          const grouped = groupItemsBySeller(parsedCart);
+          const sellerIds = Object.keys(grouped);
+          
+          // 판매자 정보들을 병렬로 가져오기
+          const sellerInfoMap = await fetchAllSellerInfo(sellerIds);
+          
           setCartItems(parsedCart);
+          setGroupedItems(grouped);
+          setSellerInfo(sellerInfoMap);
         }
       } catch (error) {
         console.error('장바구니 데이터 로드 실패:', error);
@@ -48,6 +87,7 @@ const Cart = () => {
   const saveCartToStorage = (updatedCart) => {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
     setCartItems(updatedCart);
+    setGroupedItems(groupItemsBySeller(updatedCart));
     
     // 카운트 업데이트 이벤트 발송
     const totalCount = updatedCart.reduce((sum, item) => sum + item.quantity, 0);
@@ -81,27 +121,24 @@ const Cart = () => {
     }
   };
 
+  // 판매자별 총 가격 계산
+  const getSellerTotalPrice = (items) => {
+    return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  // 전체 총 가격 계산
   const getTotalPrice = () => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
+  // 전체 상품 개수
   const getCartCount = () => {
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
   };
 
-  const handleCheckout = () => {
-    if (cartItems.length === 0) {
-      alert('장바구니가 비어있습니다.');
-      return;
-    }
-    // 주문 페이지로 이동
-    navigate('/order', { 
-      state: { 
-        items: cartItems, 
-        totalPrice: getTotalPrice(),
-        orderType: 'cart' // 장바구니 주문 구분
-      } 
-    });
+  // 판매자와 채팅하기
+  const handleChatWithSeller = (sellerId) => {
+    navigate(`/chat/${sellerId}`);
   };
 
   if (loading) {
@@ -144,88 +181,81 @@ const Cart = () => {
       </div>
 
       <div className={styles.cartList}>
-        {cartItems.map((item) => (
-          <div key={item.productId} className={styles.cartItem}>
-            <div className={styles.itemImage}>
-              {item.image ? (
-                <img 
-                  src={`${API_URL}${item.image}`} 
-                  alt={item.name}
-                  className={styles.productImage}
-                />
-              ) : (
-                <div className={styles.noImage}>이미지 없음</div>
-              )}
-            </div>
-
-            <div className={styles.itemInfo}>
-              <h3 className={styles.itemName}>{item.name}</h3>
-              <p className={styles.itemPrice}>{Number(item.price).toLocaleString()}원</p>
-              <p className={styles.itemType}>판매방식: {item.type}</p>
-              
-              <div className={styles.quantityControls}>
-                <button 
-                  onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
-                  className={styles.quantityButton}
-                  disabled={item.quantity <= 1}
-                >
-                  -
-                </button>
-                <span className={styles.quantity}>{item.quantity}</span>
-                <button 
-                  onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
-                  className={styles.quantityButton}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.itemActions}>
-              <div className={styles.itemTotal}>
-                {Number(item.price * item.quantity).toLocaleString()}원
+        {Object.entries(groupedItems).map(([sellerId, items]) => (
+          <div key={sellerId} className={styles.sellerGroup}>
+            {/* 판매자 헤더 */}
+            <div className={styles.sellerHeader}>
+              <div className={styles.sellerInfo}>
+                <h3 className={styles.sellerName}>
+                  {sellerInfo[sellerId]?.nickname || `판매자 ${sellerId}`}
+                </h3>
+                <span className={styles.itemCount}>
+                  {items.length}개 상품 • {getSellerTotalPrice(items).toLocaleString()}원
+                </span>
               </div>
               <button 
-                onClick={() => handleRemoveItem(item.productId, item.name)}
-                className={styles.removeButton}
+                onClick={() => handleChatWithSeller(sellerId)}
+                className={styles.chatButton}
               >
-                삭제
+                채팅하기
               </button>
+            </div>
+
+            {/* 해당 판매자의 상품들 */}
+            <div className={styles.sellerItems}>
+              {items.map((item) => (
+                <div key={item.productId} className={styles.cartItem}>
+                  <div className={styles.itemImage}>
+                    {item.image ? (
+                      <img 
+                        src={`${API_URL}${item.image}`} 
+                        alt={item.name}
+                        className={styles.productImage}
+                      />
+                    ) : (
+                      <div className={styles.noImage}>이미지 없음</div>
+                    )}
+                  </div>
+
+                  <div className={styles.itemInfo}>
+                    <h4 className={styles.itemName}>{item.name}</h4>
+                    <p className={styles.itemPrice}>{Number(item.price).toLocaleString()}원</p>
+                    <p className={styles.itemType}>판매방식: {item.type}</p>
+                    
+                    <div className={styles.quantityControls}>
+                      <button 
+                        onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
+                        className={styles.quantityButton}
+                        disabled={item.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <span className={styles.quantity}>{item.quantity}</span>
+                      <button 
+                        onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
+                        className={styles.quantityButton}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className={styles.itemActions}>
+                    <div className={styles.itemTotal}>
+                      {Number(item.price * item.quantity).toLocaleString()}원
+                    </div>
+                    <button 
+                      onClick={() => handleRemoveItem(item.productId, item.name)}
+                      className={styles.removeButton}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}
-      </div>
-
-      <div className={styles.cartSummary}>
-        <div className={styles.totalSection}>
-          <div className={styles.totalRow}>
-            <span>상품금액</span>
-            <span>{getTotalPrice().toLocaleString()}원</span>
-          </div>
-          <div className={styles.totalRow}>
-            <span>배송비</span>
-            <span>0원</span>
-          </div>
-          <div className={styles.totalRowFinal}>
-            <span>총 결제금액</span>
-            <span>{getTotalPrice().toLocaleString()}원</span>
-          </div>
-        </div>
-
-        <div className={styles.actionButtons}>
-          <button 
-            onClick={() => navigate('/home')}
-            className={styles.continueShoppingButton}
-          >
-            계속 쇼핑하기
-          </button>
-          <button 
-            onClick={handleCheckout}
-            className={styles.checkoutButton}
-          >
-            주문하기
-          </button>
-        </div>
       </div>
     </div>
   );

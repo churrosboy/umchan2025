@@ -87,6 +87,60 @@
   background-color: #f0c045;
 }
 
+/* 판매자 그룹 스타일 */
+.sellerGroup {
+  background: white;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.sellerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #fef9e7;
+  border-bottom: 1px solid #fcd265;
+}
+
+.sellerInfo {
+  flex: 1;
+}
+
+.sellerName {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.itemCount {
+  font-size: 14px;
+  color: #666;
+}
+
+.chatButton {
+  padding: 12px 20px;
+  background-color: #fcd265;
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatButton:hover {
+  background-color: #f0c045;
+}
+
+.sellerItems {
+  padding: 0;
+}
+
 /* 장바구니 아이템 리스트 */
 .cartList {
   margin-bottom: 20px;
@@ -94,11 +148,12 @@
 
 .cartItem {
   display: flex;
-  background: white;
-  border-radius: 20px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cartItem:last-child {
+  border-bottom: none;
 }
 
 .itemImage {
@@ -275,7 +330,7 @@
   background-color: #fcd265;
 }
 
-.checkoutButton {
+.orderInfoButton {
   flex: 2;
   padding: 15px;
   background-color: #fcd265;
@@ -287,7 +342,7 @@
   cursor: pointer;
 }
 
-.checkoutButton:hover {
+.orderInfoButton:hover {
   background-color: #f0c045;
 }
 
