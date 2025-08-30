@@ -19,8 +19,16 @@ const Home = () => {
   const [sellers, setSellers] = useState([]);
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
+  
+  // 🆕 애니메이션과 터치 관련 상태 추가
+  const [isDragging, setIsDragging] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const panelRef = useRef(null);
+  const lastTouchY = useRef(null);
+  const touchVelocity = useRef(0);
+  const lastTouchTime = useRef(null);
 
-  // 💡 패널 높이 useEffect를 위해 이전 높이를 저장할 ref
+  // 패널 높이 useEffect를 위해 이전 높이를 저장할 ref
   const prevPanelHeight = useRef(window.innerHeight * 0.35);
 
   const filtered = sellers.filter(s => filter === 'all' || s.sellingType === filter);
@@ -38,13 +46,13 @@ const Home = () => {
         const res = await axios.get('/api/sellers');
         setSellers(res.data);
       } catch (err) {
-        console.error('❌ 판매자 데이터 가져오기 실패:', err);
+        console.error('⌘ 판매자 데이터 가져오기 실패:', err);
       }
     };
     fetchSellers();
   }, []);
 
-  // 1. 지도 초기화
+  // 지도 초기화
   useEffect(() => {
     const script = document.createElement('script');
     script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${naverMapKey}`;
@@ -66,18 +74,18 @@ const Home = () => {
 
           window.naver.maps.Event.addListener(mapInstance, 'click', () => {
             setSelectedSeller(null);
-            setPanelHeight(100);
+            smoothSetPanelHeight(100);
           });
         },
         (error) => {
-          console.error('❌ 현재 위치 가져오기 실패:', error);
+          console.error('⌘ 현재 위치 가져오기 실패:', error);
           alert('현재 위치를 가져오는 데 실패했습니다. 위치 권한을 확인해주세요.');
         }
       );
     };
   }, []);
 
-  // 2. 마커 생성 및 뷰포트 관리 (데이터 구조 최종 수정 버전)
+  // 마커 생성 및 뷰포트 관리
   useEffect(() => {
     if (!map || sellers.length === 0) return;
 
@@ -105,7 +113,7 @@ const Home = () => {
           window.naver.maps.Event.addListener(marker, 'click', () => {
             setSelectedSeller(seller);
             const newPanelHeight = 340;
-            setPanelHeight(newPanelHeight);
+            smoothSetPanelHeight(newPanelHeight);
 
             const projection = map.getProjection();
             const sellerPoint = projection.fromLatLngToPoint(sellerPosition);
@@ -132,51 +140,182 @@ const Home = () => {
     };
   }, [map, sellers]);
 
-  // 💡 3. 패널 높이 변경에 따른 지도 중심 이동 (충돌 가능성 있는 부분)
+  // 패널 높이 변경에 따른 지도 중심 이동
   useEffect(() => {
-    if (!map) return;
+    if (!map || isDragging) return;
     const diff = panelHeight - prevPanelHeight.current;
-    // panBy는 화면 픽셀 기준이므로 Point 객체를 사용하지 않아도 됩니다.
-    map.panBy(0, diff / 2); // 패널이 움직인 만큼의 절반만 지도를 이동
+    map.panBy(0, diff / 2);
     prevPanelHeight.current = panelHeight;
-  }, [panelHeight, map]);
+  }, [panelHeight, map, isDragging]);
 
-  const handleTouchStart = (e) => {
-    setStartY(e.touches[0].clientY);
-    setStartHeight(panelHeight);
-  };
-
-  const handleTouchMove = (e) => {
-    if (startY === null) return;
-    e.preventDefault();
-    const deltaY = e.touches[0].clientY - startY;
-    let newHeight = startHeight - deltaY;
-    newHeight = Math.max(100, Math.min(window.innerHeight - 132, newHeight));
-    setPanelHeight(newHeight);
-  };
-
-  const handleTouchEnd = () => {
-    if (startY === null) return;
-    const maxHeight = window.innerHeight - 132;
+  // 🆕 부드러운 패널 높이 설정 함수
+  const smoothSetPanelHeight = (targetHeight) => {
+    setIsTransitioning(true);
+    setPanelHeight(targetHeight);
     
-    if (panelHeight > maxHeight * 0.85) {
-      setPanelHeight(maxHeight);
-    } else if (panelHeight < 150) {
-      setPanelHeight(100);
+    // 애니메이션이 끝난 후 transition 상태 해제
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
+  };
+
+  // 🆕 개선된 터치 시작 핸들러
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    setStartY(touch.clientY);
+    setStartHeight(panelHeight);
+    setIsDragging(true);
+    setIsTransitioning(false);
+    lastTouchY.current = touch.clientY;
+    lastTouchTime.current = Date.now();
+    touchVelocity.current = 0;
+  };
+
+  // 🆕 개선된 터치 이동 핸들러
+  const handleTouchMove = (e) => {
+    if (startY === null || !isDragging) return;
+    e.preventDefault();
+    
+    const touch = e.touches[0];
+    const currentY = touch.clientY;
+    const currentTime = Date.now();
+    
+    // 속도 계산 (관성 효과를 위해)
+    if (lastTouchTime.current && currentTime - lastTouchTime.current > 0) {
+      touchVelocity.current = (currentY - lastTouchY.current) / (currentTime - lastTouchTime.current);
     }
     
+    const deltaY = currentY - startY;
+    let newHeight = startHeight - deltaY;
+    
+    // 경계값 처리 (탄성 효과 추가)
+    const minHeight = 100;
+    const maxHeight = window.innerHeight - 132;
+    
+    if (newHeight < minHeight) {
+      // 최소 높이보다 작을 때 저항감 추가
+      newHeight = minHeight - (minHeight - newHeight) * 0.3;
+    } else if (newHeight > maxHeight) {
+      // 최대 높이보다 클 때 저항감 추가
+      newHeight = maxHeight + (newHeight - maxHeight) * 0.3;
+    }
+    
+    setPanelHeight(newHeight);
+    lastTouchY.current = currentY;
+    lastTouchTime.current = currentTime;
+  };
+
+  // 🆕 개선된 터치 종료 핸들러
+  const handleTouchEnd = () => {
+    if (startY === null || !isDragging) return;
+    
+    const maxHeight = window.innerHeight - 132;
+    const minHeight = 100;
+    let targetHeight = panelHeight;
+    
+    // 관성 효과 적용
+    const velocityThreshold = 0.5;
+    if (Math.abs(touchVelocity.current) > velocityThreshold) {
+      const inertiaDistance = touchVelocity.current * 200; // 관성 거리
+      targetHeight = panelHeight - inertiaDistance;
+    }
+    
+    // 스냅 포인트 설정
+    const midHeight = maxHeight * 0.5;
+    const highThreshold = maxHeight * 0.85;
+    const lowThreshold = 150;
+    
+    if (targetHeight > highThreshold) {
+      targetHeight = maxHeight;
+    } else if (targetHeight < lowThreshold) {
+      targetHeight = minHeight;
+    } else if (targetHeight > midHeight) {
+      targetHeight = maxHeight;
+    } else {
+      targetHeight = minHeight;
+    }
+    
+    // 경계값 보정
+    targetHeight = Math.max(minHeight, Math.min(maxHeight, targetHeight));
+    
+    setIsDragging(false);
+    smoothSetPanelHeight(targetHeight);
     setStartY(null);
+    
+    // 리셋
+    lastTouchY.current = null;
+    lastTouchTime.current = null;
+    touchVelocity.current = 0;
+  };
+
+  // 🆕 마우스 이벤트도 지원 (데스크톱에서 테스트용)
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setStartY(e.clientY);
+    setStartHeight(panelHeight);
+    setIsDragging(true);
+    setIsTransitioning(false);
+    lastTouchY.current = e.clientY;
+    lastTouchTime.current = Date.now();
+    
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      const currentY = e.clientY;
+      const currentTime = Date.now();
+      
+      if (lastTouchTime.current && currentTime - lastTouchTime.current > 0) {
+        touchVelocity.current = (currentY - lastTouchY.current) / (currentTime - lastTouchTime.current);
+      }
+      
+      const deltaY = currentY - startY;
+      let newHeight = startHeight - deltaY;
+      
+      const minHeight = 100;
+      const maxHeight = window.innerHeight - 132;
+      
+      if (newHeight < minHeight) {
+        newHeight = minHeight - (minHeight - newHeight) * 0.3;
+      } else if (newHeight > maxHeight) {
+        newHeight = maxHeight + (newHeight - maxHeight) * 0.3;
+      }
+      
+      setPanelHeight(newHeight);
+      lastTouchY.current = currentY;
+      lastTouchTime.current = currentTime;
+    };
+    
+    const handleMouseUp = () => {
+      handleTouchEnd();
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   };
 
   return (
     <div className={styles.wrapper}>
       <div ref={mapRef} className={styles.map} />
-      <div className={styles.panel} style={{ height: panelHeight }}>
+      <div 
+        ref={panelRef}
+        className={`${styles.panel} ${isDragging ? styles.dragging : ''} ${isTransitioning ? styles.transitioning : ''}`}
+        style={{ 
+          height: panelHeight,
+          transition: isDragging ? 'none' : isTransitioning ? 'height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)' : 'none'
+        }}
+      >
         <div
           className={styles.dragHandle}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          style={{ 
+            cursor: isDragging ? 'grabbing' : 'grab',
+            touchAction: 'none' // 브라우저 기본 터치 동작 방지
+          }}
         >
           <div className={styles.dragBar} />
         </div>

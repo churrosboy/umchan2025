@@ -94,6 +94,10 @@ const Profile = () => {
     navigate('/MyRecipe/' + userId);
   }
 
+  const goToItemRegister = () => {
+    navigate('/item_register');
+  }
+
   //테스트용 함수 (auth 상태 변경 함수)
   const toggleAuth = async () => {
     try {
@@ -173,7 +177,7 @@ const Profile = () => {
         <div style={styles.activityCard}>
           <div style={styles.sectionTitle}>활동하기</div> {/*제목*/}
             {userData.is_auth ? (
-              <button style={styles.button}>
+              <button style={styles.button} onClick={goToItemRegister}>
                 <HiPlusCircle size={22} style={styles.leftIcon}/>
                 <span style={styles.buttonText}>내 음식 판매하기</span>
                 <HiChevronRight size={22} style={styles.rightIcon}/>
