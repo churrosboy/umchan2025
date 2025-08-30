@@ -354,8 +354,8 @@ const Home = () => {
                     {seller.thumbnail_list && seller.thumbnail_list.map((img, idx) => (
                       <img
                         key={idx}
-                        src={`/images${img}`}
-                        alt={`인네일${idx}`}
+                        src={`/images$seller1-1`}
+                        alt={`썸네일${idx}`}
                         className={styles.thumbnailImage}
                       />
                     ))}

@@ -99,8 +99,8 @@ const Signup4 = () => {
 
     try {
       // 주소 체크
-      if (!address || !detailAddress) {
-        throw new Error('주소를 모두 입력해주세요.');
+      if (!address) {
+        throw new Error('주소를 입력해주세요.');
       }
       const fullAddress = `${address} ${detailAddress}`.trim();
 
