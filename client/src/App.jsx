@@ -82,7 +82,7 @@ const AppRoutes = () => {
         <Route path="/search_recipe" element={<ProtectedRoute><SearchRecipe /></ProtectedRoute>} />
         <Route path="/recipe_detail/:recipeId" element={<ProtectedRoute><RecipeDetail /></ProtectedRoute>} />
         <Route path="/review_post" element={<ProtectedRoute><ReviewPost /></ProtectedRoute>} />
-        <Route path="/item_register" element={<ProtectedRoute><ItemRegister /></ProtectedRoute>} />
+        <Route path="/ItemRegister" element={<ProtectedRoute><ItemRegister /></ProtectedRoute>} />
         <Route path="/AccountMng/:userId" element={<ProtectedRoute><AccountMng /></ProtectedRoute>} />
         <Route path="/AuthReq" element={<ProtectedRoute><AuthReq /></ProtectedRoute>} /> {/* 위생인증 요청 페이지 */}
       </Routes>

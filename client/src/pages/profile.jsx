@@ -65,6 +65,10 @@ const Profile = () => {
     navigate('/user_recipe_list/' + userId);
  */
 
+  const goToItemRegister = () => {
+    navigate('/ItemRegister');
+  }
+
   {/*레시피 생성 화면으로 이동하는 함수, userId 넘겨주는 작업 필요*/}
   const goToRecipeRegister = () => {
     navigate('/RecipeRegister');
@@ -173,7 +177,7 @@ const Profile = () => {
         <div style={styles.activityCard}>
           <div style={styles.sectionTitle}>활동하기</div> {/*제목*/}
             {userData.is_auth ? (
-              <button style={styles.button}>
+              <button style={styles.button} onClick={goToItemRegister}> {/*판매 등록 페이지로 이동하는 버튼, ItemRegister로 이동하는 함수*/}
                 <HiPlusCircle size={22} style={styles.leftIcon}/>
                 <span style={styles.buttonText}>내 음식 판매하기</span>
                 <HiChevronRight size={22} style={styles.rightIcon}/>
