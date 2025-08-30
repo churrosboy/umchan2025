@@ -13,7 +13,7 @@ const OtherProfile = () => {
         const fetchUserData = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`${API_URL}/api/users/${userId}`);
+                const response = await fetch(`/api/users/${userId}`);
 
                 if (!response.ok) {
                     throw new Error('사용자 정보를 불러오는데 실패했습니다.');
@@ -59,7 +59,7 @@ const OtherProfile = () => {
     // 관심 판매자 등록
     const addToFavorites = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/users/${userId}/heart`, {
+            const response = await fetch(`/api/users/${userId}/heart`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

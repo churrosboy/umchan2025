@@ -17,7 +17,7 @@ const MyRecipe = () => {
                 setLoading(true);
 
                 // 사용자 정보와 레시피를 함께 가져오기
-                const response = await fetch(`${API_URL}/api/recipes/user/${userId}`);
+                const response = await fetch(`/api/recipes/user/${userId}`);
                 if (!response.ok) throw new Error('데이터를 가져오는 데 실패했습니다.');
                 const data = await response.json();
 

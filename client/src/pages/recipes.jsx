@@ -17,8 +17,8 @@ const RecipeList = () => {
             try {
                 setLoading(true);
                 const url = keyword 
-                    ? `${API_URL}/api/recipes?keyword=${keyword}` // 검색어가 있을 경우
-                    : `${API_URL}/api/recipes`; // 검색어가 없을 경우
+                    ? `/api/recipes?keyword=${keyword}` // 검색어가 있을 경우
+                    : `/api/recipes`; // 검색어가 없을 경우
 
                 const response = await fetch(url);
                 
@@ -53,7 +53,7 @@ const RecipeList = () => {
         const willBeLiked = !liked[id];
 
         try {
-            const response = await fetch(`${API_URL}/api/recipes/${id}/like`, {
+            const response = await fetch(`/api/recipes/${id}/like`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
