@@ -56,13 +56,13 @@ const ChatRoom = () => {
 
 const styles = {
   chatPage: {
-    maxWidth: '500px',
+    width: '100%',
     margin: '0 auto',
-    padding: '20px',
-    paddingTop: '70px',
     backgroundColor: '#f9f9f9',
     minHeight: '100vh',
     borderRadius: '8px',
+    padding: '0 20px',
+    boxSizing: 'border-box',
   },
   header: {
     display: 'flex',

@@ -225,7 +225,7 @@ const ChatList = () => {
 
 const styles = {
   container: {
-    maxWidth: '500px',
+    width: '100%',
     margin: '0 auto',
     backgroundColor: '#f9f9f9',
     minHeight: '100vh',
