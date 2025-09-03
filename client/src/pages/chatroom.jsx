@@ -61,7 +61,7 @@ const styles = {
     backgroundColor: '#f9f9f9',
     minHeight: '100vh',
     borderRadius: '8px',
-    padding: '0 20px',
+    padding: '0 25px',
     boxSizing: 'border-box',
   },
   header: {

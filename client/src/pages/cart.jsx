@@ -1,3 +1,4 @@
+// src/pages/cart.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Cart.module.css';
@@ -34,14 +35,6 @@ const Cart = () => {
     return sellerInfoMap;
   };
 
-  // 장바구니 개수 업데이트 이벤트 발송
-  const updateCartCount = () => {
-    const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    window.dispatchEvent(new CustomEvent('cartUpdated', { 
-      detail: { count: totalCount } 
-    }));
-  };
-
   // 판매자별로 상품 그룹화
   const groupItemsBySeller = (items) => {
     const grouped = {};
@@ -65,7 +58,6 @@ const Cart = () => {
           const grouped = groupItemsBySeller(parsedCart);
           const sellerIds = Object.keys(grouped);
           
-          // 판매자 정보들을 병렬로 가져오기
           const sellerInfoMap = await fetchAllSellerInfo(sellerIds);
           
           setCartItems(parsedCart);
@@ -89,7 +81,6 @@ const Cart = () => {
     setCartItems(updatedCart);
     setGroupedItems(groupItemsBySeller(updatedCart));
     
-    // 카운트 업데이트 이벤트 발송
     const totalCount = updatedCart.reduce((sum, item) => sum + item.quantity, 0);
     window.dispatchEvent(new CustomEvent('cartUpdated', { 
       detail: { count: totalCount } 
@@ -126,11 +117,6 @@ const Cart = () => {
     return items.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  // 전체 총 가격 계산
-  const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
   // 전체 상품 개수
   const getCartCount = () => {
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -149,9 +135,6 @@ const Cart = () => {
     return (
       <div className={styles.wrapper}>
         <div className={styles.header}>
-          <button onClick={() => navigate(-1)} className={styles.backButton}>
-            ← 뒤로가기
-          </button>
           <h1 className={styles.title}>장바구니</h1>
         </div>
         <div className={styles.emptyCart}>
@@ -171,9 +154,6 @@ const Cart = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <button onClick={() => navigate(-1)} className={styles.backButton}>
-          ← 뒤로가기
-        </button>
         <h1 className={styles.title}>장바구니 ({getCartCount()})</h1>
         <button onClick={handleClearCart} className={styles.clearButton}>
           전체삭제
