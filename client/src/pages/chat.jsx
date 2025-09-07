@@ -100,24 +100,24 @@ const Chat = ({ sellerId }) => {
                 ...(isMyMessage ? styles.myMessage : styles.otherMessage)
               }}
             >
+              <div style={{
+                ...styles.messageBubble,
+                ...(isMyMessage ? styles.myMessageBubble : styles.otherMessageBubble)
+              }}>
+                {msg.text}
+              </div>
+
+              <div style={styles.messageTime}>
+                {new Date(msg.timestamp).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+
               <div style={styles.messageRow}>
-                <div style={{
-                  ...styles.messageBubble,
-                  ...(isMyMessage ? styles.myMessageBubble : styles.otherMessageBubble)
-                }}>
-                  {msg.text}
-                </div>
-                
                 {/* 내가 보낸 메시지에만 읽음 표시 */}
                 {isMyMessage && (
                   <div style={styles.readStatus}>
-                    {isRead ? '읽음' : '안읽음'}
+                    {isRead ? '' : '안읽음'}
                   </div>
                 )}
-              </div>
-              
-              <div style={styles.messageTime}>
-                {new Date(msg.timestamp).toLocaleTimeString()}
               </div>
             </div>
           );
