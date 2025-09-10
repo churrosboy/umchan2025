@@ -1,9 +1,11 @@
 .wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   width: 100%;
   max-width: 100%;
   margin: 0;
   padding: 20px;
-  min-height: 100vh;
   background-color: #f9f9f9;
   box-sizing: border-box;
   /* overflow-x: hidden;    ← 혹시 여전히 스크롤 생기면 임시로 추가 */
@@ -16,6 +18,7 @@
   margin-bottom: 20px;
   padding-bottom: 15px;
   border-bottom: 1px solid #ddd;
+  flex-shrink: 0;
 }
 
 .backButton {
@@ -143,7 +146,9 @@
 
 /* 장바구니 아이템 리스트 */
 .cartList {
-  margin-bottom: 20px;
+  flex: 1;
+  overflow-y: auto;  
+  margin-bottom: 60px;
 }
 
 .cartItem {
@@ -277,74 +282,6 @@
   color: #333;
 }
 
-/* 장바구니 요약 */
-.cartSummary {
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  position: sticky;
-  bottom: 0;
-}
-
-.totalSection {
-  margin-bottom: 20px;
-}
-
-.totalRow {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #666;
-}
-
-.totalRowFinal {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 15px;
-  border-top: 1px solid #ddd;
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-}
-
-.actionButtons {
-  display: flex;
-  gap: 10px;
-}
-
-.continueShoppingButton {
-  flex: 1;
-  padding: 15px;
-  background: white;
-  border: 2px solid #fcd265;
-  color: #333;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.continueShoppingButton:hover {
-  background-color: #fcd265;
-}
-
-.orderInfoButton {
-  flex: 2;
-  padding: 15px;
-  background-color: #fcd265;
-  color: #333;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.orderInfoButton:hover {
-  background-color: #f0c045;
-}
 
 /* 반응형 */
 @media (max-width: 768px) {

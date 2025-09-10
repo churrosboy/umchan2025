@@ -71,25 +71,57 @@ const Chat = ({ sellerId }) => {
     setNewMessage('');
   };
 
+  // 읽음 상태 확인 함수
+  const getReadStatus = (message) => {
+    if (!message.readBy) return false;
+    
+    // 내가 보낸 메시지인 경우, 상대방이 읽었는지 확인
+    if (message.senderId === auth.currentUser?.uid) {
+      return message.readBy[sellerId] === true;
+    }
+    // 상대방이 보낸 메시지인 경우, 내가 읽었는지 확인
+    else {
+      return message.readBy[auth.currentUser?.uid] === true;
+    }
+  };
+
   return (
     <div style={styles.chatContainer}>
       <div style={styles.messageList}>
-        {messages.map((msg, idx) => (
-          <div 
-            key={idx} 
-            style={{
-              ...styles.message,
-              ...(msg.senderId === auth.currentUser?.uid ? styles.myMessage : styles.otherMessage)
-            }}
-          >
-            <div style={styles.messageBubble}>
-              {msg.text}
+        {messages.map((msg, idx) => {
+          const isMyMessage = msg.senderId === auth.currentUser?.uid;
+          const isRead = getReadStatus(msg);
+          
+          return (
+            <div 
+              key={idx} 
+              style={{
+                ...styles.message,
+                ...(isMyMessage ? styles.myMessage : styles.otherMessage)
+              }}
+            >
+              <div style={{
+                ...styles.messageBubble,
+                ...(isMyMessage ? styles.myMessageBubble : styles.otherMessageBubble)
+              }}>
+                {msg.text}
+              </div>
+
+              <div style={styles.messageTime}>
+                {new Date(msg.timestamp).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+
+              <div style={styles.messageRow}>
+                {/* 내가 보낸 메시지에만 읽음 표시 */}
+                {isMyMessage && (
+                  <div style={styles.readStatus}>
+                    {isRead ? '' : '안읽음'}
+                  </div>
+                )}
+              </div>
             </div>
-            <div style={styles.messageTime}>
-              {new Date(msg.timestamp).toLocaleTimeString()}
-            </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 
@@ -101,7 +133,7 @@ const Chat = ({ sellerId }) => {
           style={styles.input}
           rows="1"
           onInput={(e) => {
-            e.target.style.height = 'auto';  // 이 부분이 문제
+            e.target.style.height = 'auto';
             e.target.style.height = e.target.scrollHeight + 'px';
           }}
         />
@@ -139,11 +171,31 @@ const styles = {
   otherMessage: {
     alignItems: 'flex-start',
   },
+  messageRow: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    gap: '8px',
+  },
   messageBubble: {
     padding: '8px 12px',
     borderRadius: '8px',
     maxWidth: '70%',
     wordBreak: 'break-word',
+  },
+  myMessageBubble: {
+    backgroundColor: '#ffc038',
+    color: 'white',
+  },
+  otherMessageBubble: {
+    backgroundColor: '#f1f3f5',
+    color: '#333',
+  },
+  readStatus: {
+    fontSize: '10px',
+    color: '#666',
+    whiteSpace: 'nowrap',
+    marginTop: '2px',
+    alignSelf: 'flex-start',
   },
   messageTime: {
     fontSize: '10px',

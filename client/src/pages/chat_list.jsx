@@ -1,7 +1,7 @@
 // src/pages/ChatList.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDatabase, ref, onValue, query, orderByChild } from 'firebase/database';
+import { getDatabase, ref, onValue } from 'firebase/database';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const ChatList = () => {
@@ -19,7 +19,6 @@ const ChatList = () => {
         return;
       }
       
-      // 사용자의 채팅방 목록 가져오기
       fetchChatRooms(user.uid);
     });
 
@@ -40,14 +39,11 @@ const ChatList = () => {
       const chatData = snapshot.val();
       const userChatRooms = [];
 
-      // 사용자가 참여한 채팅방 필터링
       for (const [chatRoomId, chatRoom] of Object.entries(chatData)) {
         if (chatRoomId.includes(userId)) {
-          // 상대방 ID 추출
           const participants = chatRoomId.split('_');
           const otherUserId = participants.find(id => id !== userId);
           
-          // 마지막 메시지 가져오기
           const messages = chatRoom.messages || {};
           const messageList = Object.entries(messages)
             .map(([key, value]) => ({ id: key, ...value }))
@@ -55,7 +51,6 @@ const ChatList = () => {
           
           const lastMessage = messageList[0];
           
-          // 읽지 않은 메시지 개수 계산
           const unreadCount = messageList.filter(msg => 
             msg.senderId !== userId && !msg.readBy?.[userId]
           ).length;
@@ -70,10 +65,8 @@ const ChatList = () => {
         }
       }
 
-      // 마지막 메시지 시간순으로 정렬
       userChatRooms.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
 
-      // 상대방 정보 가져오기
       const chatRoomsWithUserInfo = await Promise.all(
         userChatRooms.map(async (room) => {
           try {
@@ -153,7 +146,9 @@ const ChatList = () => {
   }
 
   return (
+    // 최상위 컨테이너 스타일이 flexbox 레이아웃으로 변경되었습니다.
     <div style={styles.container}>
+      {/* 헤더는 고정됩니다. */}
       <div style={styles.header}>
         <h2>채팅</h2>
         <div style={styles.chatCount}>
@@ -168,10 +163,12 @@ const ChatList = () => {
           <p>다른 사용자와 거래를 시작하면<br />채팅방이 생성됩니다.</p>
         </div>
       ) : (
-        <div style={styles.chatList}>
+        // 이 div가 남은 공간을 모두 차지하고, 내부에서만 스크롤됩니다.
+        <div style={styles.chatListContainer}>
           {chatRooms.map((room) => (
             <div 
               key={room.chatRoomId} 
+              className="chat-item" // hover 효과를 위해 클래스명 유지
               style={styles.chatItem}
               onClick={() => handleChatRoomClick(room.chatRoomId, room.otherUserId)}
             >
@@ -223,21 +220,14 @@ const ChatList = () => {
   );
 };
 
+// 스타일 객체가 flexbox 레이아웃에 맞게 수정되었습니다.
 const styles = {
   container: {
-    maxWidth: '500px',
-    margin: '0 auto',
-    backgroundColor: '#f9f9f9',
-    minHeight: '100vh',
-    paddingTop: '70px',
-  },
-  loadingContainer: {
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '50vh',
-    fontSize: '16px',
-    color: '#666',
+    flexDirection: 'column',
+    width: '100%',
+    height: '100vh',
+    backgroundColor: '#f9f9f9',
   },
   header: {
     display: 'flex',
@@ -246,6 +236,21 @@ const styles = {
     padding: '20px',
     backgroundColor: 'white',
     borderBottom: '1px solid #eee',
+    flexShrink: 0, // 헤더 높이가 줄어들지 않도록 설정
+  },
+  // chatList -> chatListContainer로 변경하고 스크롤 속성 추가
+  chatListContainer: {
+    flex: 1, // 헤더를 제외한 나머지 공간을 모두 차지
+    overflowY: 'auto', // 내용이 길어지면 이 안에서만 세로 스크롤
+    backgroundColor: 'white',
+  },
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    fontSize: '16px',
+    color: '#666',
   },
   chatCount: {
     color: '#666',
@@ -255,13 +260,15 @@ const styles = {
     textAlign: 'center',
     padding: '60px 20px',
     color: '#666',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   emptyIcon: {
     fontSize: '48px',
     marginBottom: '20px',
-  },
-  chatList: {
-    backgroundColor: 'white',
   },
   chatItem: {
     padding: '15px 20px',
@@ -269,10 +276,12 @@ const styles = {
     cursor: 'pointer',
     backgroundColor: 'white',
     transition: 'background-color 0.2s',
+    display: 'flex', // 내부 정렬을 위해 추가
   },
   profileSection: {
     display: 'flex',
     alignItems: 'center',
+    width: '100%', // 너비를 100%로 설정
   },
   profileImage: {
     marginRight: '12px',
@@ -340,7 +349,7 @@ const styles = {
   },
 };
 
-// hover 효과를 위한 추가 스타일 (인라인으로는 제한적)
+// hover 효과를 위한 추가 스타일 (기존 코드 유지)
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.textContent = `
