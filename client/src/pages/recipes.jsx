@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { HiOutlineSearch } from 'react-icons/hi';
 import { sellers } from '../data/sellers';
+import styles from '../styles/Recipe.module.css';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const RecipeList = () => {
@@ -84,70 +85,48 @@ const RecipeList = () => {
     };
 
     return (
-        <div style={{ ...styles.page, paddingBottom: 60 }}>
-            <div style={{
-                position: 'absolute',
-                top: 20,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 100,
-                width: '90%',
-                maxWidth: 500,
-            }}>
-                <div style={{ 
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: 'white',
-                    padding: '10px 14px',
-                    borderRadius: '999px',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-                }}>
-                <HiOutlineSearch size={20} color="#888" style={{ marginRight: 8 }} />
+        <div className={{ ...styles.page, paddingBottom: 60 }}>
+            <div className={styles.searchContainer}>
+                <div className={styles.searchBar}>
+                <HiOutlineSearch size={20} color="#888" className={{ marginRight: 8 }} />
                 <input
                     type="text"
                     onClick={goToSearch}
                     placeholder="원하는 음식을 검색해보세요"
-                    style={{
-                    border: 'none',
-                    background: 'transparent',
-                    outline: 'none',
-                    flex: 1,
-                    fontSize: 14,
-                    color: '#333',
-                    }}
+                    className={styles.searchInputBox}
                 />
                 </div>
             </div>
         
             {keyword && (
-                <div style={styles.sectionTitleBar}>
-                    <h3 style={styles.resultTitle}>
+                <div className={styles.sectionTitleBar}>
+                    <h3 className={styles.resultTitle}>
                         "{keyword}" 검색 결과
                     </h3>
-                    <p style={styles.resultCount}>{recipeList.length}개의 레시피를 찾았습니다</p>
+                    <p className={styles.resultCount}>{recipeList.length}개의 레시피를 찾았습니다</p>
                 </div>
             )}
 
             {!keyword && (
-                <div style={styles.sectionTitleBar}>
-                    <h3 style={styles.resultTitle}>
+                <div className={styles.sectionTitleBar}>
+                    <h3 className={styles.resultTitle}>
                         {recipeList.length}개의 등록된 레시피
                     </h3>
                 </div>
             )}
 
-            <div style={styles.recipeSection}>
+            <div className={styles.recipeSection}>
                 {recipeList.map(item => (
-                <div style={styles.recipeCard} key={item.recipe_id}>
-                    <div style={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}></div>
-                    <div style={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
-                    <div style={styles.recipeTitle}>
+                <div className={styles.recipeCard} key={item.recipe_id}>
+                    <div className={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}></div>
+                    <div className={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
+                    <div className={styles.recipeTitle}>
                         {item.title}
-                        <span style={styles.likes}> 💚{item.like_cnt}</span>
+                        <span className={styles.likes}> 💚{item.like_cnt}</span>
                     </div>
-                    <div style={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
+                    <div className={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
                 </div>
-                    <div style={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.recipe_id)}}>
+                    <div className={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.recipe_id)}}>
                         {liked[item.recipe_id] ? '❤️' : '♡'}
                     </div>
                 </div>
@@ -156,82 +135,5 @@ const RecipeList = () => {
         </div>
     );
 }
-
-const styles = {
-    sectionTitleBar: {
-        paddingTop: "70px",
-        paddingRight: "20px", 
-        paddingBottom: "6px",
-        paddingLeft: "20px",
-        fontSize: 14,
-        fontWeight: "bold",
-        backgroundColor: "#f7f7f7",
-    },
-    recipeSection: {
-        overflowY: "auto",
-        borderBottom: "8px solid #f7f7f7",
-        background: "#fff",
-    },
-    recipeCard: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "12px 20px",
-        borderBottom: "1px solid #eee",
-        background: "#fff",
-    },
-    recipeImage: {
-      cursor: "pointer",
-        width: 60,
-        height: 60,
-        backgroundColor: "#ddd",
-        borderRadius: 6,
-        marginRight: 10,
-        flexShrink: 0,
-    },
-    recipeInfo: {
-      cursor: "pointer",
-        flex: 1,
-        fontSize: 14,
-        minWidth: 0,
-    },
-    recipeTitle: {
-      cursor: "pointer",
-        fontWeight: "bold",
-        marginBottom: 4,
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-    },
-    recipeDesc: {
-        fontSize: 12,
-        color: "#666",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        display: "-webkit-box",
-        WebkitLineClamp: 2,
-        lineClamp: 2,
-        WebkitBoxOrient: "vertical",
-        maxWidth: "100%",
-        lineHeight: 1.4,
-        maxHeight: "2.8em",
-    },
-    heart: {
-        fontSize: 16,
-        color: "#888",
-        marginLeft: 10,
-        alignSelf: "center",
-        cursor: "pointer",
-    },
-    page: {
-        minHeight: "100vh",
-        background: "#fff",
-    },
-    likes: {
-        marginLeft: 'auto',
-        fontSize: '13px',
-        color: '#23a34a',
-    },
-};
 
 export default RecipeList;

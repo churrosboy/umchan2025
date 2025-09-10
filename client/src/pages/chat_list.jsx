@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import styles from '../styles/ChatList.module.css';
 
 const ChatList = () => {
   const [chatRooms, setChatRooms] = useState([]);
@@ -139,7 +140,7 @@ const ChatList = () => {
 
   if (loading) {
     return (
-      <div style={styles.loadingContainer}>
+      <div className={styles.loadingContainer}>
         <div>채팅방 목록을 불러오는 중...</div>
       </div>
     );
@@ -147,65 +148,64 @@ const ChatList = () => {
 
   return (
     // 최상위 컨테이너 스타일이 flexbox 레이아웃으로 변경되었습니다.
-    <div style={styles.container}>
+    <div className={styles.container}>
       {/* 헤더는 고정됩니다. */}
-      <div style={styles.header}>
+      <div className={styles.header}>
         <h2>채팅</h2>
-        <div style={styles.chatCount}>
+        <div className={styles.chatCount}>
           {chatRooms.length}개의 대화
         </div>
       </div>
 
       {chatRooms.length === 0 ? (
-        <div style={styles.emptyState}>
-          <div style={styles.emptyIcon}>💬</div>
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>💬</div>
           <h3>아직 채팅방이 없습니다</h3>
           <p>다른 사용자와 거래를 시작하면<br />채팅방이 생성됩니다.</p>
         </div>
       ) : (
         // 이 div가 남은 공간을 모두 차지하고, 내부에서만 스크롤됩니다.
-        <div style={styles.chatListContainer}>
+        <div className={styles.chatListContainer}>
           {chatRooms.map((room) => (
             <div 
               key={room.chatRoomId} 
-              className="chat-item" // hover 효과를 위해 클래스명 유지
-              style={styles.chatItem}
+              className={["chat-item", styles.chatItem].join(" ")}
               onClick={() => handleChatRoomClick(room.chatRoomId, room.otherUserId)}
             >
-              <div style={styles.profileSection}>
-                <div style={styles.profileImage}>
+              <div className={styles.profileSection}>
+                <div className={styles.profileImage}>
                   {room.otherUserInfo?.profileImage ? (
                     <img 
                       src={room.otherUserInfo.profileImage} 
                       alt="프로필" 
-                      style={styles.profileImg}
+                      className={styles.profileImg}
                     />
                   ) : (
-                    <div style={styles.defaultProfile}>
+                    <div className={styles.defaultProfile}>
                       {room.otherUserInfo?.nickname?.charAt(0) || '사'}
                     </div>
                   )}
                 </div>
                 
-                <div style={styles.chatInfo}>
-                  <div style={styles.userNameRow}>
-                    <span style={styles.userName}>
+                <div className={styles.chatInfo}>
+                  <div className={styles.userNameRow}>
+                    <span className={styles.userName}>
                       {room.otherUserInfo?.nickname || '사용자'}
                     </span>
-                    <span style={styles.lastMessageTime}>
+                    <span className={styles.lastMessageTime}>
                       {formatTime(room.lastMessageTime)}
                     </span>
                   </div>
                   
-                  <div style={styles.lastMessageRow}>
-                    <span style={styles.lastMessage}>
+                  <div className={styles.lastMessageRow}>
+                    <span className={styles.lastMessage}>
                       {room.lastMessage 
                         ? truncateMessage(room.lastMessage.text)
                         : '새로운 대화를 시작해보세요'
                       }
                     </span>
                     {room.unreadCount > 0 && (
-                      <div style={styles.unreadBadge}>
+                      <div className={styles.unreadBadge}>
                         {room.unreadCount > 99 ? '99+' : room.unreadCount}
                       </div>
                     )}
@@ -218,135 +218,6 @@ const ChatList = () => {
       )}
     </div>
   );
-};
-
-// 스타일 객체가 flexbox 레이아웃에 맞게 수정되었습니다.
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    height: '100vh',
-    backgroundColor: '#f9f9f9',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '20px',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #eee',
-    flexShrink: 0, // 헤더 높이가 줄어들지 않도록 설정
-  },
-  // chatList -> chatListContainer로 변경하고 스크롤 속성 추가
-  chatListContainer: {
-    flex: 1, // 헤더를 제외한 나머지 공간을 모두 차지
-    overflowY: 'auto', // 내용이 길어지면 이 안에서만 세로 스크롤
-    backgroundColor: 'white',
-  },
-  loadingContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    fontSize: '16px',
-    color: '#666',
-  },
-  chatCount: {
-    color: '#666',
-    fontSize: '14px',
-  },
-  emptyState: {
-    textAlign: 'center',
-    padding: '60px 20px',
-    color: '#666',
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  emptyIcon: {
-    fontSize: '48px',
-    marginBottom: '20px',
-  },
-  chatItem: {
-    padding: '15px 20px',
-    borderBottom: '1px solid #f0f0f0',
-    cursor: 'pointer',
-    backgroundColor: 'white',
-    transition: 'background-color 0.2s',
-    display: 'flex', // 내부 정렬을 위해 추가
-  },
-  profileSection: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%', // 너비를 100%로 설정
-  },
-  profileImage: {
-    marginRight: '12px',
-  },
-  profileImg: {
-    width: '48px',
-    height: '48px',
-    borderRadius: '50%',
-    objectFit: 'cover',
-  },
-  defaultProfile: {
-    width: '48px',
-    height: '48px',
-    borderRadius: '50%',
-    backgroundColor: '#ffc038',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    fontSize: '18px',
-    fontWeight: 'bold',
-  },
-  chatInfo: {
-    flex: 1,
-    minWidth: 0,
-  },
-  userNameRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '4px',
-  },
-  userName: {
-    fontSize: '16px',
-    fontWeight: '600',
-    color: '#333',
-  },
-  lastMessageTime: {
-    fontSize: '12px',
-    color: '#999',
-  },
-  lastMessageRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  lastMessage: {
-    fontSize: '14px',
-    color: '#666',
-    flex: 1,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
-  unreadBadge: {
-    backgroundColor: '#ff4757',
-    color: 'white',
-    borderRadius: '10px',
-    padding: '2px 7px',
-    fontSize: '12px',
-    fontWeight: 'bold',
-    marginLeft: '8px',
-    minWidth: '18px',
-    textAlign: 'center',
-  },
 };
 
 // hover 효과를 위한 추가 스타일 (기존 코드 유지)
