@@ -16,8 +16,8 @@ const SellerDetail = () => {
       setLoading(true);
       try {
         const [userRes, productRes] = await Promise.all([
-          fetch(`${API_URL}/api/users/${sellerId}`),
-          fetch(`${API_URL}/api/products/user/${sellerId}`)
+          fetch(`/api/users/${sellerId}`),
+          fetch(`/api/products/user/${sellerId}`)
         ]);
         
         if (userRes.ok) {

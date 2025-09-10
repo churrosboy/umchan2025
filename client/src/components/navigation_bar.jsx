@@ -15,7 +15,7 @@ const NavigationBar = () => {
   const items = [
     { label: '홈', icon: <HiHome size={22} />, path: '/home' },
     { label: '레시피', icon: <HiBookOpen size={22} />, path: '/recipes' },
-    { label: '채팅', icon: <HiChatBubbleLeftRight size={22} />, path: '/chat' },
+    { label: '채팅', icon: <HiChatBubbleLeftRight size={22} />, path: '/chats' },
     { label: '장바구니', icon: <HiShoppingCart size={22} />, path: '/cart' },
     { label: '내정보', icon: <HiUser size={22} />, path: '/profile' },
   ];

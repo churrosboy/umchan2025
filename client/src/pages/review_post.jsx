@@ -28,7 +28,7 @@ const ReviewPost = () => {
         const formData = new FormData();
         formData.append('image', imageFile);
 
-        const imageResponse = await fetch(`${API_URL}/api/upload`, {
+        const imageResponse = await fetch(`/api/upload`, {
           method: 'POST',
           body: formData,
         });
@@ -50,7 +50,7 @@ const ReviewPost = () => {
       };
 
       // 3. 리뷰 데이터를 서버에 전송
-      await fetch(`${API_URL}/api/reviews`, {
+      await fetch(`/api/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(review),

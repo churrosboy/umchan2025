@@ -26,7 +26,11 @@ const uploadsDir = path.resolve(process.cwd(), 'uploads');
 // ✅ 정적 서빙: /api/uploads/** -> uploads 디렉터리 파일 제공
 app.use('/api/uploads', express.static(uploadsDir));
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ 
+  origin: [
+    'http://localhost:3000'
+  ]
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
