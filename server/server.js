@@ -13,7 +13,9 @@ import profileRouter from './routes/profile.js';
 import sanitaryRouter from './routes/sanitary.js';
 import geocodeRouter from './routes/geocode.js';
 
-import myreviewRouter from './routes/myreview.js'; // ✅ myreview router import
+import tradeRoutes from './routes/tradeRoutes.js'; // tradeRoutes import
+import reviewRoutes from './routes/reviewRoutes.js'; // reviewRoutes import
+import myReviewRoutes from './routes/myReviewRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -49,7 +51,9 @@ app.use('/api/sellers', sellerRoutes);
 app.use('/api/profile', profileRouter); // 프로필 라우터
 app.use('/api/sanitary', sanitaryRouter); // 위생인증 요청 라우터
 
-app.use('/api/myreview', myreviewRouter); // ✅ myreview router mount
+app.use('/api/myreview', myReviewRoutes);
+app.use('/api/trade', tradeRoutes); // tradeRoutes mount
+app.use('/api/reviews', reviewRoutes); // reviewRoutes mount
 
 const PORT = process.env.PORT || 4000;
 connect()

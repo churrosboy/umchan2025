@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
   main_img: { type: [String], default: [null] },
   phone_num: { type: String },
   disc: { type: String },
+  rating_sum: { type: Number, default: 0 },
 });
 
 const User = mongoose.model("UserDev", userSchema);

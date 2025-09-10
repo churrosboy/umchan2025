@@ -1,3 +1,4 @@
+// src/pages/my_review.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import header from "../styles/PageHeader.module.css";
@@ -75,7 +76,7 @@ const My_review = () => {
   return (
     <div className={header.wrapper}>
       <div className={header.container}>
-        {/* 상단 헤더 (그대로 둠) */}
+        {/* 상단 헤더 */}
         <div className={header.header}>
           <div className={header.backButton} onClick={goBack}>←</div>
           <div className={header.title}>나의 리뷰</div>
@@ -93,14 +94,18 @@ const My_review = () => {
                 <li className={styles.empty}>아직 작성한 리뷰가 없어요.</li>
               )}
 
-              {list.map((rv, idx) => {
+              {list.map((rv) => {
                 const firstImg =
                   Array.isArray(rv.image_url) && rv.image_url.length > 0
                     ? rv.image_url[0]
                     : null;
+                const d = rv.timestamp ? new Date(rv.timestamp) : null;
 
                 return (
-                  <li key={idx} className={styles.reviewItem}>
+                  <li
+                    key={rv._id || `${rv.seller_id}-${rv.item_id || ""}-${(rv.timestamp || "")}`}
+                    className={styles.reviewItem}
+                  >
                     {/* 왼쪽 사진 */}
                     <div className={styles.photoWrap}>
                       {firstImg ? (
@@ -132,6 +137,13 @@ const My_review = () => {
                         </div>
                         <StarRating value={rv.rating} />
                       </div>
+
+                      {d && (
+                        <div style={{ fontSize: 11, color: "#999", marginBottom: 4 }}>
+                          {d.toLocaleDateString()} {d.toLocaleTimeString()}
+                        </div>
+                      )}
+
                       <p className={styles.text} title={rv.content || ""}>
                         {rv.content || "내용이 없습니다."}
                       </p>
