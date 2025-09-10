@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { HiPhoto, HiChevronRight, HiMiniXCircle} from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+import styles from '../styles/RecipeRegister.module.css';
 const API_URL = process.env.REACT_APP_API_URL;
+
 
 const RecipeRegister = () => {
   const navigate = useNavigate();
@@ -172,42 +174,42 @@ const RecipeRegister = () => {
   };
 
   return (
-    <div style={styles.page}>
+    <div className={styles.page}>
       {/* 헤더 */}
-      <div style={styles.header}>
-        <div style={styles.backButton} onClick={goBack}>←</div>
-        <div style={styles.headerTitle}>레시피 등록</div>
-        <div style={styles.headerSpacer} />
+      <div className={styles.header}>
+        <div className={styles.backButton} onClick={goBack}>←</div>
+        <div className={styles.headerTitle}>레시피 등록</div>
+        <div className={styles.headerSpacer} />
       </div>
 
       {/* 본문 */}
-      <div style={styles.container}>
+      <div className={styles.container}>
         {/* 메뉴 메인사진 */}
-        <div style={styles.uploadSection}>
-          <label style={styles.photoLabel}>
+        <div className={styles.uploadSection}>
+          <label className={styles.photoLabel}>
             <input
               type="file"
-              style={styles.photoInput}
+              className={styles.photoInput}
               onChange={e => updateMainFile(e.target.files[0])}
             />
             {recipe.file ? (
               <img
                 src={URL.createObjectURL(recipe.file)}
                 alt="MainFile"
-                style={styles.photoPreview}
+                className={styles.photoPreview}
               />
             ) : (
-              <HiPhoto size={28} style={styles.stepIcon} />
+              <HiPhoto size={28} className={styles.stepIcon} />
             )}
           </label>
-          <div style={styles.uploadLabel}>메뉴 메인사진 등록하기</div>
+          <div className={styles.uploadLabel}>메뉴 메인사진 등록하기</div>
         </div>
 
         {/* 메뉴 이름 */}
-        <div style={styles.inputSection}>
-          <div style={styles.inputTitle}>메뉴 이름</div>
+        <div className={styles.inputSection}>
+          <div className={styles.inputTitle}>메뉴 이름</div>
           <input
-            style={styles.inputField}
+            className={styles.inputField}
             type="text"
             value={recipe.title}
             onChange={e => updateTitle(e.target.value)}
@@ -215,62 +217,62 @@ const RecipeRegister = () => {
         </div>
 
         {/* 재료 */}
-        <div style={styles.inputSection}>
-          <div style={styles.inputTitle}>재료</div>
+        <div className={styles.inputSection}>
+          <div className={styles.inputTitle}>재료</div>
         {recipe.ingredients.map((ing, idx) => (
-          <div key={idx} style={styles.stepWrapper}>
-            <HiMiniXCircle style={styles.removeIcon} onClick={() => removeIngredient(idx)} />
-            <div style={styles.ingredientRow}>
+          <div key={idx} className={styles.stepWrapper}>
+            <HiMiniXCircle className={styles.removeIcon} onClick={() => removeIngredient(idx)} />
+            <div className={styles.ingredientRow}>
               <input
                 type="text"
                 value={ing.name}
                 onChange={e => updateIngredient(idx, 'name', e.target.value)}
                 placeholder="재료명 (예: 양파)"
-                style={{...styles.inputField, ...styles.ingredientNameField}}
+                className={{...styles.inputField, ...styles.ingredientNameField}}
               />
               <input
                 type="text"
                 value={ing.amount}
                 onChange={e => updateIngredient(idx, 'amount', e.target.value)}
                 placeholder="양 (예: 1개, 100g)"
-                style={{...styles.inputField, ...styles.ingredientAmountField}}
+                className={{...styles.inputField, ...styles.ingredientAmountField}}
               />
             </div>
           </div>
         ))}
         {/* 재료 추가 버튼 */}
-        <button style={styles.addButton} onClick={addIngredient}>+ 재료 추가</button>
+        <button className={styles.addButton} onClick={addIngredient}>+ 재료 추가</button>
         </div>
 
         {/* 설명 라벨 */}
-        <div style={styles.descriptionSection}>
-          <div style={styles.descriptionLabel}>조리 순서를 등록해주세요 :)</div>
+        <div className={styles.descriptionSection}>
+          <div className={styles.descriptionLabel}>조리 순서를 등록해주세요 :)</div>
         </div>
 
         {/* 동적 조리 단계 */}
-        <div style={styles.stepsSection}>
+        <div className={styles.stepsSection}>
           {steps.map((step, idx) => (
-            <div key={step.id} style={styles.stepWrapper}>
-              <HiMiniXCircle style={styles.removeIcon} onClick={() => removeStep(step.id)} />
-              <div style={styles.stepCard}>
-                <label style={styles.photoLabel}>
+            <div key={step.id} className={styles.stepWrapper}>
+              <HiMiniXCircle className={styles.removeIcon} onClick={() => removeStep(step.id)} />
+              <div className={styles.stepCard}>
+                <label className={styles.photoLabel}>
                   <input
                     type="file"
-                    style={styles.photoInput}
+                    className={styles.photoInput}
                     onChange={e => updateFile(step.id, e.target.files[0])}
                   />
                   {step.file ? (
                     <img
                       src={URL.createObjectURL(step.file)}
                       alt="step"
-                      style={styles.photoPreview}
+                      className={styles.photoPreview}
                     />
                   ) : (
-                    <HiPhoto size={28} style={styles.stepIcon} />
+                    <HiPhoto size={28} className={styles.stepIcon} />
                   )}
                 </label>
                 <input
-                  style={styles.stepInput}
+                  className={styles.stepInput}
                   type="text"
                   placeholder="조리 순서 설명"
                   value={step.desc}
@@ -282,51 +284,16 @@ const RecipeRegister = () => {
         </div>
 
         {/* 단계 추가 버튼 */}
-        <button style={styles.addButton} onClick={addStep}>+ 단계 추가</button>
-        <div style={styles.margin2}></div>
+        <button className={styles.addButton} onClick={addStep}>+ 단계 추가</button>
+        <div className={styles.margin2}></div>
         {/* 다음 버튼 */}
-        <button style={styles.submitButton} onClick={handleSubmit}>
-          다음<HiChevronRight style={styles.nextIcon} />
+        <button className={styles.submitButton} onClick={handleSubmit}>
+          다음<HiChevronRight className={styles.nextIcon} />
         </button>
-        <div style={styles.margin}></div>
+        <div className={styles.margin}></div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  page: { minHeight: '100vh', backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column' },
-  header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', background: '#fff', borderBottom: '1px solid #ddd', position: 'relative', zIndex: 1 },
-  backButton: { fontSize: 18, cursor: 'pointer' },
-  headerTitle: { position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontWeight: 'bold', fontSize: 16 },
-  headerSpacer: { width: 18 },
-  container: { flex: 1, backgroundColor: '#fff', padding: '16px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' },
-  uploadSection: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #E6E6E6' },
-  uploadIcon: { color: '#888888' },
-  uploadLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
-  inputSection: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid #E6E6E6' },
-  inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'column', gap: '8px' },
-  ingredientRow: { display: 'flex', gap: '8px', alignItems: 'center' },
-  ingredientNameField: { flex: 2 },
-  ingredientAmountField: { flex: 1 },
-  inputTitle: { fontSize: 16, fontWeight: 600, color: '#111111' },
-  inputField: { height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
-  descriptionSection: { padding: '0 12px' },
-  descriptionLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
-  stepsSection: { display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' },
-  stepWrapper: { position: 'relative' },
-  removeIcon: { position: 'absolute', top: '4px', right: '4px', fontSize: 16, color: '#888888', cursor: 'pointer' },
-  stepCard: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #E6E6E6' },
-  photoLabel: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: 60, height: 60, backgroundColor: '#DDD', borderRadius: 6, overflow: 'hidden', cursor: 'pointer' },
-  photoInput: { display: 'none' },
-  photoPreview: { width: '100%', height: '100%', objectFit: 'cover' },
-  stepIcon: { color: '#888888' },
-  stepInput: { flex: 1, height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
-  addButton: { marginTop: '8px', backgroundColor: '#fff', border: '1px solid #888888', borderRadius: 15, padding: '8px 12px', fontSize: 14, cursor: 'pointer', alignSelf: 'center' },
-  submitButton: { marginTop: 'auto', backgroundColor: '#FFD856', borderRadius: 15, padding: '12px', fontSize: 16, fontWeight: 600, color: '#111111', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none', gap: '8px' },
-  nextIcon: { fontSize: 20, color: '#888888' },
-  margin2: {padding: '4px'},
-  margin: {padding: '40px'}
 };
 
 export default RecipeRegister;
