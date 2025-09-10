@@ -6,6 +6,7 @@ import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import axios from 'axios';
+import styles from '../styles/UpdateProfile.module.css';
 
 const UpdateProfile = () => {
   const navigate = useNavigate();
@@ -236,32 +237,36 @@ const UpdateProfile = () => {
   const likeCnt = safeNumber(serverUser?.like_cnt, 0);
 
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.container}>
-        <div style={styles.header}>
-          <div style={styles.backButton}>
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.backButton}>
             <span onClick={goBack}>←</span>
           </div>
-          <div style={styles.headerTitle}>프로필</div>
-          <div style={styles.saveButton}>
+          <div className={styles.headerTitle}>프로필</div>
+          <div className={styles.saveButton}>
             <span onClick={SaveProfile}>저장하기</span>
           </div>
         </div>
 
-        <div style={styles.scrollArea}>
-          <div style={styles.profileContainer}>
-            <label style={{ ...styles.profileImageContainer, position: 'relative' }}>
+        <div className={styles.scrollArea}>
+          <div className={styles.profileContainer}>
+            <label className={styles.profileImageContainer}>
               <input
                 type="file"
                 accept="image/*"
-                style={styles.photoInput}
+                className={styles.photoInput}
                 onChange={(e) => updateFile(e.target.files?.[0])}
               />
               {profile.filePreview ? (
                 <>
-                  <img src={profile.filePreview} alt="프로필 사진" style={styles.profileImage} />
+                  <img
+                    src={profile.filePreview}
+                    alt="프로필 사진"
+                    className={styles.profileImage}
+                  />
                   <div
-                    style={styles.removeIcon}
+                    className={styles.removeIcon}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -276,15 +281,19 @@ const UpdateProfile = () => {
               )}
             </label>
 
-            <div style={styles.profileNameRow}>
+            <div className={styles.profileNameRow}>
               <InlineEditor
                 initialValue={profile.nickname}
                 onSave={(newNick) => updateNickname(newNick)}
               />
-              <p style={styles.text}>
-                <Star width={15} height={15} style={{ verticalAlign: 'middle' }} />
+              <p className={styles.text}>
+                <Star width={15} height={15} className={styles.inlineIcon} />
                 {rating.toFixed(1)} ({reviewCnt})
-                <Heart width={17} height={17} style={{ verticalAlign: 'middle', marginLeft: 6 }} />
+                <Heart
+                  width={17}
+                  height={17}
+                  className={`${styles.inlineIcon} ${styles.heartIcon}`}
+                />
                 {likeCnt}
               </p>
             </div>
@@ -298,35 +307,38 @@ const UpdateProfile = () => {
           </div>
         </div>
 
-        <div style={styles.panelContent}>
-          <div style={styles.userItem}>
-            <strong style={styles.userItemStrong}>{profile.nickname}</strong>
-            <p style={styles.userItemParagraph}>
-              <Star width={15} height={15} style={{ verticalAlign: 'middle' }} />
+        <div className={styles.panelContent}>
+          <div className={styles.userItem}>
+            <strong className={styles.userItemStrong}>{profile.nickname}</strong>
+
+            <p className={styles.userItemParagraph}>
+              <Star width={15} height={15} className={styles.inlineIcon} />
               {rating.toFixed(1)} ({reviewCnt})
-              <Heart width={17} height={17} style={{ verticalAlign: 'middle', marginLeft: 6 }} />
+              <Heart
+                width={17}
+                height={17}
+                className={`${styles.inlineIcon} ${styles.heartIcon}`}
+              />
               {likeCnt}
             </p>
 
-            {/* GeoJSON location → 문자열 변환 */}
-            <p style={styles.userItemParagraph}>
+            <p className={styles.userItemParagraph}>
               {formatLocation(serverUser?.location) || serverUser?.address || ''}
             </p>
 
-            <div style={styles.thumbnailScroll}>
+            <div className={styles.thumbnailScroll}>
               {[0, 1, 2].map((slotIdx) => {
-                // 마지막 채워진 인덱스 계산
                 const filled = profile.main_imgPreviews
                   .map((img, i) => (img ? i : -1))
                   .filter((i) => i >= 0);
                 const lastFilled = filled.length ? filled[filled.length - 1] : -1;
 
                 return (
-                  <label key={slotIdx} style={{ ...styles.thumbnailSlot, position: 'relative' }}>
+                  <label key={slotIdx} className={styles.thumbnailSlot}>
                     <input
                       type="file"
                       accept="image/*"
-                      style={styles.photoInput}
+                      className={styles.photoInput}
                       onChange={(e) => handleAddImage(slotIdx, e.target.files?.[0])}
                     />
                     {profile.main_imgPreviews[slotIdx] ? (
@@ -334,11 +346,11 @@ const UpdateProfile = () => {
                         <img
                           src={profile.main_imgPreviews[slotIdx]}
                           alt={`썸네일${slotIdx}`}
-                          style={styles.thumbnailImage}
+                          className={styles.thumbnailImage}
                         />
                         {slotIdx === lastFilled && (
                           <div
-                            style={styles.removeIcon}
+                            className={styles.removeIcon}
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -359,159 +371,11 @@ const UpdateProfile = () => {
           </div>
         </div>
 
-        <div style={styles.margin}></div>
+        <div className={styles.margin}></div>
       </div>
     </div>
   );
 };
 
-const styles = {
-  wrapper: {
-    minHeight: '100vh',
-    background: '#fff',
-    fontFamily: 'Arial, sans-serif',
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'relative',
-    padding: '0 16px'
-  },
-  container: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: 0
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px 20px',
-    fontWeight: 'bold',
-    fontSize: 16,
-    borderBottom: '1px solid #ddd',
-    position: 'relative'
-  },
-  backButton: {
-    cursor: 'pointer',
-    fontSize: 18,
-    color: '#333'
-  },
-  saveButton: {
-    cursor: 'pointer',
-    fontSize: 14,
-    color: '#333'
-  },
-  headerTitle: {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    fontWeight: 'bold'
-  },
-  scrollArea: {
-    flex: 0,
-    overflowY: 'auto'
-  },
-  profileContainer: {
-    padding: '16px',
-    display: 'flex',
-    flexDirection: 'column',
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  profileImageContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: '100%',
-    backgroundColor: '#B4B3B3',
-    overflow: 'hidden',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover'
-  },
-  profileNameRow: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 6
-  },
-  text: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 6,
-    margin: 0,
-    fontSize: 13,
-    color: '#666'
-  },
-  panelContent: {
-    flex: 0,
-    overflowY: 'auto'
-  },
-  userItemStrong: {
-    fontSize: 'clamp(14px, 4vw, 18px)'
-  },
-  userItemParagraph: {
-    fontSize: 'clamp(12px, 3.5vw, 16px)',
-    margin: '4px 0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6
-  },
-  thumbnailScroll: {
-    display: 'flex',
-    overflowX: 'auto',
-    gap: '8px',
-    marginTop: '16px',
-    marginBottom: '16px'
-  },
-  thumbnailImage: {
-    width: '80px',
-    height: '80px',
-    objectFit: 'cover',
-    borderRadius: '8px',
-    flexShrink: 0
-  },
-  userItem: {
-    borderBottom: '1px solid #ddd',
-    cursor: 'pointer'
-  },
-  thumbnailSlot: {
-    width: '80px',
-    height: '80px',
-    flexShrink: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: '8px',
-    backgroundColor: '#f0f0f0',
-    overflow: 'hidden'
-  },
-  removeIcon: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    background: '#fff',
-    borderRadius: '50%',
-    width: 20,
-    height: 20,
-    lineHeight: '20px',
-    textAlign: 'center',
-    fontSize: '14px',
-    cursor: 'pointer',
-    zIndex: 2
-  },
-  margin: {
-    padding: '30px'
-  },
-  photoInput: {
-    display: 'none' // 숨김 처리
-  }
-};
 
 export default UpdateProfile;

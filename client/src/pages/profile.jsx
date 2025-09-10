@@ -12,6 +12,7 @@ import {
 } from 'react-icons/hi2'; //아이콘들
 import { getAuth } from 'firebase/auth';  //firebase auth 가져오기
 import axios from 'axios'; //axios 가져오기
+import styles from '../styles/Profile.module.css';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -131,257 +132,117 @@ const Profile = () => {
   //테스트용 함수 (auth 상태 변경 함수)
   
   return (
-    <div style={styles.wrapper}>  {/*배경*/}
-      <div style={styles.container}>  {/*요소들 담은 박스*/}
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
 
         {/* 프로필 카드 */}
-        <div style={styles.profileCard} onClick={goToSetting}>  {/*프로필 구역 전체가 버튼임. 누르면 세팅화면으로 이동*/}
-          {/*프로필 이미지 담은 컨테이너*/}
-
-          <div style={styles.profileImageContainer}>
-          {userData.profile_image ? (
-            <img
-              src={userData.profile_image}
-              alt="프로필 사진"
-              style={styles.profileImage}
-            />
-          ) : (
-            <HiUser size={36} />
-          )}  {/*프로필 이미지가 존재 --> 프로필 이미지 띄워줌, 존재X --> HiUser 아이콘 띄워줌*/}
-          </div>
-          {/*프로필 정보 나열*/}
-          <div style={styles.profileInfo}>
-            {userData ? (
-              <div style={styles.profileName}>{userData.nickname}</div>
+        <div className={styles.profileCard} onClick={goToSetting}>
+          <div className={styles.profileImageContainer}>
+            {userData.profile_image ? (
+              <img
+                src={userData.profile_image}
+                alt="프로필 사진"
+                className={styles.profileImage}
+              />
             ) : (
-              <div style={styles.profileName}>사용자를 찾을 수 없습니다</div>
-            )
-            } {/*user 존재하면 닉네임 띄워줌*/}
-            <div style={styles.ratingBadge}>
+              <HiUser size={36} />
+            )}
+          </div>
+
+          <div className={styles.profileInfo}>
+            {userData ? (
+              <div className={styles.profileName}>{userData.nickname}</div>
+            ) : (
+              <div className={styles.profileName}>사용자를 찾을 수 없습니다</div>
+            )}
+
+            <div className={styles.ratingBadge}>
               {userData ? (
-                <div style={styles.ratingText}>{userData.avg_rating}공기</div>
+                <div className={styles.ratingText}>{userData.avg_rating}공기</div>
               ) : (
-                <div style={styles.ratingText}>error</div>
-              )
-              } {/*user 존재하면 평점 띄워줌(avg_rating)*/}
-              
+                <div className={styles.ratingText}>error</div>
+              )}
             </div>
           </div>
-          {/*프로필란 자체가 버튼임을 알게해주는 아이콘 삽입함*/}
-          <div style={styles.arrowIcon}>
-            <HiChevronRight size={22}/>
+
+          <div className={styles.arrowIcon}>
+            <HiChevronRight size={22} />
           </div>
         </div>
 
         {/* 활동하기 카드 */}
-        <div style={styles.activityCard}>
-          <div style={styles.sectionTitle}>활동하기</div> {/*제목*/}
-            {userData.is_auth ? (
-              <button style={styles.button} onClick={goToItemRegister}>
-                <HiPlusCircle size={22} style={styles.leftIcon}/>
-                <span style={styles.buttonText}>내 음식 판매하기</span>
-                <HiChevronRight size={22} style={styles.rightIcon}/>
-              </button>
-            ) : (
-              <button style={styles.button} onClick={goToAuthReq}>
-                <HiPlusCircle size={22} style={styles.leftIcon}/>
-                <span style={styles.buttonText}>음식 판매 인증 요청하기</span>
-                <HiChevronRight size={22} style={styles.rightIcon}/>
-              </button>
-            )}
+        <div className={styles.activityCard}>
+          <div className={styles.sectionTitle}>활동하기</div>
 
-            {/*테스트용 버튼!! */}
-            <button style={styles.button} onClick={toggleAuth}>
-              <HiPlusCircle size={22} style={styles.leftIcon}/>
-              <span style={styles.buttonText}>auth 상태 변경</span>
-              <HiChevronRight size={22} style={styles.rightIcon}/>
+          {userData.is_auth ? (
+            <button className={styles.button} onClick={goToItemRegister}>
+              <HiPlusCircle size={22} className={styles.leftIcon} />
+              <span className={styles.buttonText}>내 음식 판매하기</span>
+              <HiChevronRight size={22} className={styles.rightIcon} />
             </button>
-            {/*테스트용 버튼!! */}
+          ) : (
+            <button className={styles.button} onClick={goToAuthReq}>
+              <HiPlusCircle size={22} className={styles.leftIcon} />
+              <span className={styles.buttonText}>음식 판매 인증 요청하기</span>
+              <HiChevronRight size={22} className={styles.rightIcon} />
+            </button>
+          )}
 
-          <button style={styles.button} onClick={goToRecipeRegister}>  {/*레시피 공유 페이지로 이동하는 버튼, RecipeRegister로 이동하는 함수*/}
-            <HiPencil size={22} style={styles.leftIcon}/>
-            <span style={styles.buttonText}>레시피 공유하기</span>
-            <HiChevronRight size={22} style={styles.rightIcon}/>
+          {/* 테스트용 버튼 */}
+          <button className={styles.button} onClick={toggleAuth}>
+            <HiPlusCircle size={22} className={styles.leftIcon} />
+            <span className={styles.buttonText}>auth 상태 변경</span>
+            <HiChevronRight size={22} className={styles.rightIcon} />
+          </button>
+
+          <button className={styles.button} onClick={goToRecipeRegister}>
+            <HiPencil size={22} className={styles.leftIcon} />
+            <span className={styles.buttonText}>레시피 공유하기</span>
+            <HiChevronRight size={22} className={styles.rightIcon} />
           </button>
         </div>
 
         {/* 나의 거래 카드 */}
-        <div style={styles.transactionCard}>
-          <div style={styles.sectionTitle}>나의 거래</div>  {/*제목*/}
-          { userData.is_auth ? (
-          <button style={styles.button} onClick={goToSalesHistory}> {/*판매내역으로 이동하는 버튼, 아직 구현X*/}
-            <HiTicket size={22} style={styles.leftIcon}/>
-            <span style={styles.buttonText}>판매내역</span>
-            <HiChevronRight size={22} style={styles.rightIcon}/>
-          </button>
+        <div className={styles.transactionCard}>
+          <div className={styles.sectionTitle}>나의 거래</div>
+
+          {userData.is_auth ? (
+            <button className={styles.button} onClick={goToSalesHistory}>
+              <HiTicket size={22} className={styles.leftIcon} />
+              <span className={styles.buttonText}>판매내역</span>
+              <HiChevronRight size={22} className={styles.rightIcon} />
+            </button>
           ) : (
-            <button style={styles.inactive_button}> {/*판매내역버튼 비활성화*/}
-              <HiTicket size={22} style={styles.leftIcon}/>
-              <span style={styles.buttonText}>판매내역</span>
-              <HiChevronRight size={22} style={styles.rightIcon}/>
+            <button className={styles.inactive_button}>
+              <HiTicket size={22} className={styles.leftIcon} />
+              <span className={styles.buttonText}>판매내역</span>
+              <HiChevronRight size={22} className={styles.rightIcon} />
             </button>
           )}
-          <button style={styles.button} onClick={goToPurchaseHistory}>  {/*구매내역으로 이동하는 버튼, 아직 구현X*/}
-            <HiShoppingBag size={22} style={styles.leftIcon}/>
-            <span style={styles.buttonText}>구매내역</span>
-            <HiChevronRight size={22} style={styles.rightIcon}/>
+
+          <button className={styles.button} onClick={goToPurchaseHistory}>
+            <HiShoppingBag size={22} className={styles.leftIcon} />
+            <span className={styles.buttonText}>구매내역</span>
+            <HiChevronRight size={22} className={styles.rightIcon} />
           </button>
-          <button style={styles.button} onClick={goToMyReview}> {/*내가 작성한 리뷰들로 이동하는 버튼, 아직 구현X*/}
-            <HiBookOpen size={22} style={styles.leftIcon}/>
-            <span style={styles.buttonText}>리뷰 관리</span>
-            <HiChevronRight size={22} style={styles.rightIcon}/>
+
+          <button className={styles.button} onClick={goToMyReview}>
+            <HiBookOpen size={22} className={styles.leftIcon} />
+            <span className={styles.buttonText}>리뷰 관리</span>
+            <HiChevronRight size={22} className={styles.rightIcon} />
           </button>
-          <button style={styles.button} onClick={goToMyRecipe}> {/*내 레시피 페이지로 이동하는 버튼,my_recipe 페이지로 이동하는 함수, 페이지 수정 필요 */}
-            <HiBookOpen size={22} style={styles.leftIcon}/>
-            <span style={styles.buttonText}>내 레시피</span>
-            <HiChevronRight size={22} style={styles.rightIcon}/>
+
+          <button className={styles.button} onClick={goToMyRecipe}>
+            <HiBookOpen size={22} className={styles.leftIcon} />
+            <span className={styles.buttonText}>내 레시피</span>
+            <HiChevronRight size={22} className={styles.rightIcon} />
           </button>
         </div>
-        <div style={styles.margin}></div>
+
+        <div className={styles.margin}></div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  wrapper: {
-    backgroundColor: '#f9f9f9',
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'start',
-    boxSizing: 'border-box',
-    fontFamily: 'Roboto, sans-serif'
-  },
-  container: {
-    width: '100%',
-    padding: '16px',
-    backgroundColor: '#ffffff',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px'
-  },
-  profileCard: {
-    backgroundColor: '#ffffff',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-    borderRadius: '15px',
-    padding: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '15px'
-  },
-  profileImageContainer: {
-    width: '65px',
-    height: '65px',
-    borderRadius: '50%',
-    backgroundColor: '#ffffff',
-    overflow: 'hidden',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover'
-  },
-  profileInfo: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '5px'
-  },
-  profileName: {
-    fontSize: '16px',
-    fontWeight: 600,
-    color: 'black'
-  },
-  ratingBadge: {
-    backgroundColor: '#22BC03',
-    borderRadius: '15px',
-    padding: '4px 10px',
-    alignSelf: 'center',
-    textAlign: 'center',
-  },
-  ratingText: {
-    fontSize: '12px',
-    textAlign: 'center',
-    color: '#CDFFB5'
-  },
-  arrowIcon: {
-    backgroundColor: 'transparent',
-    padding: '21.5px'
-  },
-  activityCard: {
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-    borderRadius: '15px',
-    padding: '16px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px'
-  },
-  transactionCard: {
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-    borderRadius: '15px',
-    padding: '16px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px'
-  },
-  sectionTitle: {
-    fontSize: '16px',
-    fontWeight: 600,
-    color: 'black'
-  },
-  button: {
-    backgroundColor: '#FFD856',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-    borderRadius: '15px',
-    position: 'relative',
-    padding: '12px 40px',
-    textAlign: 'center',
-    fontSize: '16px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    border: 'none',
-    transition: 'background-color 0.2s ease',
-  },
-  inactive_button: {
-    backgroundColor: '#E1E1E1',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-    borderRadius: '15px',
-    position: 'relative',
-    padding: '12px 40px',
-    textAlign: 'center',
-    fontSize: '16px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    border: 'none',
-    transition: 'background-color 0.2s ease',
-  },
-  leftIcon: {
-    position: 'absolute',
-    left: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    fontSize: '20px'
-  },
-  rightIcon: {
-    position: 'absolute',
-    right: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    fontSize: '20px'
-  },
-  buttonText: {
-    display: 'block'
-  },
-  margin: {
-    padding: '20px'
-  }
 };
 
 export default Profile;

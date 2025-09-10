@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { users } from '../data/users';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase'; 
+import styles from '../styles/Setting.module.css';
 
 const Setting = () => {
     const { userId } = useParams();
@@ -32,69 +33,30 @@ const Setting = () => {
         }
     }
 
-    return (
-        <div style={styles.wrapper}>
-          <div style={styles.container}>
-            <div style={styles.backButton}><span onClick={goBack}>
-                &lt; 뒤로가기
-            </span></div>
-            <button style={styles.button} onClick={goToUpdateProfile}>프로필 수정</button>
-            <button style={styles.button} onClick={goToAccountMng}>계정 관리</button>
-            <button style={styles.button}>알림설정</button>
-            <button style={styles.button}>채팅설정</button>
-            <button style={styles.button}>앱 설정</button>
-            <div style={styles.margin}></div>
-            <button style={styles.button} onClick={handleLogout}>로그아웃</button>
-            <button style={styles.button}>탈퇴하기</button>
-            <div style={styles.margin}></div>
-          </div>
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <div className={styles.backButton}>
+          <span onClick={goBack}>&lt; 뒤로가기</span>
         </div>
-    );
+
+        <button className={styles.button} onClick={goToUpdateProfile}>프로필 수정</button>
+        <button className={styles.button} onClick={goToAccountMng}>계정 관리</button>
+        <button className={styles.button}>알림설정</button>
+        <button className={styles.button}>채팅설정</button>
+        <button className={styles.button}>앱 설정</button>
+
+        <div className={styles.margin}></div>
+
+        <button className={styles.button} onClick={handleLogout}>로그아웃</button>
+        <button className={styles.button}>탈퇴하기</button>
+
+        <div className={styles.margin}></div>
+      </div>
+    </div>
+  );
 };
 
-const styles = {
-  wrapper: {
-    backgroundColor: '#f9f9f9',
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'start',
-    boxSizing: 'border-box',
-    fontFamily: 'Roboto, sans-serif'
-  },
-  container: {
-    width: '100%',
-    backgroundColor: '#ffffff',
-    padding: '16px',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-    boxSizing: 'border-box',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px'
-  },
-  backButton: {
-        cursor: 'pointer',
-        fontSize: 18,
-        color: '#333',
-  },
-  button: {
-    backgroundColor: '#FFD856',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-    borderRadius: '15px',
-    position: 'relative',
-    padding: '12px 40px',
-    textAlign: 'center',
-    fontSize: '16px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    border: 'none'
-  },
-  buttonText: {
-    display: 'block'
-  },
-  margin: {
-    padding: '20px'
-  }
-};
+
 
 export default Setting;
