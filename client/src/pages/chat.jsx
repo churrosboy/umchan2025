@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getDatabase, ref, push, onValue, query, orderByChild } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
+import styles from '../styles/Chat.module.css';
 
 const Chat = ({ sellerId }) => {
   const [messages, setMessages] = useState([]);
@@ -86,35 +87,28 @@ const Chat = ({ sellerId }) => {
   };
 
   return (
-    <div style={styles.chatContainer}>
-      <div style={styles.messageList}>
+    <div className={styles.chatContainer}>
+      <div className={styles.messageList}>
         {messages.map((msg, idx) => {
           const isMyMessage = msg.senderId === auth.currentUser?.uid;
           const isRead = getReadStatus(msg);
-          
           return (
-            <div 
-              key={idx} 
-              style={{
-                ...styles.message,
-                ...(isMyMessage ? styles.myMessage : styles.otherMessage)
-              }}
+            <div
+              key={idx}
+              className={`${styles.message} ${isMyMessage ? styles.myMessage : styles.otherMessage}`}
             >
-              <div style={{
-                ...styles.messageBubble,
-                ...(isMyMessage ? styles.myMessageBubble : styles.otherMessageBubble)
-              }}>
-                {msg.text}
+              <div className={styles.messageRow}>
+                <div className={`${styles.messageBubble} ${isMyMessage ? styles.myMessageBubble : styles.otherMessageBubble}`}>
+                  {msg.text}
+                </div>
               </div>
-
-              <div style={styles.messageTime}>
-                {new Date(msg.timestamp).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-              </div>
-
-              <div style={styles.messageRow}>
+              <div className={styles.messageInfoContainer}>
+                <div className={styles.messageTime}>
+                  {new Date(msg.timestamp).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                </div>
                 {/* 내가 보낸 메시지에만 읽음 표시 */}
                 {isMyMessage && (
-                  <div style={styles.readStatus}>
+                  <div className={styles.readStatus}>
                     {isRead ? '' : '안읽음'}
                   </div>
                 )}
@@ -124,111 +118,24 @@ const Chat = ({ sellerId }) => {
         })}
         <div ref={messagesEndRef} />
       </div>
-
-      <form style={styles.inputContainer} onSubmit={handleSendMessage}>
+      <form className={styles.inputContainer} onSubmit={handleSendMessage}>
         <textarea
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="메시지를 입력하세요..."
-          style={styles.input}
+          className={styles.input}
           rows="1"
           onInput={(e) => {
             e.target.style.height = 'auto';
             e.target.style.height = e.target.scrollHeight + 'px';
           }}
         />
-        <button type="submit" style={styles.sendButton}><strong>전송</strong></button>
+        <button type="submit" className={styles.sendButton}>
+          <strong>전송</strong>
+        </button>
       </form>
     </div>
   );
-};
-
-const styles = {
-  chatContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '70vh',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    overflow: 'hidden',
-    backgroundColor: '#ffffffff',
-  },
-  messageList: {
-    flex: 1,
-    padding: '10px',
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  message: {
-    marginBottom: '10px',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  myMessage: {
-    alignItems: 'flex-end',
-  },
-  otherMessage: {
-    alignItems: 'flex-start',
-  },
-  messageRow: {
-    display: 'flex',
-    alignItems: 'flex-end',
-    gap: '8px',
-  },
-  messageBubble: {
-    padding: '8px 12px',
-    borderRadius: '8px',
-    maxWidth: '70%',
-    wordBreak: 'break-word',
-  },
-  myMessageBubble: {
-    backgroundColor: '#ffc038',
-    color: 'white',
-  },
-  otherMessageBubble: {
-    backgroundColor: '#f1f3f5',
-    color: '#333',
-  },
-  readStatus: {
-    fontSize: '10px',
-    color: '#666',
-    whiteSpace: 'nowrap',
-    marginTop: '2px',
-    alignSelf: 'flex-start',
-  },
-  messageTime: {
-    fontSize: '10px',
-    color: '#888',
-    marginTop: '2px',
-  },
-  inputContainer: {
-    display: 'flex',
-    padding: '10px',
-    borderTop: '1px solid #ddd',
-  },
-  input: {
-    flex: 1,
-    padding: '8px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    marginRight: '8px',
-    resize: 'none',
-    minHeight: '10px',
-    maxHeight: '70px',
-    overflowY: 'auto', 
-    fontFamily: 'inherit',
-    fontSize: 'inherit',
-  },
-  sendButton: {
-    padding: '8px 15px',
-    backgroundColor: '#ffc038ff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '16px',
-  }
 };
 
 export default Chat;
