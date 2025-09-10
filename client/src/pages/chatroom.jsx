@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase, ref, get, update } from 'firebase/database';
 import Chat from '../pages/chat';
+import styles from '../styles/Chatroom.module.css';
 
 const ChatRoom = () => {
   const { sellerId } = useParams();
@@ -95,41 +96,16 @@ const ChatRoom = () => {
   if (loading) return <div>로딩 중...</div>;
 
   return (
-    <div style={styles.chatPage}>
-      <div style={styles.header}>
-        <button onClick={() => navigate(-1)} style={styles.backButton}>
+    <div className={styles.chatPage}>
+      <div className={styles.header}>
+        <button onClick={() => navigate(-1)} className={styles.backButton}>
           ←
         </button>
         <h2>{sellerInfo?.nickname || '판매자'}</h2>
       </div>
-      
       <Chat sellerId={sellerId} />
     </div>
   );
-};
-
-const styles = {
-  chatPage: {
-    width: '100%',
-    margin: '0 auto',
-    backgroundColor: '#f9f9f9',
-    minHeight: '100vh',
-    borderRadius: '8px',
-    padding: '0 25px',
-    boxSizing: 'border-box',
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '15px',
-  },
-  backButton: {
-    background: 'none',
-    border: 'none',
-    fontSize: '16px',
-    cursor: 'pointer',
-    marginRight: '10px',
-  }
 };
 
 export default ChatRoom;
