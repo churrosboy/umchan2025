@@ -1,0 +1,104 @@
+.wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.contentContainer {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 15px;
+}
+
+.groupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.productInfo {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.productImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.imageContainer {
+  margin-right: 16px;
+}
+
+.arrowIcon {
+  margin-left: 8px;
+  float: right;
+}
+
+.productName {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.productType {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.groupContent {
+  transition: max-height 0.5s ease-in-out;
+  transition-property: max-height, opacity;
+  transition-duration: 0.5s, 0.3s;
+}
+
+.groupContentOpen {
+  max-height: 2000px;
+  overflow: auto;
+  opacity: 1;
+  transition-delay: 0s, 0.2s;
+}
+
+.groupContentClosed {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition-delay: 0s, 0s;
+}
+
+.chatButton {
+  flex: 1;
+  padding: 12px 30px;
+  background-color: #fcd265;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}

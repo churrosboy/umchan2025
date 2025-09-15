@@ -12,6 +12,7 @@ import sellerRoutes from './routes/sellers.js';
 import profileRouter from './routes/profile.js';
 import sanitaryRouter from './routes/sanitary.js';
 import geocodeRouter from './routes/geocode.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -46,6 +47,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/sellers', sellerRoutes);
 app.use('/api/profile', profileRouter); // 프로필 라우터
 app.use('/api/sanitary', sanitaryRouter); // 위생인증 요청 라우터
+app.use('/api/orders', orderRoutes);
 
 const PORT = process.env.PORT || 4000;
 connect()
