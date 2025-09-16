@@ -107,20 +107,24 @@ const OtherProfile = () => {
             </div>
             <div style={styles.scrollArea}>
             <div style={styles.profileContainer}>
-                <div style={styles.profileImage}>👩‍🍳</div>
+                <div style={styles.profileImage}>
+                {user.profile_img ? (
+                    <img 
+                        src={user.profile_img.startsWith('http') ? user.profile_img : `${API_URL}/images${user.profile_img}`}
+                        alt="프로필 사진" 
+                        style={{ width: '100%', height: '100%', borderRadius: '50%' }}
+                    />
+                ) : (
+                    <span role="img" aria-label="No Profile">👤</span>
+                )}
+                </div>
                 <div style={styles.profileNameRow}>
                 <div style={styles.profileName}>{user.nickname || user.name}</div>
                 <p>⭐ {user.avg_rating || user.rating} ({user.review_cnt || user.reviews}) 💚 {user.like_cnt || user.hearts}</p>
                 </div>
                 <div style={styles.profileDesc}>{user.disc || '진심을 담아 정성껏 만들겠습니다.'}</div>
                 <div style={styles.buttonGroup}>
-                <button style={styles.buttonYellow}>채팅하기</button>
-                <button 
-                  style={styles.buttonYellow}
-                  onClick={addToFavorites}
-                >
-                  관심 판매자 등록하기
-                </button>
+                <button style={styles.buttonYellow} onClick={() => navigate(`/chat/${user.id}`)}>채팅하기</button>
                 </div>
                 <div style={styles.infoRow}>
                   {new Date(user.createdAt || new Date()).toLocaleDateString()} 회원 가입 · 

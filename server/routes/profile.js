@@ -242,7 +242,7 @@ router.patch(
           console.log(`썸네일 ${i} 삭제`);
         }
       }
-      update.$set.thumbnail_list = newThumbs;
+      update.$set.main_img = newThumbs;
 
       await users.updateOne({ id: uid }, update);
       const updated = await users.findOne({ id: uid });

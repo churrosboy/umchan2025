@@ -185,9 +185,28 @@ const SellerDetail = () => {
                 className={styles.menuCard}
                 onClick={() => navigate(`/menu/${product.item_id}`)}
               >
-                <strong>{product.name}</strong>
-                <p>{product.info}</p>
-                <p className={styles.menuCardPrice}>{product.price.toLocaleString()}원</p>
+                <div className={styles.menuImageWrapper}>
+                  {product.images[0] ? (
+                    <img 
+                      src={product.images[0]} 
+                      alt={product.name} 
+                      className={styles.menuImage} 
+                      onError={(e) => {
+                        e.target.onerror = null; 
+                        e.target.src = 'https://via.placeholder.com/80?text=No+Image';
+                      }}
+                    />
+                  ) : (
+                    <div className={styles.menuNoImage}>
+                      <span>이미지 없음</span>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.menuContent}>
+                  <strong>{product.name}</strong>
+                  <p>{product.info}</p>
+                  <p className={styles.menuCardPrice}>{product.price.toLocaleString()}원</p>
+                </div>
               </div>
             ))}
           </div>
@@ -204,9 +223,28 @@ const SellerDetail = () => {
                 className={styles.menuCard}
                 onClick={() => navigate(`/menu/${product.item_id}`)}
               >
-                <strong>{product.name}</strong>
-                <p>{product.info}</p>
-                <p className={styles.menuCardPrice}>{product.price.toLocaleString()}원</p>
+                <div className={styles.menuImageWrapper}>
+                  {product.image_url ? (
+                    <img 
+                      src={product.image_url} 
+                      alt={product.name} 
+                      className={styles.menuImage} 
+                      onError={(e) => {
+                        e.target.onerror = null; 
+                        e.target.src = 'https://via.placeholder.com/80?text=No+Image';
+                      }}
+                    />
+                  ) : (
+                    <div className={styles.menuNoImage}>
+                      <span>이미지 없음</span>
+                    </div>
+                  )}
+                </div>
+                <div className={styles.menuContent}>
+                  <strong>{product.name}</strong>
+                  <p>{product.info}</p>
+                  <p className={styles.menuCardPrice}>{product.price.toLocaleString()}원</p>
+                </div>
               </div>
             ))}
           </div>
