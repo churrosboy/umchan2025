@@ -2,47 +2,59 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 // pages
-import Login from './pages/login';
-import Signup1 from './pages/signup1';
-import Signup2 from './pages/signup2';
-import Signup3 from './pages/signup3';
-import Signup4 from './pages/signup4';
-import Home from './pages/home';
-import SellerDetail from './pages/seller_detail';
-import MenuDetail from './pages/menu_detail';
-import OtherProfile from './pages/other_user_profile';
-import SellerAuth from './pages/seller_auth';
-import RecipeList from './pages/user_recipe_list';
-import ReviewList from './pages/user_review_list';
-import Profile from './pages/profile';
-import Setting from './pages/setting';
-import Sales_History from './pages/sales_history';
-import Purchase_History from './pages/purchase_history';
-import MyRecipe from './pages/my_recipe';
-import My_review from './pages/my_review';
-import RecipeRegister from './pages/RecipeRegister';
-import UpdateProfile from './pages/UpdateProfile';
-import Search from './pages/search';
-import SellerList from './pages/seller_list';
-import Recipes from './pages/recipes';
-import SearchRecipe from './pages/search_recipe';
-import RecipeDetail from './pages/recipe_detail';
-import ReviewPost from './pages/review_post';
-import AccountMng from './pages/AccountMng';
-import AuthReq from './pages/AuthReq'; // 위생인증 요청 페이지
-import ItemRegister from './pages/item_register';
-import ChatRoom from './pages/chatroom';
-import ChatList from './pages/chat_list';
-import Cart from './pages/cart';
+import Login from './pages/auth/Login/Login';
+import Signup1 from './pages/auth/SignUp/SignUp1';
+import Signup2 from './pages/auth/SignUp/SignUp2';
+import Signup3 from './pages/auth/SignUp/SignUp3';
+import Signup4 from './pages/auth/SignUp/SignUp4';
+
+import Home from './pages/home/Home';
+
+import SellerDetail from './pages/sellers/SellerDetail';
+import MenuDetail from './pages/MenuDetail';
+
+import Profile from './pages/profile/Profile';
+import UpdateProfile from './pages/profile/UpdateProfile';
+import OtherProfile from './pages/profile/OthersProfile';
+
+import SellerAuth from './pages/sellers/SellerAuth';
+
+import RecipeList from './pages/users/UserRecipeList';
+import ReviewList from './pages/users/UserReviewList';
+import MyRecipe from './pages/users/MyRecipe';
+import MyReview from './pages/users/MyReview';
+import Setting from './pages/users/Setting';
+import AccountMng from './pages/users/AccountMng';
+import AuthReq from './pages/users/AuthReq'; // 위생인증 요청 페이지
+
+import SalesHistory from './pages/SalesHistory';
+import PurchaseHistory from './pages/PurchaseHistory';
+
+import RecipeRegister from './pages/recipe/RecipeRegister';
+import RecipeDetail from './pages/recipe/RecipeDetail';
+import Recipes from './pages/recipe/Recipe';
+
+import Search from './pages/search/Search';
+import SearchRecipe from './pages/search/SearchRecipe';
+
+import ReviewPost from './pages/PostReview';
+
+import ItemRegister from './pages/ItemRegister';
+import SellerList from './pages/sellers/SellerList';
+
+import ChatRoom from './pages/chat/ChatRoom';
+import ChatList from './pages/chat/ChatList';
+
+import Cart from './pages/cart/Cart';
 
 // components
-import NavigationBar from './components/navigation_bar';
-import SearchBar from './components/search_bar';
-import ProtectedRoute from './components/protected_route';
+import NavigationBar from './components/NavigationBar';
+import SearchBar from './components/SearchBar';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const AppRoutes = () => {
   const location = useLocation();
-  
+
   const hideNavigationBar = [
     '/', '/signup1', '/signup2', '/signup3', '/signup4'
   ].includes(location.pathname);
@@ -71,10 +83,10 @@ const AppRoutes = () => {
         <Route path="/user_review_list/:userId" element={<ProtectedRoute><ReviewList /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/setting" element={<ProtectedRoute><Setting /></ProtectedRoute>} />
-        <Route path="/sales_history" element={<ProtectedRoute><Sales_History /></ProtectedRoute>} />
-        <Route path="/purchase_history" element={<ProtectedRoute><Purchase_History /></ProtectedRoute>} />
+        <Route path="/sales_history" element={<ProtectedRoute><SalesHistory /></ProtectedRoute>} />
+        <Route path="/purchase_history" element={<ProtectedRoute><PurchaseHistory /></ProtectedRoute>} />
         <Route path="/my_recipe/:userId" element={<ProtectedRoute><MyRecipe /></ProtectedRoute>} />
-        <Route path="/my_review" element={<ProtectedRoute><My_review /></ProtectedRoute>} />
+        <Route path="/my_review" element={<ProtectedRoute><MyReview /></ProtectedRoute>} />
         <Route path="/RecipeRegister" element={<ProtectedRoute><RecipeRegister /></ProtectedRoute>} />
         <Route path="/UpdateProfile" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
         <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
