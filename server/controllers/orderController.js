@@ -75,8 +75,8 @@ export async function getBuyerOrders(req, res) {
   }
 }
 
-// 특정 주문 삭제
-export async function deleteOrder(req, res) {
+// 주문 취소 (상태 변경)
+export async function cancelOrder(req, res) {
   const token = getTokenFromHeader(req);
   if (!token) return res.status(401).json({ success: false, message: "No token" });
 
@@ -85,24 +85,68 @@ export async function deleteOrder(req, res) {
     const myUid = decoded.uid;
 
     const { orderId } = req.params;
-    let deletedOrder = await Order.findOneAndDelete({ order_id: orderId, buyer_id: myUid });
-    if (!deletedOrder) {
-      deletedOrder = await Order.findOneAndDelete({ order_id: orderId, seller_id: myUid });
-    }
-    
-    if (!deletedOrder) {
+    // 구매자 또는 판매자만 취소 가능
+    const order = await Order.findOne({
+      order_id: orderId,
+      $or: [{ buyer_id: myUid }, { seller_id: myUid }]
+    });
+
+    if (!order) {
       return res.status(404).json({ message: '주문을 찾을 수 없습니다.' });
     }
+
+    // 상태를 'cancelled'로 변경
+    order.status = 'cancelled';
+    await order.save();
+
     res.json({
       success: true,
-      order: deletedOrder,
-      message: '주문이 성공적으로 삭제되었습니다.'
+      order,
+      message: '주문이 성공적으로 취소되었습니다.'
     });
   } catch (err) {
     res.status(401).json({
       success: false,
       error: err.message,
-      message: '토큰 검증 실패 또는 주문 삭제중 오류가 발생했습니다.'
+      message: '토큰 검증 실패 또는 주문 취소 중 오류가 발생했습니다.'
+    });
+  }
+}
+
+// 주문 확정 (상태 변경)
+export async function confirmOrder(req, res) {
+  const token = getTokenFromHeader(req);
+  if (!token) return res.status(401).json({ success: false, message: "No token" });
+
+  try {
+    const decoded = await admin.auth().verifyIdToken(token);
+    const myUid = decoded.uid;
+
+    const { orderId } = req.params;
+    // 구매자만 확정 가능
+    const order = await Order.findOne({
+      order_id: orderId,
+      buyer_id: myUid
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: '주문을 찾을 수 없습니다.' });
+    }
+
+    // 상태를 'completed'로 변경
+    order.status = 'completed';
+    await order.save();
+
+    res.json({
+      success: true,
+      order,
+      message: '주문이 성공적으로 확정되었습니다.'
+    });
+  } catch (err) {
+    res .status(401).json({
+      success: false,
+      error: err.message,
+      message: '토큰 검증 실패 또는 주문 확정 중 오류가 발생했습니다.'
     });
   }
 }

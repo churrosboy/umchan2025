@@ -101,4 +101,14 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  margin-right: 15px;
+}
+
+.centerTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 1.2rem;
+  font-weight: bold;
 }

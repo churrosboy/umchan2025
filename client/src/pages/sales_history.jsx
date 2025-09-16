@@ -106,7 +106,7 @@ const Sales_History = () => {
     <div className={`${header.wrapper} ${salesStyles.wrapper}`}> 
       <div className={header.header}> 
         <div className={header.backButton} onClick={goBack}>←</div> 
-        <div className={header.title}>판매 내역</div> 
+        <div className={salesStyles.centerTitle}>판매 내역</div> 
       </div>
       
       <div className={salesStyles.contentContainer}>
