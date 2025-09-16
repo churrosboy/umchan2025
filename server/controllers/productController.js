@@ -1,4 +1,7 @@
 import Product from '../models/Product.js';
+import admin from 'firebase-admin';
+import fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 
 // 판매 품목 등록
 export async function createProduct(req, res) {
@@ -8,6 +11,8 @@ export async function createProduct(req, res) {
     console.log('Request files:', req.files);
 
     let imageUrls = [];
+
+    /*
 
     // 방법 1: upload.array('images', 10) 사용 시
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
@@ -26,6 +31,51 @@ export async function createProduct(req, res) {
           }
         }
       });
+    }
+    */
+
+    // Firebase Storage에 이미지 업로드
+    imageUrls = []; // 변수 재선언 방지
+
+    try {
+      // 버킷 이름을 명시적으로 지정
+      const bucket = admin.storage().bucket('umchan-eb63f.firebasestorage.app');
+      
+      const files = req.files || [];
+      
+      for (const file of files) {
+        const destination = `products/${file.filename}`;
+        
+        console.log(`파일 업로드 시작: ${file.filename} -> ${destination}`);
+        
+        await bucket.upload(file.path, {
+          destination,
+          metadata: {
+            contentType: file.mimetype,
+            metadata: {
+              firebaseStorageDownloadTokens: uuidv4()
+            }
+          }
+        });
+        
+        // Storage 파일의 public URL 생성 (토큰 기반 URL)
+        const downloadToken = uuidv4();
+        const url = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(destination)}?alt=media&token=${downloadToken}`;
+
+        // console.log(`생성된 URL: ${url}`);
+        imageUrls.push(url);
+        
+        // 임시 파일 삭제
+        fs.unlinkSync(file.path);
+      }
+    } catch (storageError) {
+      console.error('Firebase Storage 업로드 실패:', storageError);
+      
+      // 실패 시 로컬 파일 경로 사용 (대체 방안)
+      if (req.files && Array.isArray(req.files)) {
+        imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+        console.log('로컬 경로로 대체:', imageUrls);
+      }
     }
 
     if (imageUrls.length === 0) {

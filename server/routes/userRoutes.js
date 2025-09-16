@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
       thumbnail_list: [],
       instant_cnt: new Int32(0),
       reserve_cnt: new Int32(0),
-      profile_image: "",
+      profile_img: "",
       intro: ""
     };
 

@@ -10,7 +10,6 @@ import styles from '../styles/UpdateProfile.module.css';
 
 const UpdateProfile = () => {
   const navigate = useNavigate();
-
   const [authUser, setAuthUser] = useState(null);
   const [serverUser, setServerUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -101,7 +100,7 @@ const UpdateProfile = () => {
           nickname: userData.nickname ?? '',
           disc: userData.intro ?? '',
 
-          filePreview: toPublicUrl(userData.profile_image ?? null),
+          filePreview: userData.profile_img,
           fileFile: null,
           clearProfile: false,
 
@@ -190,9 +189,9 @@ const UpdateProfile = () => {
 
       // 프로필 이미지
       if (profile.fileFile) {
-        form.append('profile_image', profile.fileFile);
+        form.append('profile_img', profile.fileFile);
       }
-      form.append('clear_profile_image', String(!!profile.clearProfile));
+      form.append('clear_profile_img', String(!!profile.clearProfile));
 
       // 썸네일 0~2
       for (let i = 0; i < 3; i++) {
@@ -215,10 +214,10 @@ const UpdateProfile = () => {
         const thumbs = Array.isArray(updated.thumbnail_list) ? updated.thumbnail_list : [];
         setProfile((prev) => ({
           ...prev,
-          filePreview: toPublicUrl(updated.profile_image ?? null),
+          filePreview: updated.profile_img,
           fileFile: null,
           clearProfile: false,
-          main_imgPreviews: [...thumbs, null, null].slice(0, 3).map(toPublicUrl),
+          main_imgPreviews: [...thumbs, null, null].slice(0, 3),
           main_imgFiles: [null, null, null],
           clearThumbs: [false, false, false],
         }));
@@ -260,10 +259,16 @@ const UpdateProfile = () => {
               />
               {profile.filePreview ? (
                 <>
+                  {console.log('filePreview URL:', profile.filePreview)}
                   <img
                     src={profile.filePreview}
                     alt="프로필 사진"
                     className={styles.profileImage}
+                    onError={(e) => {
+                      console.error('이미지 로드 실패:', e, profile.filePreview);
+                      e.target.onerror = null;
+                      e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                    }}
                   />
                   <div
                     className={styles.removeIcon}

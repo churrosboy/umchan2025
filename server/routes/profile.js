@@ -43,6 +43,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 const fileUrl = (filename) => `/api/uploads/${filename}`;
+
 function parseBearer(req) {
   const h = req.headers.authorization || "";
   const m = h.match(/^Bearer\s+(.+)$/i);
@@ -77,19 +78,30 @@ router.get("/", async (req, res) => {
 /*
 받아들일 필드:
 - 텍스트: nickname, intro, address, phone_number,
-         clear_profile_image, clear_thumbnail0/1/2 ('true'/'false')
-- 파일: profile_image(1), thumbnail0/1/2 (각 1)
+         clear_profile_img, clear_thumbnail0/1/2 ('true'/'false')
+- 파일: profile_img(1), thumbnail0/1/2 (각 1)
 */
 router.patch(
   "/",
   upload.fields([
-    { name: "profile_image", maxCount: 1 },
+    { name: "profile_img", maxCount: 1 },
     { name: "thumbnail0", maxCount: 1 },
     { name: "thumbnail1", maxCount: 1 },
     { name: "thumbnail2", maxCount: 1 },
   ]),
   async (req, res) => {
     try {
+      // Firebase Admin SDK 상태 확인
+      console.log("Firebase Admin 상태 확인:");
+      console.log("- admin.storage() 존재 여부:", !!admin.storage());
+      console.log("- bucket 존재 여부:", !!admin.storage().bucket());
+      try {
+        const bucketName = admin.storage().bucket().name;
+        console.log("- bucket 이름:", bucketName);
+      } catch (e) {
+        console.error("- bucket 이름 확인 실패:", e.message);
+      }
+      
       const token = parseBearer(req);
       if (!token) return res.status(401).json({ error: "No token" });
 
@@ -112,11 +124,58 @@ router.patch(
       if (typeof body.phone_number === "string") update.$set.phone_number = body.phone_number;
 
       // 프로필 이미지
-      const profileFile = files.profile_image?.[0];
+      const profileFile = files.profile_img?.[0];
       if (profileFile) {
-        update.$set.profile_image = fileUrl(profileFile.filename);
-      } else if (String(body.clear_profile_image).toLowerCase() === "true") {
-        update.$set.profile_image = null;
+        try {
+          console.log("프로필 이미지 Firebase 업로드 시작:", profileFile.filename);
+          
+          // Firebase Storage 버킷 참조
+          const bucket = admin.storage().bucket();
+          
+          // 파일 경로 생성
+          const timestamp = Date.now();
+          const randomId = Math.random().toString(36).substring(2, 8);
+          const destination = `profile_images/${uid}_${timestamp}_${randomId}`;
+          
+          // 로컬 파일 경로
+          const filePath = profileFile.path;
+          
+          // Firebase Storage에 업로드
+          await bucket.upload(filePath, {
+            destination: destination,
+            metadata: {
+              contentType: profileFile.mimetype,
+              metadata: {
+                firebaseStorageDownloadTokens: uid // 토큰으로 사용자 ID 활용
+              }
+            }
+          });
+          
+          // 업로드 후 공개 URL 생성
+          const file = bucket.file(destination);
+          const [metadata] = await file.getMetadata();
+          
+          // 파일 URL 생성
+          const bucketName = bucket.name;
+          const downloadToken = metadata.metadata.firebaseStorageDownloadTokens;
+          const fileUrls = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(destination)}?alt=media&token=${downloadToken}`;
+          
+          // URL을 프로필 이미지로 설정
+          update.$set.profile_img = fileUrls;
+          
+          // 임시 파일 삭제
+          fs.unlinkSync(filePath);
+
+          console.log("프로필 이미지 Firebase 업로드 성공:", fileUrls);
+        } catch (error) {
+          console.error("Firebase 업로드 오류:", error);
+          // 에러 발생 시 기존 방식으로 폴백
+          update.$set.profile_img = fileUrl(profileFile.filename);
+          console.log("로컬 URL로 대체:", update.$set.profile_img);
+        }
+      } else if (String(body.clear_profile_img).toLowerCase() === "true") {
+        update.$set.profile_img = null;
+        console.log("프로필 이미지 삭제");
       }
 
       // 썸네일 갱신(3칸)
@@ -129,8 +188,59 @@ router.patch(
       for (let i = 0; i < 3; i++) {
         const f = files[`thumbnail${i}`]?.[0];
         const clear = String(body[`clear_thumbnail${i}`]).toLowerCase() === "true";
-        if (f) newThumbs[i] = fileUrl(f.filename);
-        else if (clear) newThumbs[i] = null;
+        
+        if (f) {
+          try {
+            console.log(`썸네일 ${i} Firebase 업로드 시작:`, f.filename);
+            
+            // Firebase Storage 버킷 참조
+            const bucket = admin.storage().bucket();
+            
+            // 파일 경로 생성
+            const timestamp = Date.now();
+            const randomId = Math.random().toString(36).substring(2, 8);
+            const destination = `thumbnails/${uid}_${i}_${timestamp}_${randomId}`;
+            
+            // 로컬 파일 경로
+            const filePath = f.path;
+            
+            // Firebase Storage에 업로드
+            await bucket.upload(filePath, {
+              destination: destination,
+              metadata: {
+                contentType: f.mimetype,
+                metadata: {
+                  firebaseStorageDownloadTokens: `${uid}_${i}` // 토큰으로 사용자 ID와 썸네일 번호 활용
+                }
+              }
+            });
+            
+            // 업로드 후 공개 URL 생성
+            const file = bucket.file(destination);
+            const [metadata] = await file.getMetadata();
+            
+            // 파일 URL 생성
+            const bucketName = bucket.name;
+            const downloadToken = metadata.metadata.firebaseStorageDownloadTokens;
+            const thumbnailUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(destination)}?alt=media&token=${downloadToken}`;
+            
+            // URL을 썸네일로 설정
+            newThumbs[i] = thumbnailUrl;
+            
+            // 임시 파일 삭제
+            fs.unlinkSync(filePath);
+            
+            console.log(`썸네일 ${i} Firebase 업로드 성공:`, thumbnailUrl);
+          } catch (error) {
+            console.error(`썸네일 ${i} Firebase 업로드 오류:`, error);
+            // 에러 발생 시에는 로컬 URL 사용 (폴백)
+            newThumbs[i] = fileUrl(f.filename);
+            console.log(`썸네일 ${i} 로컬 URL로 대체:`, newThumbs[i]);
+          }
+        } else if (clear) {
+          newThumbs[i] = null;
+          console.log(`썸네일 ${i} 삭제`);
+        }
       }
       update.$set.thumbnail_list = newThumbs;
 

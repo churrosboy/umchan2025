@@ -14,9 +14,9 @@ export const sellers = [
       { id: 102, name: '메뉴B', price: 12000, desc: '오이무침', reviews: 5 },
     ],
     images: [
-      '/images/seller1-1.jpeg',
-      '/images/seller1-2.jpeg',
-      '/images/seller1-3.jpeg'
+      process.env.PUBLIC_URL + '/images/seller1-1.jpeg',
+      process.env.PUBLIC_URL + '/images/seller1-2.jpeg',
+      process.env.PUBLIC_URL + '/images/seller1-3.jpeg'
     ],
 
   },
@@ -34,9 +34,9 @@ export const sellers = [
       { id: 103, name: '메뉴C', price: 13000, desc: '김치전', reviews: 12 },
     ],
     images: [
-      '/images/seller2-1.jpeg',
-      '/images/seller2-2.jpeg',
-      '/images/seller2-3.jpeg'
+      process.env.PUBLIC_URL + '/images/seller2-1.jpeg',
+      process.env.PUBLIC_URL + '/images/seller2-2.jpeg',
+      process.env.PUBLIC_URL + '/images/seller2-3.jpeg'
     ],
   },
   {
