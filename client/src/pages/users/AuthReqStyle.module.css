@@ -1,20 +1,21 @@
 /* 카드 레이아웃: Profile의 카드(둥근 모서리 + 그림자) 느낌 */
-.authreq-card {
+.authreqCard {
   margin: 16px;
   padding: 16px;
   background: #ffffff;
   border-radius: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* 타이틀 & 서브타이틀 */
-.authreq-title {
+.authreqTitle {
   font-size: 16px;
   font-weight: 600;
   color: #000;
   text-align: center;
 }
-.authreq-subtitle {
+
+.authreqSubTitle {
   margin-top: 6px;
   font-size: 13px;
   color: #666;
@@ -22,14 +23,14 @@
 }
 
 /* 업로드 슬롯 행 */
-.authreq-slotRow {
+.authreqSlotRow {
   display: flex;
   justify-content: center;
   margin: 16px 0 12px;
 }
 
 /* 슬롯 자체: 프로필 썸네일 느낌 유지 + 더 큼 */
-.authreq-slot {
+.authreqSlot {
   width: 260px;
   height: 200px;
   border-radius: 15px;
@@ -43,26 +44,26 @@
   cursor: pointer;
 }
 
-.authreq-fileInput {
+.authreqFileInput {
   display: none;
 }
 
 /* + 아이콘 */
-.authreq-plus {
+.authreqPlus {
   font-size: 48px;
   color: #bbb;
   line-height: 1;
 }
 
 /* 이미지 미리보기 */
-.authreq-slotImg {
+.authreqSlotImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 /* 우상단 X 제거 버튼 (프로필/썸네일 UX 통일) */
-.authreq-remove {
+.authreqRemove {
   position: absolute;
   top: 6px;
   right: 6px;
@@ -74,31 +75,38 @@
   line-height: 24px;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 /* 상태 배지 */
-.authreq-status {
+.authreqStatus {
   text-align: center;
   font-size: 13px;
   margin: 6px 0 2px;
   color: #666;
 }
-.authreq-status--pending { color: #a67c00; }   /* 노랑계 */
-.authreq-status--approved { color: #2e7d32; }  /* 초록 */
-.authreq-status--rejected { color: #b71c1c; }  /* 레드 */
 
-/* 액션 영역 */
-.authreq-actions {
+.authreqStatus--pending {
+  color: #a67c00;
+}
+
+.authreqStatus--approved {
+  color: #2e7d32;
+}
+
+.authreqStatus--rejected {
+  color: #b71c1c;
+}
+
+.authreqAction {
   display: flex;
   justify-content: center;
   margin-top: 12px;
 }
 
-/* 노란 버튼: Profile.styles.button 과 동일 톤 */
-.authreq-yellowBtn {
+.authreqButton {
   background-color: #FFD856;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 15px;
   padding: 12px 40px;
   border: none;
@@ -107,19 +115,23 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-.authreq-yellowBtn:disabled {
+
+.authreqButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-.authreq-yellowBtn:active {
+
+.authreqButton:active {
   filter: brightness(0.97);
 }
 
-/* 가이드 힌트 */
-.authreq-hints {
+.authreqHint {
   margin: 14px 8px 4px;
   padding-left: 18px;
   color: #777;
   font-size: 12px;
 }
-.authreq-hints li { margin: 4px 0; }
+
+.authreqHint li {
+  margin: 4px 0;
+}

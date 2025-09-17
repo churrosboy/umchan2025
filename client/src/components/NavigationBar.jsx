@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   HiHome,
@@ -21,32 +20,13 @@ const NavigationBar = () => {
   ];
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: 0,
-      width: '100%',
-      height: '60px',
-      background: '#fff',
-      borderTop: '1px solid #ccc',
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      zIndex: 100,
-    }}>
+    <div className="navigationContainer">
       {items.map(item => (
         <button
           key={item.path}
           onClick={() => navigate(item.path)}
-          style={{
-            background: 'none',
-            border: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: location.pathname === item.path ? '#fcd265' : '#444',
-            fontSize: 12,
-          }}
+          className="navigationBar"
+          style={{ color: location.pathname === item.path ? '#fcd265' : '#444' }}
         >
           {item.icon}
           <span style={{ marginTop: 2 }}>{item.label}</span>

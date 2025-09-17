@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import header from "../PageHeader.module.css";
-import "./AuthReqStyle.module.css";
+import styles from "./AuthReqStyle.module.css";
 import axios from "axios";
 import { getAuth } from "firebase/auth";
 
@@ -107,43 +107,39 @@ const AuthReq = () => {
           <div className={header.saveButton} />
         </div>
 
-        {/* 카드 */}
-        <div className="authreq-card">
-          <div className="authreq-title">주방 사진을 찍어 업로드해주세요</div>
-          <div className="authreq-subtitle">선명한 사진일수록 승인 확률이 높아요.</div>
+        <div className={styles.authreqCard}>
+          <div className={styles.authreqTitle}>주방 사진을 찍어 업로드해주세요</div>
+          <div className={styles.authreqSubTitle}>선명한 사진일수록 승인 확률이 높아요.</div>
 
-          {/* 업로드 슬롯 */}
-          <div className="authreq-slotRow">
-            <label htmlFor="kitchen-upload" className="authreq-slot">
+          <div className={styles.authreqSlotRow}>
+            <label htmlFor="kitchen-upload" className={styles.authreqSlot}>
               <input
                 id="kitchen-upload"
                 type="file"
                 accept="image/*"
-                className="authreq-fileInput"
+                className={styles.authreqFileInput}
                 onChange={onFileChange}
               />
               {preview ? (
                 <>
-                  <img src={preview} alt="kitchen" className="authreq-slotImg" />
-                  <div className="authreq-remove" onClick={clearPhoto}>×</div>
+                  <img src={preview} alt="kitchen" className={styles.authreqSlotImg} />
+                  <div className={styles.authreqRemove} onClick={clearPhoto}>×</div>
                 </>
               ) : (
-                <div className="authreq-plus">+</div>
+                <div className={styles.authreqPlus}>+</div>
               )}
             </label>
           </div>
 
-          {/* 상태 배지 */}
           {status && (
-            <div className={`authreq-status authreq-status--${status}`}>
+            <div className={`${styles.authreqStatus} ${styles[`authreqStatus--${status}`]}`}>
               {status === "pending" ? "검토 대기중" : status === "approved" ? "승인됨" : "반려됨"}
             </div>
           )}
 
-          {/* 노란 버튼 */}
-          <div className="authreq-actions">
+          <div className={styles.authreqAction}>
             <button
-              className="authreq-yellowBtn"
+              className={styles.authreqButton}
               onClick={submit}
               disabled={!preview || !!(preview && !file)}
               title={!preview ? "사진을 업로드해주세요" : undefined}
@@ -152,8 +148,7 @@ const AuthReq = () => {
             </button>
           </div>
 
-          {/* 힌트 */}
-          <ul className="authreq-hints">
+          <ul className={styles.authreqHint}>
             <li>조리대, 조리기구, 위생상태가 잘 보이도록 촬영해주세요.</li>
             <li>개인정보(주소, 전화번호 등)가 사진에 노출되지 않게 주의하세요.</li>
           </ul>

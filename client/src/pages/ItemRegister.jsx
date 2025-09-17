@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { HiPhoto, HiChevronRight, HiMiniXCircle } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import styles from './Item.module.css';
 const API_URL = process.env.REACT_APP_API_URL;
 
 const ItemRegister = () => {
@@ -18,31 +19,31 @@ const ItemRegister = () => {
         navigate('/');
         return;
       }
-      
+
       try {
         setAuthUser(fbUser);
         const token = await fbUser.getIdToken();
-        
+
         // 서버에서 사용자 정보 가져오기
         const res = await fetch('/api/profile', {
-          headers: { 
-            Authorization: `Bearer ${token}` 
+          headers: {
+            Authorization: `Bearer ${token}`
           }
         });
-        
+
         const userData = await res.json();
         if (!userData?.user) {
           alert('사용자 정보를 찾을 수 없습니다.');
           return;
         }
-        
+
         setUser(userData.user);
       } catch (err) {
         console.error('사용자 정보 불러오기 실패:', err);
         alert('사용자 정보를 불러올 수 없습니다.');
       }
     });
-    
+
     return () => unsub();
   }, [navigate]);
 
@@ -118,41 +119,41 @@ const ItemRegister = () => {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <div style={styles.backButton} onClick={goBack}>←</div>
-        <div style={styles.headerTitle}>판매 품목 등록</div>
-        <div style={styles.headerSpacer} />
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <div className={styles.backButton} onClick={goBack}>←</div>
+        <div className={styles.headerTitle}>판매 품목 등록</div>
+        <div className={styles.headerSpacer} />
       </div>
-      <div style={styles.container}>
+      <div className={styles.container}>
         {/* 이미지 업로드 */}
-        <div style={styles.uploadSection}>
-          <label style={styles.photoLabel}>
+        <div className={styles.uploadSection}>
+          <label className={styles.photoLabel}>
             <input
               type="file"
-              style={styles.photoInput}
+              className={styles.photoInput}
               multiple
               accept="image/*"
               onChange={handleImageChange}
             />
-            <HiPhoto size={28} style={styles.stepIcon} />
+            <HiPhoto size={28} className={styles.stepIcon} />
           </label>
-          <div style={styles.uploadLabel}>상품 사진 등록 (여러 장 가능)</div>
+          <div className={styles.uploadLabel}>상품 사진 등록 (여러 장 가능)</div>
         </div>
         {/* 이미지 미리보기 및 삭제 */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+        <div className={styles.previewGrid}>
           {images.map((img, idx) => (
-            <div key={idx} style={{ position: 'relative' }}>
-              <img src={URL.createObjectURL(img)} alt="item" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 6 }} />
-              <HiMiniXCircle style={{ position: 'absolute', top: 2, right: 2, fontSize: 18, color: '#888', cursor: 'pointer' }} onClick={() => removeImage(idx)} />
+            <div key={idx} className={styles.previewItem}>
+              <img src={URL.createObjectURL(img)} alt="item" className={styles.previewImg} />
+              <HiMiniXCircle className={styles.removeIcon} onClick={() => removeImage(idx)} />
             </div>
           ))}
         </div>
         {/* 상품명 */}
-        <div style={styles.inputSection}>
-          <div style={styles.inputTitle}>상품명</div>
+        <div className={styles.inputSection}>
+          <div className={styles.inputTitle}>상품명</div>
           <input
-            style={styles.inputField}
+            className={styles.inputField}
             type="text"
             name="name"
             value={item.name}
@@ -161,18 +162,18 @@ const ItemRegister = () => {
           />
         </div>
         {/* 판매 방식 */}
-        <div style={styles.inputSection}>
-          <div style={styles.inputTitle}>판매 방식</div>
-          <select name="type" value={item.type} onChange={handleChange} style={styles.inputField}>
+        <div className={styles.inputSection}>
+          <div className={styles.inputTitle}>판매 방식</div>
+          <select name="type" value={item.type} onChange={handleChange} className={styles.inputField}>
             <option value="즉시">즉시 판매</option>
             <option value="예약">예약 판매</option>
           </select>
         </div>
         {/* 가격 */}
-        <div style={styles.inputSection}>
-          <div style={styles.inputTitle}>가격</div>
+        <div className={styles.inputSection}>
+          <div className={styles.inputTitle}>가격</div>
           <input
-            style={styles.inputField}
+            className={styles.inputField}
             type="number"
             name="price"
             value={item.price}
@@ -181,10 +182,10 @@ const ItemRegister = () => {
           />
         </div>
         {/* 예약 마감 */}
-        <div style={styles.inputSection}>
-          <div style={styles.inputTitle}>예약 마감 시간</div>
+        <div className={styles.inputSection}>
+          <div className={styles.inputTitle}>예약 마감 시간</div>
           <input
-            style={styles.inputField}
+            className={styles.inputField}
             type="datetime-local"
             name="reserve_end"
             value={item.reserve_end}
@@ -193,56 +194,24 @@ const ItemRegister = () => {
           />
         </div>
         {/* 설명 */}
-        <div style={styles.inputSection}>
-          <div style={styles.inputTitle}>상품 설명</div>
+        <div className={styles.inputSection}>
+          <div className={styles.inputTitle}>상품 설명</div>
           <textarea
-            style={{ ...styles.inputField, height: 80, resize: 'vertical' }}
+            className={styles.inputField}
             name="info"
             value={item.info}
             onChange={handleChange}
             placeholder="상품 설명을 입력하세요"
           />
         </div>
-        <div style={styles.margin2}></div>
-        <button style={styles.submitButton} onClick={handleSubmit}>
-          등록<HiChevronRight style={styles.nextIcon} />
+        <div className={styles.margin2}></div>
+        <button className={styles.submitButton} onClick={handleSubmit}>
+          등록<HiChevronRight className={styles.nextIcon} />
         </button>
-        <div style={styles.margin}></div>
+        <div className={styles.margin}></div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  page: { minHeight: '100vh', backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column' },
-  header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', background: '#fff', borderBottom: '1px solid #ddd', position: 'relative', zIndex: 1 },
-  backButton: { fontSize: 18, cursor: 'pointer' },
-  headerTitle: { position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontWeight: 'bold', fontSize: 16 },
-  headerSpacer: { width: 18 },
-  container: { flex: 1, backgroundColor: '#fff', padding: '16px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' },
-  uploadSection: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #E6E6E6' },
-  uploadIcon: { color: '#888888' },
-  uploadLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
-  inputSection: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid #E6E6E6' },
-  inputSectionIngredient: { borderRadius: 15, display: 'flex', flexDirection: 'column', gap: '8px' },
-  inputTitle: { fontSize: 16, fontWeight: 600, color: '#111111' },
-  inputField: { height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
-  descriptionSection: { padding: '0 12px' },
-  descriptionLabel: { fontSize: 17, fontWeight: 600, color: 'black' },
-  stepsSection: { display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' },
-  stepWrapper: { position: 'relative' },
-  removeIcon: { position: 'absolute', top: '4px', right: '4px', fontSize: 16, color: '#888888', cursor: 'pointer' },
-  stepCard: { backgroundColor: '#FEFEFE', borderRadius: 15, padding: '12px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #E6E6E6' },
-  photoLabel: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: 60, height: 60, backgroundColor: '#DDD', borderRadius: 6, overflow: 'hidden', cursor: 'pointer' },
-  photoInput: { display: 'none' },
-  photoPreview: { width: '100%', height: '100%', objectFit: 'cover' },
-  stepIcon: { color: '#888888' },
-  stepInput: { flex: 1, height: 40, borderRadius: 15, border: '0.5px solid #888888', padding: '0 12px', fontSize: 14 },
-  addButton: { marginTop: '8px', backgroundColor: '#fff', border: '1px solid #888888', borderRadius: 15, padding: '8px 12px', fontSize: 14, cursor: 'pointer', alignSelf: 'center' },
-  submitButton: { marginTop: 'auto', backgroundColor: '#FFD856', borderRadius: 15, padding: '12px', fontSize: 16, fontWeight: 600, color: '#111111', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none', gap: '8px' },
-  nextIcon: { fontSize: 20, color: '#888888' },
-  margin2: {padding: '4px'},
-  margin: {padding: '40px'}
 };
 
 export default ItemRegister;

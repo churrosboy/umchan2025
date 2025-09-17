@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HiPencil, HiCheck } from 'react-icons/hi2';
+import '../styles/commonStyles.css';
 
 /**
  * 범용 인라인 에디터 컴포넌트
@@ -23,50 +24,25 @@ const InlineEditor = ({ initialValue, onSave }) => {
   };
 
   return (
-    <div style={styles.wrapper}>
+    <div className="inlineWrapper">
       {editing ? (
         <input
-          style={styles.input}
+          className="inlineInput"
           type="text"
           value={temp}
           onChange={e => setTemp(e.target.value)}
         />
       ) : (
-        <span style={styles.text}>{value}</span>
+        <span className="inlineInput">{value}</span>
       )}
       <div
-        style={styles.iconContainer}
+        className="iconContainer"
         onClick={editing ? handleSave : handleEdit}
       >
         {editing ? <HiCheck size={16} /> : <HiPencil size={16} />}
       </div>
     </div>
   );
-};
-
-const styles = {
-  wrapper: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: 8
-  },
-  text: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#333'
-  },
-  input: {
-    fontSize: 14,
-    padding: '4px 8px',
-    borderRadius: 8,
-    border: '1px solid #ccc',
-    outline: 'none'
-  },
-  iconContainer: {
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center'
-  }
 };
 
 export default InlineEditor;

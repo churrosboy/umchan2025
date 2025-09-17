@@ -1,39 +1,52 @@
+.wrapper {
+  min-height: 100vh;
+  background: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0,
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  font-weight: bold;
+  font-size: 16px;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+
+.backButton {
+  cursor: pointer;
+  font-size: 18px;
+  color: #333;
+}
+
+.headerTitle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+}
+
+.headerSpacer {
+  width: 18px;
+}
+
 .sectionTitleBar {
-  padding-top: 70px;
-  padding-right: 20px;
-  padding-bottom: 6px;
-  padding-left: 20px;
+  padding: 10px 20px 6px;
   font-size: 14px;
   font-weight: bold;
   background-color: #f7f7f7;
-}
-
-.searchBar {
-  display: flex;
-  align-items: center;
-  background-color: white;
-  padding: 10px 14px;
-  border-radius: 999px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.searchContainer {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
-  width: 90%;
-  max-width: 500px;
-}
-
-.searchInputBox {
-  border: none;
-  background: transparent;
-  outline: none;
-  flex: 1;
-  font-size: 14px;
-  color: #333;
 }
 
 .recipeSection {
@@ -65,7 +78,7 @@
   cursor: pointer;
   flex: 1;
   font-size: 14px;
-  min-width: 0;
+  min-width: 0,
 }
 
 .recipeTitle {
@@ -91,12 +104,11 @@
   max-height: 2.8em;
 }
 
-.heart {
+.editIcon {
   font-size: 16px;
   color: #888;
   margin-left: 10px;
   align-self: center;
-  cursor: pointer;
 }
 
 .page {
@@ -104,8 +116,46 @@
   background: #fff;
 }
 
+.rating {
+  color: #f5a623;
+}
+
 .likes {
   margin-left: auto;
   font-size: 13px;
   color: #23a34a;
+}
+
+scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
+
+.reviewCard {
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.reviewerName {
+  font-weight: bold;
+}
+
+.reviewRating {
+  font-size: 13px;
+  color: #f5a623;
+}
+
+.reviewContent {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  white-space: pre-line;
 }

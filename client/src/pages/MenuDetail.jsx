@@ -148,7 +148,7 @@ const MenuDetail = () => {
             <img
               src={`${product.images[currentImageIndex]}`}
               alt={`${product.name} ${currentImageIndex + 1}`}
-              style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+              className={styles.mainImage}
             />
 
             {/* 이미지가 2개 이상일 때만 버튼 표시 */}
@@ -156,70 +156,25 @@ const MenuDetail = () => {
               <>
                 <button
                   onClick={prevImage}
-                  style={{
-                    position: 'absolute',
-                    left: '10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '40px',
-                    height: '40px',
-                    cursor: 'pointer',
-                    fontSize: '18px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
+                  className={`${styles.navButton} ${styles.navPrev}`}
                 >
                   &#8249;
                 </button>
 
                 <button
                   onClick={nextImage}
-                  style={{
-                    position: 'absolute',
-                    right: '10px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '40px',
-                    height: '40px',
-                    cursor: 'pointer',
-                    fontSize: '18px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
+                  className={`${styles.navButton} ${styles.navNext}`}
                 >
                   &#8250;
                 </button>
 
                 {/* 이미지 인디케이터 (점) */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  display: 'flex',
-                  gap: '5px'
-                }}>
+                <div className={styles.indicatorContainer}>
                   {product.images.map((_, index) => (
                     <div
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
-                      style={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        backgroundColor: index === currentImageIndex ? 'white' : 'rgba(255, 255, 255, 0.5)',
-                        cursor: 'pointer'
-                      }}
+                      className={`${styles.indicatorDot} ${index === currentImageIndex ? styles.activeDot : ''}`}
                     />
                   ))}
                 </div>
@@ -242,8 +197,8 @@ const MenuDetail = () => {
       </div>
 
       {/* 수량 선택 및 총 가격 */}
-      <div className={styles.quantitySection}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div className={styles.quantityWrapper}>
+        <div className={styles.quntitySection}>
           <span className={styles.quantityLabel}>수량:</span>
           <div className={styles.quantityControls}>
             <button

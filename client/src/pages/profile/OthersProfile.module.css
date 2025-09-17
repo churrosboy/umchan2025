@@ -1,0 +1,150 @@
+.wrapper {
+  min-height: 100vh;
+  background: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #666;
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: red;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  font-weight: bold;
+  font-size: 16;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+
+.backButton {
+  cursor: pointer;
+  font-size: 18;
+  color: #333;
+}
+
+.headerTitle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+}
+
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80;
+}
+
+.profileContainer {
+  padding: 20;
+  text-align: center;
+}
+
+.profileImage {
+  width: 80;
+  height: 80;
+  background-color: #fcd265;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32;
+  margin: 0 auto 10px;
+}
+
+.profileNameRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6;
+  marginbottom: 6;
+}
+
+.profileName {
+  font-weight: bold;
+  font-size: 16;
+}
+
+.profileRating {
+  font-size: 13;
+  color: #666;
+}
+
+.profileDesc {
+  font-size: 13;
+  color: #666;
+  margin-bottom: 16;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10;
+  margin-bottom: 20;
+}
+
+.buttonYellow {
+  background-color: #fcd265;
+  border: none;
+  border-radius: 8;
+  padding: 12;
+  font-weight: bold;
+  font-size: 14;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.infoRow {
+  font-size: 12;
+  color: #999;
+  margin-bottom: 20;
+}
+
+.menuList {
+  padding: 0 20px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14;
+}
+
+.menuIcon {
+  font-size: 18;
+  margin-right: 10;
+  color: #fcd265;
+}
+
+.clickableText {
+  cursor: pointer;
+}

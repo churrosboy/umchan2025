@@ -1,0 +1,136 @@
+.searchPage {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  font-family: sans-serif;
+  background: #fff;
+  padding: 70px 20px 60px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.iconX {
+  margin-left: 8px;
+  font-size: 20px;
+  color: #666;
+}
+
+.filterBar {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+
+.filterBtn {
+  font-size: 14px;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #333;
+}
+
+.sellerList {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sellerCard {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  background: #ccc;
+  border-radius: 6px;
+  text-align: center;
+  line-height: 80px;
+  font-size: 12px;
+  margin-right: 12px;
+  color: white;
+}
+
+.sellerInfo {
+  flex: 1;
+  font-size: 14px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.name {
+  font-weight: bold;
+}
+
+.rating {
+  color: #f5a623;
+}
+
+.likes {
+  font-size: 13px;
+  color: #23a34a;
+}
+
+.tags {
+  color: #666;
+  font-size: 13px;
+}
+
+.distance {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.noResults {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+.matchingProducts {
+  font-size: 13px;
+  color: #333;
+  margin: 4px 0;
+}
+
+.matchingProduct {
+  color: #f5a623;
+  font-weight: bold;
+}
+
+.moreProducts {
+  font-size: 12px;
+  color: #888;
+}
+
+.thumbnailImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}

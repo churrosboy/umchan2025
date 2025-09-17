@@ -1,224 +1,266 @@
 .recipeWrapper {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 16px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 50px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
 }
+
 .recipeHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
+
 .backBtn {
-    font-size: 22px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
 }
+
 .spacer {
-    width: 40px;
-    height: 1px;
+  width: 40px;
+  height: 1px;
 }
+
 .recipeImage {
-    margin-bottom: 24px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .recipeInfo {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
 }
+
 .recipeTitle {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
+
 .recipeName {
-    margin: 0 16px 0 0;
-    font-size: 20px;
+  margin: 0 16px 0 0;
+  font-size: 20px;
 }
+
 .rating {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 12px;
-    font-size: 14px;
-    color: #666;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 12px;
+  font-size: 14px;
+  color: #666;
 }
+
 .likes {
-    display: inline-flex;
-    align-items: center;
-    font-size: 14px;
-    color: #666;
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
 }
+
 .recipeMeta {
-    margin-top: 16px;
+  margin-top: 16px;
 }
+
 .metaTitle {
-    margin: 0 0 8px;
-    font-weight: bold;
-    font-size: 16px;
+  margin: 0 0 8px;
+  font-weight: bold;
+  font-size: 16px;
 }
+
 .ingredientGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
+
 .ingredientItem {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
 }
+
 .ingredientName {
-    font-weight: bold;
+  font-weight: bold;
 }
+
 .recipeSteps {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
 }
+
 .stepsTitle {
-    margin: 0 0 16px;
-    font-weight: bold;
-    font-size: 16px;
+  margin: 0 0 16px;
+  font-weight: bold;
+  font-size: 16px;
 }
+
 .recipeStep {
-    margin-bottom: 24px;
-    padding: 16px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
+
 .stepHeader {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
 }
+
 .stepNumberBadge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: #ffbf49ff;
-    color: white;
-    margin-right: 8px;
-    font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #ffbf49ff;
+  color: white;
+  margin-right: 8px;
+  font-size: 14px;
 }
+
 .stepTitle {
-    margin: 0;
-    font-size: 16px;
+  margin: 0;
+  font-size: 16px;
 }
+
 .stepContent {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
+
 .stepImageContainer {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
+
 .stepImage {
-    width: 100%;
-    max-height: 200px;
-    object-fit: cover;
-    border-radius: 4px;
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
 }
+
 .stepText {
-    margin: 0;
-    line-height: 1.5;
+  margin: 0;
+  line-height: 1.5;
 }
+
 .commentsSection {
-    margin-top: 32px;
+  margin-top: 32px;
 }
+
 .commentsTitle {
-    margin: 0 0 16px;
-    font-size: 16px;
+  margin: 0 0 16px;
+  font-size: 16px;
 }
+
 .commentForm {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
+
 .commentInputGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
+
 .nameInput {
-    font-weight: bold;
-    font-size: 14px;
+  font-weight: bold;
+  font-size: 14px;
 }
+
 .commentInput {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    resize: none;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: none;
 }
+
 .commentSubmit {
-    align-self: flex-end;
-    padding: 8px 16px;
-    background-color: #FFD600;
-    color: #222;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  align-self: flex-end;
+  padding: 8px 16px;
+  background-color: #FFD600;
+  color: #222;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
+
 .comment {
-    padding: 12px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-    margin-bottom: 8px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  margin-bottom: 8px;
 }
+
 .commentWriter {
-    font-weight: bold;
-    margin-right: 8px;
+  font-weight: bold;
+  margin-right: 8px;
 }
+
 .commentDate {
-    font-size: 12px;
-    color: #999;
+  font-size: 12px;
+  color: #999;
 }
+
 .commentContent {
-    display: block;
-    margin-top: 6px;
+  display: block;
+  margin-top: 6px;
 }
+
 .noResult {
-    text-align: center;
-    padding: 32px;
-    font-size: 16px;
-    color: #666;
+  text-align: center;
+  padding: 32px;
+  font-size: 16px;
+  color: #666;
 }
+
 .commentContainer {
-    background: #fdbd3dff;
-    border-radius: 12px;
-    padding: 16px;
-    margin: 12px 0;
-    box-shadow: 0 2px 8px rgba(255, 214, 0, 0.15);
+  background: #fdbd3dff;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px 0;
+  box-shadow: 0 2px 8px rgba(255, 214, 0, 0.15);
 }
+
 .commentHeader {
-    font-weight: bold;
-    color: #222;
-    margin-bottom: 8px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 8px;
 }
+
 .commentText {
-    color: #222;
-    font-size: 15px;
-    margin-bottom: 6px;
+  color: #222;
+  font-size: 15px;
+  margin-bottom: 6px;
 }
+
 .commentMeta {
-    font-size: 12px;
-    color: #888;
+  font-size: 12px;
+  color: #888;
 }
+
 .commentButton {
-    background: #FFA000;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 6px 12px;
-    cursor: pointer;
-    margin-top: 8px;
+  background: #FFA000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-top: 8px;
 }
+
 .pageBackground {
-    background: #fff;
-    min-height: 100vh;
+  background: #fff;
+  min-height: 100vh;
 }
