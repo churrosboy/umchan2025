@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserById, searchUsersByProduct } from "../controllers/userContoroller.js";
+import { getUserById, searchUsersByProduct, searchUserNicknameById } from "../controllers/userContoroller.js";
 import { Int32, Double } from 'mongodb';
 import { users } from '../models/user_model.js'; 
 import admin from "../firebaseAdmin.js"; // Firebase Admin 추가
@@ -78,7 +78,7 @@ router.post('/', async (req, res) => {
       intro: "",
       isProfileComplete: Boolean(isProfileComplete), // 추가
       createdAt: new Date(),
-      updatedAt: new Date()
+
     };
 
     await users.insertOne(userDoc);
@@ -258,5 +258,7 @@ router.get("/:id", getUserById);
 
 // 인증된 사용자 중 검색어에 해당하는 상품을 가진 사용자 검색
 router.get("/search/product", searchUsersByProduct);
+
+router.get("/nickname/:nickname", searchUserNicknameById);
 
 export default router;

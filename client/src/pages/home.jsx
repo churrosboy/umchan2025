@@ -321,14 +321,19 @@ const Home = () => {
                   </div>
                   <div className={styles.address}>{seller.address}</div>
                   <div className={styles.thumbnailScroll}>
-                    {seller.thumbnail_list && seller.thumbnail_list.map((img, idx) => (
-                      <img
-                        key={idx}
-                        src={`/images${img}`}
-                        alt={`썸네일${idx}`}
-                        className={styles.thumbnailImage}
-                      />
-                    ))}
+                  {Array.isArray(seller.main_img) && seller.main_img
+                      .filter(img => img) // null, undefined, 빈 문자열 제외
+                      .map((img, idx) => (
+                        <img
+                          key={idx}
+                          src={img}
+                          alt={`썸네일${idx}`}
+                          className={styles.thumbnailImage}
+                          onError={(e) => {
+                            e.target.style.display = 'none'; // 이미지 로드 실패 시 숨김
+                          }}
+                        />
+                      ))}
                   </div>
                 </div>
               ))}

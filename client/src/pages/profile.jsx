@@ -138,9 +138,9 @@ const Profile = () => {
         {/* 프로필 카드 */}
         <div className={styles.profileCard} onClick={goToSetting}>
           <div className={styles.profileImageContainer}>
-            {userData.profile_image ? (
+            {userData.profile_img ? (
               <img
-                src={userData.profile_image}
+                src={userData.profile_img}
                 alt="프로필 사진"
                 className={styles.profileImage}
               />

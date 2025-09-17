@@ -68,7 +68,7 @@ const AccountMng = () => {
           nickname: user.nickname ?? "",
           address: user.address ?? "",
           phone: user.phone_number ?? "",
-          avatarPreview: toPublicUrl(user.profile_image ?? null),
+          avatarPreview: toPublicUrl(user.profile_img ?? null),
           avatarFile: null,
           clearAvatar: false,
         }));

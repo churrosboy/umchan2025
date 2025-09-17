@@ -1,46 +1,275 @@
 .wrapper {
-  padding: clamp(16px, 5vw, 32px);
-  max-width: 600px;
-  margin: 0 auto;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
 }
 
 .backButton {
-  margin-bottom: 16px;
-  font-size: 1rem;
+  position: absolute; /* 버튼을 헤더 내에서 절대 위치로 */
+  left: 16px; /* 왼쪽에 배치 */
   background: none;
   border: none;
+  font-size: 1.2rem;
+  font-weight: 500;
   color: #333;
   cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  margin-right: 0; /* 마진 제거 */
 }
 
 .title {
-  font-size: clamp(20px, 5vw, 28px);
-  font-weight: bold;
-  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  /* flex 제거 */
+  text-align: center;
+  /* 이제 부모 요소가 justify-content: center라서 자동으로 중앙에 위치함 */
+}
+
+.imageBox {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.imageBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.imageBox:hover img {
+  transform: scale(1.02);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f6f6f6 0%, #e9e9e9 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 18px;
+}
+
+.contentContainer {
+  padding: 16px 20px 100px;
+  flex: 1;
+}
+
+.sellerInfo {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sellerName {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 16px 0 8px;
+  color: #222;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+}
+
+.sellerName:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 50%;
+  background-color: #ffb443;
+  transition: all 0.3s ease;
+}
+
+.sellerName:hover:after {
+  width: 100%;
+  left: 0;
 }
 
 .info {
-  font-size: clamp(14px, 4vw, 16px);
-  margin-bottom: 16px;
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.mapBox {
-  width: 100%;
-  height: 200px;
+.infoIcon {
+  color: #FFB800;
+}
+
+.heartIcon {
+  color: #4CAF50;
+}
+
+.divider {
+  width: 90%;
+  height: 1px;
   background: #eee;
-  margin: 10px 0 20px;
+  margin: 16px auto;
 }
 
 .sectionTitle {
-  font-size: clamp(16px, 4vw, 20px);
-  margin-top: 20px;
-  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 24px 0 16px;
+  color: #333;
+  padding-left: 10px;
+  border-left: 3px solid #ffbd43;
+}
+
+.menuContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
 .menuCard {
-  background: #f8f8f8;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(218, 172, 67, 0.06);
   cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex; /* 가로 배치로 변경 */
+  align-items: center;
+  gap: 16px; /* 이미지와 컨텐츠 사이 간격 */
+}
+
+.menuCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(255, 165, 55, 0.1);
+}
+
+.menuImageWrapper {
+  flex: 0 0 80px; /* 이미지 영역 크기 고정 */
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.menuImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menuNoImage {
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.menuContent {
+  flex: 1; /* 나머지 공간 차지 */
+  display: flex;
+  flex-direction: column;
+}
+
+.menuContent strong {
+  font-size: 16px;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.menuContent p {
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.menuCardPrice {
+  font-weight: 600;
+  color: #3182CE;
+  margin-top: auto;
+  font-size: 16px;
+}
+
+.noProducts {
+  text-align: center;
+  padding: 32px 0;
+  color: #888;
+  font-style: italic;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+}
+
+/* 별/하트 정보 정적 표시 */
+.infoRowStatic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.infoStaticBlock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.scoreText { font-weight: 700; }
+.countText { color: #666; }
+.dot { color: #bbb; }
+.heartWrap { display: inline-flex; align-items: center; gap: 6px; }
+
+/* 🔶 노랑 칩(별 버튼 스타일과 동일한 톤) */
+.reviewPillYellow {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ffd680;
+  background: #fff8e1;
+  color: #111;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: transform .06s ease, box-shadow .12s ease, background .2s ease;
+}
+.reviewPillYellow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 193, 7, .25);
+  background: #fff3cc;
+}
+
+.reviewEmptyHint {
+  margin-top: 10px;
+  color: #9aa0a6;
+  font-size: 13px;
 }

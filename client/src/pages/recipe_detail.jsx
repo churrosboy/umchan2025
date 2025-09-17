@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 import styles from '../styles/RecipeDetail.module.css';
+import { getAuth } from "firebase/auth";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -13,6 +14,7 @@ const RecipeDetail = () => {
     const [sellerName, setSellerName] = useState('');
     const [loading, setLoading] = useState(true);
     const [comment, setComment] = useState('');
+    const [currentUserNickname, setCurrentUserNickname] = useState('');
 
     // 레시피 데이터 불러오기
     useEffect(() => {
@@ -23,15 +25,41 @@ const RecipeDetail = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setRecipe(data);
-                    setSellerName(data.sellerName || '알 수 없음');
+
+                    // 닉네임 추가 요청
+                    if (data.user_id) {
+                      const userRes = await fetch(`/api/users/${data.user_id}`);
+                      if (userRes.ok) {
+                        const userData = await userRes.json();
+                        setSellerName(userData.nickname || '알 수 없음');
+                      } else {
+                        setSellerName('알 수 없음');
+                      }
+                    }
                 }
             } catch (err) {
                 setRecipe(null);
+                setSellerName('알 수 없음');
             }
             setLoading(false);
         };
         fetchRecipe();
     }, [recipeId]);
+
+    useEffect(() => {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (user) {
+        // 현재 로그인한 사용자의 닉네임 가져오기
+        fetch('/api/profile', {
+          headers: { Authorization: `Bearer ${user.accessToken}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+          setCurrentUserNickname(data.nickname || '알 수 없음');
+        });
+      }
+    }, []);
 
     const goBack = () => {
         navigate(-1);
@@ -55,7 +83,7 @@ const RecipeDetail = () => {
             if (response.ok) {
                 const data = await response.json();
                 setRecipe(data);
-            }
+            } 
         } catch (err) {
             console.error("댓글 등록 실패:", err);
         }
@@ -71,13 +99,34 @@ const RecipeDetail = () => {
     return (
         <div className={`${styles.pageBackground} ${styles.pageContainer}`}>
             <div className={styles.recipeWrapper}>
-                {/* --- 1. 고정될 상단 콘텐츠 --- */}
-                <div className={styles.staticContent}>
-                    <div className={styles.recipeHeader}>
-                        <button className={styles.backBtn} onClick={goBack}>{'←'}</button>
-                        <h2 style={{ margin: 0, fontSize: '18px' }}>{sellerName}<span style={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span></h2>
-                        <div className={styles.spacer} />
-                    </div>
+              {/* --- 1. 고정될 상단 콘텐츠 --- */}
+              <div className={styles.staticContent}>
+                  <div className={styles.recipeHeader}>
+                      <button className={styles.backBtn} onClick={goBack}>{'←'}</button>
+                      <h2 style={{ margin: 0, fontSize: '18px' }}>{sellerName}<span style={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span></h2>
+                      <div className={styles.spacer} />
+                  </div>
+
+                  {/* 메인 이미지 - 이미지가 없어도 공간 유지 */}
+                  <div className={styles.recipeImage}>
+                      {recipe.thumbnail ? (
+                          <img
+                              src={recipe.thumbnail}
+                              alt={recipe.title}
+                              className={styles.thumbnailImage}
+                              style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                              onError={(e) => {
+                                  console.error('메인 이미지 로드 실패:', e.target.src);
+                                  e.target.style.display = 'none';
+                                  e.target.parentElement.classList.add(styles.emptyImageContainer);
+                              }}
+                          />
+                      ) : (
+                          <div className={styles.emptyImageContainer}>
+                              <span>이미지 없음</span>
+                          </div>
+                      )}
+                  </div>
 
                     {/* 메인 이미지 */}
                     {recipe.thumbnail && (
@@ -149,23 +198,34 @@ const RecipeDetail = () => {
                         ))}
                     </div>
 
-                    {/* 댓글 섹션 */}
-                    <div className={styles.commentsSection}>
-                        <h4 className={styles.commentsTitle}>댓글</h4>
-                        <form onSubmit={handleSubmitComment} className={styles.commentForm}>
-                            <div className={styles.commentInputGroup}>
-                                <div className={styles.nameInput}>사용자이름</div>
-                                <input
-                                    type="text"
-                                    value={comment}
-                                    onChange={(e) => setComment(e.target.value)}
-                                    placeholder="댓글을 입력하세요"
-                                    className={styles.commentInput}
-                                    required
-                                />
-                                <button type="submit" className={styles.commentSubmit}>
-                                    등록
-                                </button>
+                {/* 댓글 섹션 */}
+                <div className={styles.commentsSection}>
+                    <h4 className={styles.commentsTitle}>댓글</h4>
+                    <form onSubmit={handleSubmitComment} className={styles.commentForm}>
+                        <div className={styles.commentInputGroup}>
+                            <div className={styles.nameInput}>{currentUserNickname}</div>
+                            <input
+                                type="text"
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                placeholder="댓글을 입력하세요"
+                                className={styles.commentInput}
+                                required
+                            />
+                            <button type="submit" className={styles.commentSubmit}>
+                                등록
+                            </button>
+                        </div>
+                    </form>
+                    
+                    {recipe.comments && recipe.comments.length > 0 ? (
+                        recipe.comments.map((comment, idx) => (
+                            <div className={styles.comment} key={idx}>
+                                <span className={styles.commentWriter}>{comment.writer}</span>
+                                <span className={styles.commentDate}>
+                                    {new Date(comment.timestamp).toLocaleDateString()}
+                                </span>
+                                <span className={styles.commentContent}>{comment.content}</span>
                             </div>
                         </form>
                         
