@@ -15,7 +15,6 @@ const SellerDetail = () => {
   const [loadingError, setLoadingError] = useState(null);
   const [authToken, setAuthToken] = useState(null);
 
-  // 인증 상태 감시
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -23,7 +22,6 @@ const SellerDetail = () => {
         setLoadingError('로그인이 필요합니다.');
         return;
       }
-      
       try {
         const token = await user.getIdToken();
         setAuthToken(token);
@@ -32,18 +30,14 @@ const SellerDetail = () => {
         setLoadingError('인증에 실패했습니다.');
       }
     });
-    
     return () => unsubscribe();
   }, []);
 
-  // 데이터 불러오기
   useEffect(() => {
     if (!authToken) return;
-    
     const fetchData = async () => {
       setLoading(true);
       setLoadingError(null);
-      
       try {
         const [userRes, productRes] = await Promise.all([
           axios.get(`/api/users/${sellerId}`, {
@@ -53,7 +47,6 @@ const SellerDetail = () => {
             headers: { Authorization: `Bearer ${authToken}` }
           })
         ]);
-        
         setSeller(userRes.data);
         setProducts(Array.isArray(productRes.data) ? productRes.data : []);
       } catch (err) {
@@ -67,11 +60,9 @@ const SellerDetail = () => {
         setLoading(false);
       }
     };
-    
     fetchData();
   }, [authToken, sellerId]);
 
-  // 로딩 중 UI
   if (loading) {
     return (
       <div className={styles.wrapper}>
@@ -91,7 +82,6 @@ const SellerDetail = () => {
     );
   }
 
-  // 에러 UI
   if (loadingError || !seller) {
     return (
       <div className={styles.wrapper}>
@@ -123,9 +113,16 @@ const SellerDetail = () => {
     );
   }
 
-  // 상품 필터링
+  const reviewCount = seller.review_cnt || 0;
+  const avg = Number(parseFloat(seller.avg_rating || 0).toFixed(1));
+  const hasReviews = reviewCount > 0;
+
   const instantProducts = products.filter(product => product.type === '즉시' || product.type === '즉시구매');
   const reservationProducts = products.filter(product => product.type === '예약' || product.type === '예약구매');
+
+  const goReviews = () => {
+    if (hasReviews) navigate(`/user_review_list/${seller.id}`);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -138,34 +135,43 @@ const SellerDetail = () => {
 
       <div className={styles.imageBox}>
         {seller.profile_img ? (
-          <img 
-            src={seller.profile_img}
-            alt={`${seller.nickname} 프로필`}
-          />
+          <img src={seller.profile_img} alt={`${seller.nickname} 프로필`} />
         ) : (
-          <div className={styles.imagePlaceholder}>
-            프로필 이미지가 없습니다
-          </div>
+          <div className={styles.imagePlaceholder}>프로필 이미지가 없습니다</div>
         )}
       </div>
 
       <div className={styles.contentContainer}>
         <div className={styles.sellerInfo}>
-          <h2 
+          <h2
             className={styles.sellerName}
             onClick={() => navigate(`/other_user_profile/${seller.id}`)}
           >
             {seller.nickname}
           </h2>
-          
-          <div className={styles.info}>
-            <FaStar className={styles.infoIcon} />
-            <span>{parseFloat(seller.avg_rating || 0).toFixed(1)}</span>
-            <span>({seller.review_cnt || 0})</span>
-            <span style={{ margin: '0 8px' }}>•</span>
-            <FaHeart className={styles.heartIcon} />
-            <span>{seller.like_cnt || 0}</span>
+
+          {/* ⭐ 별점/좋아요 영역: 클릭 불가, 정보만 */}
+          <div className={styles.infoRowStatic}>
+            <div className={styles.infoStaticBlock}>
+              <FaStar className={styles.infoIcon} />
+              <span className={styles.scoreText}>{avg.toFixed(1)}</span>
+              <span className={styles.countText}>({reviewCount})</span>
+            </div>
+            <div className={styles.dot} aria-hidden="true">•</div>
+            <div className={styles.heartWrap}>
+              <FaHeart className={styles.heartIcon} />
+              <span>{seller.like_cnt || 0}</span>
+            </div>
           </div>
+
+          {/* 🔶 별(노랑 칩) 디자인으로 바꾼 “리뷰 N개 보기” 버튼 */}
+          {hasReviews ? (
+            <button type="button" className={styles.reviewPillYellow} onClick={goReviews}>
+              리뷰 {reviewCount}개 보기
+            </button>
+          ) : (
+            <div className={styles.reviewEmptyHint}>아직 받은 리뷰가 없어요</div>
+          )}
 
           {seller.intro && (
             <p style={{ textAlign: 'center', margin: '16px 0', color: '#555', fontSize: 15 }}>
@@ -186,13 +192,13 @@ const SellerDetail = () => {
                 onClick={() => navigate(`/menu/${product.item_id}`)}
               >
                 <div className={styles.menuImageWrapper}>
-                  {product.images[0] ? (
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name} 
-                      className={styles.menuImage} 
+                  {product.images?.[0] ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className={styles.menuImage}
                       onError={(e) => {
-                        e.target.onerror = null; 
+                        e.target.onerror = null;
                         e.target.src = 'https://via.placeholder.com/80?text=No+Image';
                       }}
                     />
@@ -205,7 +211,7 @@ const SellerDetail = () => {
                 <div className={styles.menuContent}>
                   <strong>{product.name}</strong>
                   <p>{product.info}</p>
-                  <p className={styles.menuCardPrice}>{product.price.toLocaleString()}원</p>
+                  <p className={styles.menuCardPrice}>{Number(product.price).toLocaleString()}원</p>
                 </div>
               </div>
             ))}
@@ -225,12 +231,12 @@ const SellerDetail = () => {
               >
                 <div className={styles.menuImageWrapper}>
                   {product.image_url ? (
-                    <img 
-                      src={product.image_url} 
-                      alt={product.name} 
-                      className={styles.menuImage} 
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className={styles.menuImage}
                       onError={(e) => {
-                        e.target.onerror = null; 
+                        e.target.onerror = null;
                         e.target.src = 'https://via.placeholder.com/80?text=No+Image';
                       }}
                     />
@@ -243,7 +249,7 @@ const SellerDetail = () => {
                 <div className={styles.menuContent}>
                   <strong>{product.name}</strong>
                   <p>{product.info}</p>
-                  <p className={styles.menuCardPrice}>{product.price.toLocaleString()}원</p>
+                  <p className={styles.menuCardPrice}>{Number(product.price).toLocaleString()}원</p>
                 </div>
               </div>
             ))}

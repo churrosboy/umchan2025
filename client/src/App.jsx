@@ -27,13 +27,13 @@ import SellerList from './pages/seller_list';
 import Recipes from './pages/recipes';
 import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
-import ReviewPost from './pages/review_post';
 import AccountMng from './pages/AccountMng';
 import AuthReq from './pages/AuthReq'; // 위생인증 요청 페이지
 import ItemRegister from './pages/item_register';
 import ChatRoom from './pages/chatroom';
 import ChatList from './pages/chat_list';
 import Cart from './pages/cart';
+import ReviewCreate from './pages/ReviewCreate';
 
 // components
 import NavigationBar from './components/navigation_bar';
@@ -83,13 +83,14 @@ const AppRoutes = () => {
         <Route path="/recipes" element={<ProtectedRoute><Recipes /></ProtectedRoute>} />
         <Route path="/search_recipe" element={<ProtectedRoute><SearchRecipe /></ProtectedRoute>} />
         <Route path="/recipe_detail/:recipeId" element={<ProtectedRoute><RecipeDetail /></ProtectedRoute>} />
-        <Route path="/review_post" element={<ProtectedRoute><ReviewPost /></ProtectedRoute>} />
         <Route path="/item_register" element={<ProtectedRoute><ItemRegister /></ProtectedRoute>} />
         <Route path="/AccountMng/:userId" element={<ProtectedRoute><AccountMng /></ProtectedRoute>} />
         <Route path="/AuthReq" element={<ProtectedRoute><AuthReq /></ProtectedRoute>} /> {/* 위생인증 요청 페이지 */}
         <Route path="/chat/:sellerId" element={<ChatRoom />} />
         <Route path="/chats" element={<ChatList />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/review/:orderId" element={<ProtectedRoute><ReviewCreate /></ProtectedRoute>} />
+        <Route path="/review/edit/:reviewId" element={<ProtectedRoute><ReviewCreate /></ProtectedRoute>} />
       </Routes>
       {!hideNavigationBar && <NavigationBar />}
     </>

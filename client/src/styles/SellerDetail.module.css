@@ -227,3 +227,49 @@
   background: rgba(0, 0, 0, 0.02);
   border-radius: 8px;
 }
+
+/* 별/하트 정보 정적 표시 */
+.infoRowStatic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.infoStaticBlock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.scoreText { font-weight: 700; }
+.countText { color: #666; }
+.dot { color: #bbb; }
+.heartWrap { display: inline-flex; align-items: center; gap: 6px; }
+
+/* 🔶 노랑 칩(별 버튼 스타일과 동일한 톤) */
+.reviewPillYellow {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ffd680;
+  background: #fff8e1;
+  color: #111;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: transform .06s ease, box-shadow .12s ease, background .2s ease;
+}
+.reviewPillYellow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 193, 7, .25);
+  background: #fff3cc;
+}
+
+.reviewEmptyHint {
+  margin-top: 10px;
+  color: #9aa0a6;
+  font-size: 13px;
+}

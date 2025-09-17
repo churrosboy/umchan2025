@@ -1,0 +1,330 @@
+/* 기본 래퍼 */
+.wrapper {
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.centerTitle {
+  font-weight: 700;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* 본문 컨테이너 */
+.contentContainer {
+  padding: 16px;
+  padding-bottom: 96px; /* 하단 submitBar 여유 */
+  box-sizing: border-box;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* 주문 요약 카드 (신규 작성 시) */
+.summaryCard {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.summaryFallback {
+  color: #777;
+  font-size: 13px;
+}
+
+.summaryInner {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.summaryThumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summaryThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbPlaceholder {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.summaryMeta {
+  flex: 1;
+  min-width: 0;
+}
+
+.metaTitle {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metaSeller {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.metaDate {
+  font-size: 12px;
+  color: #888;
+}
+
+/* 별점 영역 */
+.ratingBox {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.starGroup {
+  display: inline-flex;
+  gap: 6px;
+  outline: none;
+}
+
+.starBtn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
+}
+
+.starBtn:active {
+  transform: scale(0.96);
+}
+
+.starIcon {
+  width: 24px;
+  height: 24px;
+  opacity: 0.45;
+}
+
+.starActive .starIcon {
+  opacity: 1;
+}
+
+.ratingLabel {
+  font-size: 13px;
+  color: #555;
+}
+
+/* 가이드 칩 */
+.guideChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 2px;
+}
+
+.chip {
+  font-size: 12px;
+  color: #444;
+  background: #faf5dd;
+  border: 1px solid #f5e2a3;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+/* 텍스트 */
+.textSection {
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+
+.textArea {
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.textArea:focus {
+  border-color: #f2c94c;
+  box-shadow: 0 0 0 3px rgba(242, 201, 76, 0.25);
+}
+
+.textMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.helper {
+  font-size: 12px;
+  color: #777;
+}
+
+.helperWarn {
+  color: #d94141;
+}
+
+.counter {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 이미지 */
+.imageSection {
+  margin-top: 12px;
+}
+
+.imageHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.imageTitle {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.imageHint {
+  font-size: 12px;
+  color: #999;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.addTile {
+  border: 1px dashed #ddd;
+  border-radius: 12px;
+  height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.addTile:active {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.addPlus {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.addText {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.imageTile {
+  position: relative;
+  height: 96px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f7f7f7;
+}
+
+.imageTile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* 제출 바 */
+.submitBar {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 0 0;
+  margin-top: 16px;
+  background: linear-gradient(to top, #fff 70%, rgba(255,255,255,0));
+}
+
+.submitBtn, .cancelBtn {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background: #f3f3f3;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.cancelBtn:active {
+  background: #e9e9e9;
+}
+
+.submitBtn {
+  background: #f2c94c;
+  color: #222;
+}
+
+.submitBtn:active {
+  filter: brightness(0.95);
+}
+
+.disabled, .submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
