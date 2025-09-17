@@ -1,21 +1,21 @@
-.sectionTitleBar {
-    padding-top: 70px;
-    padding-right: 20px;
-    padding-bottom: 6px;
-    padding-left: 20px;
-    font-size: 14px;
-    font-weight: bold;
-    background-color: #f7f7f7;
-}
-.searchBar {
+/* --- 1. 페이지 레이아웃 --- */
+.pageContainer {
+    height: 100vh;
+    padding-bottom: 60px; /* 네비게이션 바 높이 */
+    box-sizing: border-box;
     display: flex;
-    align-items: center;
-    background-color: white;
-    padding: 10px 14px;
-    border-radius: 999px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    flex-direction: column;
+    background: #fff;
 }
+
+.scrollableContent {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* --- 2. 검색창 관련 --- */
 .searchContainer {
+    /* position: absolute는 flex 레이아웃에 영향을 받지 않으므로 그대로 둡니다. */
     position: absolute;
     top: 20px;
     left: 50%;
@@ -24,6 +24,16 @@
     width: 90%;
     max-width: 500px;
 }
+
+.searchBar {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 10px 14px;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
 .searchInputBox {
     border: none;
     background: transparent;
@@ -32,11 +42,26 @@
     font-size: 14px;
     color: #333;
 }
+
+/* --- 3. 레시피 목록 --- */
+.sectionTitleBar {
+    /* 검색창이 absolute 이므로, 그 높이만큼 여백을 줍니다. */
+    padding-top: 70px; 
+    padding-right: 20px;
+    padding-bottom: 6px;
+    padding-left: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #eee;
+}
+
 .recipeSection {
-    overflow-y: auto;
+    /* 👇 이제 이 부분은 스크롤을 담당하지 않으므로 overflow-y를 제거합니다. */
     border-bottom: 8px solid #f7f7f7;
     background: #fff;
 }
+
 .recipeCard {
     display: flex;
     justify-content: space-between;
@@ -45,6 +70,7 @@
     border-bottom: 1px solid #eee;
     background: #fff;
 }
+
 .recipeImage {
     cursor: pointer;
     width: 60px;
@@ -54,12 +80,14 @@
     margin-right: 10px;
     flex-shrink: 0;
 }
+
 .recipeInfo {
     cursor: pointer;
     flex: 1;
     font-size: 14px;
     min-width: 0;
 }
+
 .recipeTitle {
     cursor: pointer;
     font-weight: bold;
@@ -68,6 +96,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
 .recipeDesc {
     font-size: 12px;
     color: #666;
@@ -81,6 +110,7 @@
     line-height: 1.4;
     max-height: 2.8em;
 }
+
 .heart {
     font-size: 16px;
     color: #888;
@@ -88,10 +118,7 @@
     align-self: center;
     cursor: pointer;
 }
-.page {
-    min-height: 100vh;
-    background: #fff;
-}
+
 .likes {
     margin-left: auto;
     font-size: 13px;

@@ -51,6 +51,7 @@
 }
 .panelContent::-webkit-scrollbar {
   display: none;
+  overflow-y: auto;
 }
 
 .filterButtons {

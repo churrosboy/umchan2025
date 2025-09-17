@@ -39,6 +39,7 @@ import ReviewCreate from './pages/ReviewCreate';
 import NavigationBar from './components/navigation_bar';
 import SearchBar from './components/search_bar';
 import ProtectedRoute from './components/protected_route';
+import InitialProfile from './pages/InitialProfile';
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -89,6 +90,7 @@ const AppRoutes = () => {
         <Route path="/chat/:sellerId" element={<ChatRoom />} />
         <Route path="/chats" element={<ChatList />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/initial-profile" element={<InitialProfile />} />      </Routes>
         <Route path="/review/:orderId" element={<ProtectedRoute><ReviewCreate /></ProtectedRoute>} />
         <Route path="/review/edit/:reviewId" element={<ProtectedRoute><ReviewCreate /></ProtectedRoute>} />
       </Routes>

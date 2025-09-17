@@ -1,12 +1,43 @@
+/* 기존 .recipeWrapper의 padding과 margin을 제거하고, 
+  flexbox 레이아웃으로 재구성한 최종 버전입니다. 
+*/
+
+.pageContainer {
+  height: 100vh;
+  padding-bottom: 60px; /* 네비게이션 바 높이만큼 여백 */
+  box-sizing: border-box;
+}
+
+.pageBackground {
+    background: #fff;
+    min-height: 100vh;
+}
+
+/* 👇 핵심 수정: padding과 margin을 제거하고 flexbox 컨테이너 역할만 수행 */
 .recipeWrapper {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 16px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 50px;
-    box-sizing: border-box;
+    max-width: 600px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff; /* 배경색 유지 */
+}
+
+/* 👇 핵심 수정: 상단 고정 영역 스타일 */
+.staticContent {
+  flex-shrink: 0; /* 높이 고정 */
+  padding: 16px 16px 0; /* 위, 좌우 여백 */
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 스크롤 시 경계선 효과 */
+}
+
+/* 👇 핵심 수정: 하단 스크롤 영역 스타일 */
+.scrollableContent {
+  flex-grow: 1; /* 남은 공간 모두 차지 */
+  overflow-y: auto; /* 세로 스크롤 */
+  padding: 16px; /* 내부 콘텐츠 여백 */
 }
 
 .recipeHeader {
@@ -295,6 +326,35 @@
     font-size: 16px;
     color: #666;
 }
+.commentContainer {
+    background: #fdbd3dff;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: 0 2px 8px rgba(255, 214, 0, 0.15);
+}
+.commentHeader {
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 8px;
+}
+.commentText {
+    color: #222;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+.commentMeta {
+    font-size: 12px;
+    color: #888;
+}
+.commentButton {
+    background: #FFA000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin-top: 8px;
 
 .pageBackground {
     background: #fff;

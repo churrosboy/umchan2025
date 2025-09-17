@@ -97,85 +97,106 @@ const RecipeDetail = () => {
     }
 
     return (
-        <div className={styles.pageBackground}>
+        <div className={`${styles.pageBackground} ${styles.pageContainer}`}>
             <div className={styles.recipeWrapper}>
-                <div className={styles.recipeHeader}>
-                    <button className={styles.backBtn} onClick={goBack}>{'←'}</button>
-                    <h2 className={{ margin: 0, fontSize: '18px' }}>{sellerName}<span className={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span></h2>
-                    <div className={styles.spacer} />
-                </div>
+              {/* --- 1. 고정될 상단 콘텐츠 --- */}
+              <div className={styles.staticContent}>
+                  <div className={styles.recipeHeader}>
+                      <button className={styles.backBtn} onClick={goBack}>{'←'}</button>
+                      <h2 style={{ margin: 0, fontSize: '18px' }}>{sellerName}<span style={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span></h2>
+                      <div className={styles.spacer} />
+                  </div>
 
-                {/* 메인 이미지 - 이미지가 없어도 공간 유지 */}
-                <div className={styles.recipeImage}>
-                    {recipe.thumbnail ? (
-                        <img
-                            src={recipe.thumbnail}
-                            alt={recipe.title}
-                            className={styles.thumbnailImage}
-                            onError={(e) => {
-                                console.error('메인 이미지 로드 실패:', e.target.src);
-                                e.target.style.display = 'none';
-                                e.target.parentElement.classList.add(styles.emptyImageContainer);
-                            }}
-                        />
-                    ) : (
-                        <div className={styles.emptyImageContainer}>
-                            <span>이미지 없음</span>
+                  {/* 메인 이미지 - 이미지가 없어도 공간 유지 */}
+                  <div className={styles.recipeImage}>
+                      {recipe.thumbnail ? (
+                          <img
+                              src={recipe.thumbnail}
+                              alt={recipe.title}
+                              className={styles.thumbnailImage}
+                              style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                              onError={(e) => {
+                                  console.error('메인 이미지 로드 실패:', e.target.src);
+                                  e.target.style.display = 'none';
+                                  e.target.parentElement.classList.add(styles.emptyImageContainer);
+                              }}
+                          />
+                      ) : (
+                          <div className={styles.emptyImageContainer}>
+                              <span>이미지 없음</span>
+                          </div>
+                      )}
+                  </div>
+
+                    {/* 메인 이미지 */}
+                    {recipe.thumbnail && (
+                        <div className={styles.recipeImage}>
+                            <img
+                                src={`${recipe.thumbnail}`}
+                                alt={recipe.title}
+                                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                                onError={(e) => {
+                                    console.error('메인 이미지 로드 실패:', e.target.src);
+                                    e.target.style.display = 'none';
+                                }}
+                            />
                         </div>
                     )}
-                </div>
 
-                <div className={styles.recipeInfo}>
-                    <div className={styles.recipeTitle}>
-                        <h3 className={styles.recipeName}>{recipe.title}</h3>
-                        <span className={styles.rating}>
-                            <Star width={17} height={17} className={{ verticalAlign: 'middle' }}/>
-                            {recipe.rating} ({recipe.reviews || 0})
-                        </span>
-                        <span className={styles.likes}>
-                            <Heart width={19} height={19} className={{ verticalAlign: 'middle' }}/>
-                            {recipe.hearts || 0}
-                        </span>
-                    </div>
-                    
-                    <div className={styles.recipeMeta}>
-                        <p className={styles.metaTitle}>재료</p>
-                        <div className={styles.ingredientGrid}>
-                            {recipe.ingredients && recipe.ingredients.map((ingredient, idx) => (
-                                <div key={idx} className={styles.ingredientItem}>
-                                    <span className={styles.ingredientName}>{ingredient.name}</span>
-                                    <span className={styles.ingredientAmount}>{ingredient.amount}</span>
-                                </div>
-                            ))}
+                    <div className={styles.recipeInfo}>
+                        <div className={styles.recipeTitle}>
+                            <h3 className={styles.recipeName}>{recipe.title}</h3>
+                            <span className={styles.rating}>
+                                <Star width={17} height={17} style={{ verticalAlign: 'middle' }}/>
+                                {recipe.rating} ({recipe.reviews || 0})
+                            </span>
+                            <span className={styles.likes}>
+                                <Heart width={19} height={19} style={{ verticalAlign: 'middle' }}/>
+                                {recipe.hearts || 0}
+                            </span>
                         </div>
-                    </div>
-                </div>
-
-                {/* 조리 단계 */}
-                <div className={styles.recipeSteps}>
-                    <h4 className={styles.stepsTitle}>조리 단계</h4>
-                    {recipe.steps && recipe.steps.map((step) => (
-                        <div className={styles.recipeStep} key={step.step_num}>
-                            <div className={styles.stepHeader}>
-                                <div className={styles.stepNumberBadge}>{step.step_num}</div>
-                                <h4 className={styles.stepTitle}>단계 {step.step_num}</h4>
-                            </div>
-                            
-                            <div className={styles.stepContent}>
-                                <div className={styles.stepImageContainer}>
-                                    {step.img && (
-                                        <img 
-                                            src={step.img} 
-                                            alt={`단계 ${step.step_num} 이미지`} 
-                                            className={styles.stepImage} 
-                                        />
-                                    )}
-                                </div>
-                                <p className={styles.stepText}>{step.text}</p>
+                        
+                        <div className={styles.recipeMeta}>
+                            <p className={styles.metaTitle}>재료</p>
+                            <div className={styles.ingredientGrid}>
+                                {recipe.ingredients && recipe.ingredients.map((ingredient, idx) => (
+                                    <div key={idx} className={styles.ingredientItem}>
+                                        <span className={styles.ingredientName}>{ingredient.name}</span>
+                                        <span className={styles.ingredientAmount}>{ingredient.amount}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    ))}
+                    </div>
                 </div>
+
+                {/* --- 2. 스크롤될 하단 콘텐츠 --- */}
+                <div className={styles.scrollableContent}>
+                    {/* 조리 단계 */}
+                    <div className={styles.recipeSteps}>
+                        <h4 className={styles.stepsTitle}>조리 단계</h4>
+                        {recipe.steps && recipe.steps.map((step) => (
+                            <div className={styles.recipeStep} key={step.step_num}>
+                                <div className={styles.stepHeader}>
+                                    <div className={styles.stepNumberBadge}>{step.step_num}</div>
+                                    <h4 className={styles.stepTitle}>단계 {step.step_num}</h4>
+                                </div>
+                                
+                                <div className={styles.stepContent}>
+                                    <div className={styles.stepImageContainer}>
+                                        {step.img && (
+                                            <img 
+                                                src={step.img} 
+                                                alt={`단계 ${step.step_num} 이미지`} 
+                                                className={styles.stepImage} 
+                                            />
+                                        )}
+                                    </div>
+                                    <p className={styles.stepText}>{step.text}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
 
                 {/* 댓글 섹션 */}
                 <div className={styles.commentsSection}>
@@ -206,10 +227,22 @@ const RecipeDetail = () => {
                                 </span>
                                 <span className={styles.commentContent}>{comment.content}</span>
                             </div>
-                        ))
-                    ) : (
-                        <p>아직 댓글이 없습니다.</p>
-                    )}
+                        </form>
+                        
+                        {recipe.comments && recipe.comments.length > 0 ? (
+                            recipe.comments.map((comment, idx) => (
+                                <div className={styles.comment} key={idx}>
+                                    <span className={styles.commentWriter}>{comment.writer}</span>
+                                    <span className={styles.commentDate}>
+                                        {new Date(comment.timestamp).toLocaleDateString()}
+                                    </span>
+                                    <span className={styles.commentContent}>{comment.content}</span>
+                                </div>
+                            ))
+                        ) : (
+                            <p>아직 댓글이 없습니다.</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
