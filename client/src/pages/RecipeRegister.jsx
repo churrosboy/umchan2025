@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HiPhoto, HiChevronRight, HiMiniXCircle} from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
+import { getAuth } from 'firebase/auth';
 import styles from '../styles/RecipeRegister.module.css';
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -91,10 +92,22 @@ const RecipeRegister = () => {
       return;
     }
 
+    // 인증 토큰 가져오기
+    const auth = getAuth();
+    const user = auth.currentUser;
+    
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      navigate('/login'); // 로그인 페이지로 이동
+      return;
+    }
+    
+    const token = await user.getIdToken();
+    
     // 파일이 없으면 JSON으로 전송
     if (!recipe.file && steps.every(step => !step.file)) {
       const data = {
-        user_id: 123,
+        user_id: user.uid,
         name: recipe.title,
         text: steps.map(s => s.desc).join('\n'),
         ingredients: recipe.ingredients,
@@ -107,7 +120,10 @@ const RecipeRegister = () => {
       try {
         const response = await fetch(`/api/recipes`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // 인증 토큰 추가
+          },
           body: JSON.stringify(data),
         });
         if (response.ok) {
@@ -122,7 +138,7 @@ const RecipeRegister = () => {
     } else {
       // 파일이 하나라도 있으면 FormData로 전송
       const formData = new FormData();
-      formData.append('user_id', 123);
+      formData.append('user_id', user.uid);
       formData.append('name', recipe.title);
       formData.append('text', steps.map(s => s.desc).join('\n'));
       formData.append('ingredients', JSON.stringify(recipe.ingredients));
@@ -159,6 +175,9 @@ const RecipeRegister = () => {
       try {
         const response = await fetch(`/api/recipes`, {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}` // 인증 토큰 추가
+          },
           body: formData,
         });
         if (response.ok) {

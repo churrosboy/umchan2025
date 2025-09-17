@@ -1,47 +1,105 @@
 .recipeWrapper {
-    max-width: 600px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
     padding: 16px;
     background-color: #fff;
-    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-bottom: 50px;
+    box-sizing: border-box;
 }
+
 .recipeHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 16px;
+    position: relative;
+    width: 100%;
+    padding: 0 8px;
 }
+
 .backBtn {
     font-size: 22px;
     background: none;
     border: none;
     cursor: pointer;
     padding: 8px;
+    position: absolute;
+    left: 0;
+    z-index: 10;
 }
+
+.recipeHeader h2 {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    font-size: 18px;
+}
+
+.recipeHeader h2 span {
+    margin: 0;
+    font-size: 15px;
+}
+
 .spacer {
     width: 40px;
     height: 1px;
 }
+
 .recipeImage {
+    width: 100%;
+    height: 200px; /* 고정된 높이로 공간 유지 */
     margin-bottom: 24px;
-    border-radius: 8px;
     overflow: hidden;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #f5f5f5;
+    position: relative;
 }
+
+.thumbnailImage,
+.stepImage {
+    width: 100%;
+    height: 100%;           /* 컨테이너 높이에 맞춤 */
+    max-height: 200px;      /* 너무 높지 않게 제한 */
+    object-fit: contain;    /* 이미지 전체가 보이도록 contain 사용 */
+    border-radius: 4px;
+    background: #f5f5f5;
+}
+
+.emptyImageContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    color: #aaa;
+    font-size: 16px;
+    text-align: center;
+}
+
 .recipeInfo {
     margin-bottom: 24px;
+    padding: 0 8px;
+    width: 100%;
+    box-sizing: border-box;
 }
+
 .recipeTitle {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    width: 100%;
 }
+
 .recipeName {
-    margin: 0 16px 0 0;
+    margin: 0 16px 8px 0;
     font-size: 20px;
+    width: 100%;
 }
+
 .rating {
     display: inline-flex;
     align-items: center;
@@ -49,25 +107,32 @@
     font-size: 14px;
     color: #666;
 }
+
 .likes {
     display: inline-flex;
     align-items: center;
     font-size: 14px;
     color: #666;
 }
+
 .recipeMeta {
     margin-top: 16px;
+    width: 100%;
 }
+
 .metaTitle {
     margin: 0 0 8px;
     font-weight: bold;
     font-size: 16px;
 }
+
 .ingredientGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
+    width: 100%;
 }
+
 .ingredientItem {
     display: flex;
     justify-content: space-between;
@@ -75,33 +140,44 @@
     background-color: #f9f9f9;
     border-radius: 4px;
 }
+
 .ingredientName {
     font-weight: bold;
 }
+
 .recipeSteps {
     margin-bottom: 24px;
+    width: 100%;
+    padding: 0 8px;
+    box-sizing: border-box;
 }
+
 .stepsTitle {
     margin: 0 0 16px;
     font-weight: bold;
     font-size: 16px;
 }
+
 .recipeStep {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     padding: 16px;
     background-color: #f9f9f9;
     border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
 }
+
 .stepHeader {
     display: flex;
     align-items: center;
     margin-bottom: 12px;
 }
+
 .stepNumberBadge {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
+    min-width: 24px;
     height: 24px;
     border-radius: 50%;
     background-color: #ffbf49ff;
@@ -109,52 +185,76 @@
     margin-right: 8px;
     font-size: 14px;
 }
+
 .stepTitle {
     margin: 0;
     font-size: 16px;
 }
+
 .stepContent {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
+
 .stepImageContainer {
     margin-bottom: 12px;
+    width: 100%;
 }
+
 .stepImage {
     width: 100%;
-    max-height: 200px;
-    object-fit: cover;
+    height: 100%;           /* 컨테이너 높이에 맞춤 */
+    max-height: 200px;      /* 너무 높지 않게 제한 */
+    object-fit: contain;    /* 이미지 전체가 보이도록 contain 사용 */
     border-radius: 4px;
+    background: #f5f5f5;
 }
+
 .stepText {
     margin: 0;
     line-height: 1.5;
+    width: 100%;
 }
+
 .commentsSection {
     margin-top: 32px;
+    width: 100%;
+    padding: 0 8px;
+    box-sizing: border-box;
 }
+
 .commentsTitle {
     margin: 0 0 16px;
     font-size: 16px;
 }
+
 .commentForm {
     margin-bottom: 16px;
+    width: 100%;
 }
+
 .commentInputGroup {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
 }
+
 .nameInput {
     font-weight: bold;
     font-size: 14px;
 }
+
 .commentInput {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     resize: none;
+    width: 100%;
+    box-sizing: border-box;
 }
+
 .commentSubmit {
     align-self: flex-end;
     padding: 8px 16px;
@@ -164,61 +264,62 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
 .comment {
     padding: 12px;
     background-color: #f9f9f9;
     border-radius: 4px;
     margin-bottom: 8px;
+    width: 100%;
+    box-sizing: border-box;
 }
+
 .commentWriter {
     font-weight: bold;
     margin-right: 8px;
 }
+
 .commentDate {
     font-size: 12px;
     color: #999;
 }
+
 .commentContent {
     display: block;
     margin-top: 6px;
 }
+
 .noResult {
     text-align: center;
     padding: 32px;
     font-size: 16px;
     color: #666;
 }
-.commentContainer {
-    background: #fdbd3dff;
-    border-radius: 12px;
-    padding: 16px;
-    margin: 12px 0;
-    box-shadow: 0 2px 8px rgba(255, 214, 0, 0.15);
-}
-.commentHeader {
-    font-weight: bold;
-    color: #222;
-    margin-bottom: 8px;
-}
-.commentText {
-    color: #222;
-    font-size: 15px;
-    margin-bottom: 6px;
-}
-.commentMeta {
-    font-size: 12px;
-    color: #888;
-}
-.commentButton {
-    background: #FFA000;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 6px 12px;
-    cursor: pointer;
-    margin-top: 8px;
-}
+
 .pageBackground {
     background: #fff;
     min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* 모바일 최적화 */
+@media screen and (max-width: 480px) {
+    .recipeWrapper {
+        padding: 12px;
+    }
+    
+    .ingredientGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .recipeTitle {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .rating, .likes {
+        margin-top: 8px;
+    }
 }

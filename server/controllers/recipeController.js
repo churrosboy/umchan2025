@@ -1,4 +1,15 @@
+import fs from 'fs';
 import Recipe from "../models/Recipe.js";
+import admin from "../firebaseAdmin.js";
+
+// Bearer 토큰 파싱 함수
+function parseBearer(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  return authHeader.substring(7); // 'Bearer ' 이후 부분
+}
 
 // 레시피 목록 조회
 export async function getRecipes(req, res) {
@@ -44,6 +55,23 @@ export async function createRecipe(req, res) {
     
     // 필수 필드 검증
     const { user_id, name, text, ingredients } = req.body;
+
+    /////////////////////////////////////////////////////////////////////////////
+
+    // 인증 검증 로직
+    const token = parseBearer(req);
+    if (!token) return res.status(401).json({ error: "No token" });
+
+    let uid;
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(token);
+      uid = decodedToken.uid;
+    } catch (error) {
+      console.error('토큰 검증 실패:', error);
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
     
     if (!name || !name.trim()) {
       console.log('❌ 레시피 이름이 없습니다.');
@@ -57,56 +85,93 @@ export async function createRecipe(req, res) {
     let thumbnail = '';
     let steps = [];
     
+    // Promise 배열을 만들어 모든 파일 업로드 작업을 추적
+    const uploadPromises = [];
+    
     if (req.files && req.files.length > 0) {
       console.log(`📁 ${req.files.length}개의 파일 처리 시작`);
       
-      req.files.forEach(file => {
+      req.files.forEach(imgfile => {
         console.log('File received:', {
-          fieldname: file.fieldname,
-          originalname: file.originalname,
-          filename: file.filename
+          fieldname: imgfile.fieldname,
+          originalname: imgfile.originalname,
+          filename: imgfile.filename
         });
+
+        // 각 파일 업로드를 Promise로 처리
+        const uploadPromise = (async () => {
+          try {
+            const bucket = admin.storage().bucket();
+
+            const timestamp = Date.now();
+            const randomId = Math.random().toString(36).substring(2, 8);
+            const destination = imgfile.fieldname === 'mainImage' 
+              ? `recipe/profile_images/${uid}_${timestamp}_${randomId}` 
+              : `recipe/step_images/${uid}_${timestamp}_${randomId}`;
+
+            // 로컬 파일 경로
+            const filePath = imgfile.path;
+            
+            console.log(`업로드 시작: ${imgfile.fieldname}, 경로: ${filePath}`);
+
+            // Firebase Storage에 업로드
+            await bucket.upload(filePath, {
+              destination: destination,
+              metadata: {
+                contentType: imgfile.mimetype,
+                metadata: {
+                  firebaseStorageDownloadTokens: uid // 토큰으로 사용자 ID 활용
+                }
+              }
+            });
+
+            // 업로드 후 공개 URL 생성
+            const file = bucket.file(destination);
+            const [metadata] = await file.getMetadata();
+
+            // 파일 URL 생성
+            const bucketName = bucket.name;
+            const downloadToken = metadata.metadata.firebaseStorageDownloadTokens;
+            const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(destination)}?alt=media&token=${downloadToken}`;
+            
+            // 임시 파일 삭제
+            try {
+              fs.unlinkSync(filePath);
+              console.log(`임시 파일 삭제 성공: ${filePath}`);
+            } catch (unlinkError) {
+              console.error(`임시 파일 삭제 실패: ${filePath}`, unlinkError);
+            }
+
+            console.log(`업로드 완료: ${imgfile.fieldname}, URL: ${fileUrl}`);
+
+            if (imgfile.fieldname === 'mainImage') {
+              thumbnail = fileUrl;
+              console.log('📷 Main image:', thumbnail);
+            } else if (/^stepImage(\d+)$/.test(imgfile.fieldname)) {
+              const idx = parseInt(imgfile.fieldname.replace('stepImage', ''));
+              if (!steps[idx]) steps[idx] = {};
+              steps[idx].img = fileUrl;
+              console.log(`📷 Step ${idx+1} image:`, steps[idx].img);
+            }
+            
+            return { fieldname: imgfile.fieldname, url: fileUrl };
+          } catch (error) {
+            console.error(`Firebase 업로드 오류 (${imgfile.fieldname}):`, error);
+            return { error: true, fieldname: imgfile.fieldname };
+          }
+        })();
         
-        if (file.fieldname === 'mainImage') {
-          thumbnail = `/uploads/${file.filename}`;
-          console.log('📷 Main image:', thumbnail);
-        } else if (/^stepImage\d+$/.test(file.fieldname)) {
-          const idx = parseInt(file.fieldname.replace('stepImage', ''));
-          if (!steps[idx]) steps[idx] = {};
-          steps[idx].img = `/uploads/${file.filename}`;
-          console.log(`📷 Step ${idx} image:`, steps[idx].img);
-        }
+        uploadPromises.push(uploadPromise);
       });
     } else {
       console.log('📁 업로드된 파일이 없습니다.');
     }
     
-    // stepDescN 처리
-    console.log('📝 단계 설명 처리 시작');
-    /*
-    Object.keys(req.body).forEach(key => {
-      if (/^stepDesc\d+$/.test(key)) {
-        const idx = parseInt(key.replace('stepDesc', ''));
-        if (!steps[idx]) steps[idx] = {};
-        steps[idx].text = req.body[key];
-        steps[idx].step_num = idx + 1;
-        console.log(`📝 Step ${idx} description:`, steps[idx].text);
-      }
-    });
-    */
-   /*
-    if (Array.isArray(req.body.steps)) {
-      console.log('✅ Steps array found:', req.body.steps);
-      validSteps = req.body.steps.filter(
-        s => s && typeof s.text === 'string' && s.text.trim()
-      );
-    } else {
-      console.log('❌ No steps array found, req.body:', req.body);
-      validSteps = [];
-    }
-      */
+    // 모든 파일 업로드가 완료될 때까지 기다림
+    await Promise.all(uploadPromises);
     
-    console.log('Generated steps before filter:', steps);
+    // 나머지 코드 (steps 및 ingredients 처리)는 동일
+    console.log('📝 단계 설명 처리 시작');
     
     // ingredients 파싱
     let parsedIngredients = [];
@@ -129,11 +194,16 @@ export async function createRecipe(req, res) {
           ? JSON.parse(req.body.steps)
           : req.body.steps;
 
-        validSteps = parsedSteps.filter(step => step.text && step.text.trim()).map((step, idx) => ({
-          ...step,
-          step_num: idx + 1,
-          img: steps[idx] ? `${steps[idx].img}` : ''
-        }));
+        validSteps = parsedSteps.filter(step => step.text && step.text.trim()).map((step, idx) => {
+          // 해당 단계에 이미지가 있으면 사용, 없으면 빈 문자열
+          const stepImage = steps[idx] ? steps[idx].img : '';
+          
+          return {
+            ...step,
+            step_num: idx + 1,
+            img: stepImage
+          };
+        });
 
         console.log('✅ Parsed and validated steps:', validSteps);
       } catch (err) {
@@ -157,7 +227,7 @@ export async function createRecipe(req, res) {
     }
     
     const recipeData = {
-      user_id: parseInt(user_id) || 123,
+      user_id: user_id,
       title: name.trim(),
       desc: text ? text.trim() : '',
       thumbnail,
