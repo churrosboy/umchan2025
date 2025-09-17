@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as Star } from '../Icons/Star01.svg';
 import { ReactComponent as Heart } from '../Icons/Heart01.svg';
 import styles from '../styles/RecipeDetail.module.css';
+import { getAuth } from "firebase/auth";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -13,6 +14,7 @@ const RecipeDetail = () => {
     const [sellerName, setSellerName] = useState('');
     const [loading, setLoading] = useState(true);
     const [comment, setComment] = useState('');
+    const [currentUserNickname, setCurrentUserNickname] = useState('');
 
     // 레시피 데이터 불러오기
     useEffect(() => {
@@ -23,15 +25,41 @@ const RecipeDetail = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setRecipe(data);
-                    setSellerName(data.sellerName || '알 수 없음');
+
+                    // 닉네임 추가 요청
+                    if (data.user_id) {
+                      const userRes = await fetch(`/api/users/${data.user_id}`);
+                      if (userRes.ok) {
+                        const userData = await userRes.json();
+                        setSellerName(userData.nickname || '알 수 없음');
+                      } else {
+                        setSellerName('알 수 없음');
+                      }
+                    }
                 }
             } catch (err) {
                 setRecipe(null);
+                setSellerName('알 수 없음');
             }
             setLoading(false);
         };
         fetchRecipe();
     }, [recipeId]);
+
+    useEffect(() => {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (user) {
+        // 현재 로그인한 사용자의 닉네임 가져오기
+        fetch('/api/profile', {
+          headers: { Authorization: `Bearer ${user.accessToken}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+          setCurrentUserNickname(data.nickname || '알 수 없음');
+        });
+      }
+    }, []);
 
     const goBack = () => {
         navigate(-1);
@@ -55,7 +83,7 @@ const RecipeDetail = () => {
             if (response.ok) {
                 const data = await response.json();
                 setRecipe(data);
-            }
+            } 
         } catch (err) {
             console.error("댓글 등록 실패:", err);
         }
@@ -77,20 +105,25 @@ const RecipeDetail = () => {
                     <div className={styles.spacer} />
                 </div>
 
-                {/* 메인 이미지 */}
-                {recipe.thumbnail && (
-                    <div className={styles.recipeImage}>
+                {/* 메인 이미지 - 이미지가 없어도 공간 유지 */}
+                <div className={styles.recipeImage}>
+                    {recipe.thumbnail ? (
                         <img
-                            src={`${recipe.thumbnail}`}
+                            src={recipe.thumbnail}
                             alt={recipe.title}
-                            className={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                            className={styles.thumbnailImage}
                             onError={(e) => {
                                 console.error('메인 이미지 로드 실패:', e.target.src);
                                 e.target.style.display = 'none';
+                                e.target.parentElement.classList.add(styles.emptyImageContainer);
                             }}
                         />
-                    </div>
-                )}
+                    ) : (
+                        <div className={styles.emptyImageContainer}>
+                            <span>이미지 없음</span>
+                        </div>
+                    )}
+                </div>
 
                 <div className={styles.recipeInfo}>
                     <div className={styles.recipeTitle}>
@@ -149,7 +182,7 @@ const RecipeDetail = () => {
                     <h4 className={styles.commentsTitle}>댓글</h4>
                     <form onSubmit={handleSubmitComment} className={styles.commentForm}>
                         <div className={styles.commentInputGroup}>
-                            <div className={styles.nameInput}>사용자이름</div>
+                            <div className={styles.nameInput}>{currentUserNickname}</div>
                             <input
                                 type="text"
                                 value={comment}

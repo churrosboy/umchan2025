@@ -118,7 +118,21 @@ const RecipeList = () => {
             <div className={styles.recipeSection}>
                 {recipeList.map(item => (
                 <div className={styles.recipeCard} key={item.recipe_id}>
-                    <div className={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}></div>
+                    <div className={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
+                        {item.thumbnail ? (
+                            <img 
+                                src={item.thumbnail} 
+                                alt={item.title} 
+                                className={styles.recipeImage}
+                                onError={(e) => {
+                                    console.error('이미지 로드 실패:', e.target.src);
+                                    e.target.style.display = 'none';
+                                }}
+                            />
+                        ) : (
+                            <div className={styles.noImage}>이미지 없음</div>
+                        )}
+                    </div>
                     <div className={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
                     <div className={styles.recipeTitle}>
                         {item.title}
