@@ -85,52 +85,51 @@ const RecipeList = () => {
     };
 
     return (
-        <div className={{ ...styles.page, paddingBottom: 60 }}>
+        <div className={styles.pageContainer}>
             <div className={styles.searchContainer}>
                 <div className={styles.searchBar}>
-                <HiOutlineSearch size={20} color="#888" className={{ marginRight: 8 }} />
-                <input
-                    type="text"
-                    onClick={goToSearch}
-                    placeholder="원하는 음식을 검색해보세요"
-                    className={styles.searchInputBox}
-                />
+                    <HiOutlineSearch size={20} color="#888" style={{ marginRight: 8 }} />
+                    <input
+                        type="text"
+                        onClick={goToSearch}
+                        placeholder="원하는 음식을 검색해보세요"
+                        className={styles.searchInputBox}
+                    />
                 </div>
             </div>
-        
-            {keyword && (
-                <div className={styles.sectionTitleBar}>
-                    <h3 className={styles.resultTitle}>
-                        "{keyword}" 검색 결과
-                    </h3>
-                    <p className={styles.resultCount}>{recipeList.length}개의 레시피를 찾았습니다</p>
-                </div>
-            )}
-
-            {!keyword && (
-                <div className={styles.sectionTitleBar}>
-                    <h3 className={styles.resultTitle}>
-                        {recipeList.length}개의 등록된 레시피
-                    </h3>
-                </div>
-            )}
-
-            <div className={styles.recipeSection}>
-                {recipeList.map(item => (
-                <div className={styles.recipeCard} key={item.recipe_id}>
-                    <div className={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}></div>
-                    <div className={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
-                    <div className={styles.recipeTitle}>
-                        {item.title}
-                        <span className={styles.likes}> 💚{item.like_cnt}</span>
+            
+            {/* 👇 스크롤이 필요한 모든 콘텐츠를 이 div로 감쌉니다. */}
+            <div className={styles.scrollableContent}>
+                {keyword && (
+                    <div className={styles.sectionTitleBar}>
+                        <h3 className={styles.resultTitle}>"{keyword}" 검색 결과</h3>
+                        <p className={styles.resultCount}>{recipeList.length}개의 레시피를 찾았습니다</p>
                     </div>
-                    <div className={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
-                </div>
-                    <div className={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.recipe_id)}}>
-                        {liked[item.recipe_id] ? '❤️' : '♡'}
+                )}
+
+                {!keyword && (
+                    <div className={styles.sectionTitleBar}>
+                        <h3 className={styles.resultTitle}>{recipeList.length}개의 등록된 레시피</h3>
                     </div>
+                )}
+
+                <div className={styles.recipeSection}>
+                    {recipeList.map(item => (
+                        <div className={styles.recipeCard} key={item.recipe_id}>
+                            <div className={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}></div>
+                            <div className={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
+                                <div className={styles.recipeTitle}>
+                                    {item.title}
+                                    <span className={styles.likes}> 💚{item.like_cnt}</span>
+                                </div>
+                                <div className={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
+                            </div>
+                            <div className={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.recipe_id)}}>
+                                {liked[item.recipe_id] ? '❤️' : '♡'}
+                            </div>
+                        </div>
+                    ))}
                 </div>
-                ))}
             </div>
         </div>
     );
