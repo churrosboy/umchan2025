@@ -28,7 +28,7 @@ import Recipes from './pages/recipes';
 import SearchRecipe from './pages/search_recipe';
 import RecipeDetail from './pages/recipe_detail';
 import AccountMng from './pages/AccountMng';
-import AuthReq from './pages/AuthReq'; // 위생인증 요청 페이지
+import AuthReq from './pages/AuthReq'; // ìœ„ìƒì¸ì¦ ìš"ì²­ íŽ˜ì´ì§€
 import ItemRegister from './pages/item_register';
 import ChatRoom from './pages/chatroom';
 import ChatList from './pages/chat_list';
@@ -54,14 +54,14 @@ const AppRoutes = () => {
     <>
       {showSearchBar && <SearchBar />}
       <Routes>
-        {/* === 로그인 없이 접근 가능한 페이지 === */}
+        {/* === ë¡œê·¸ì¸ ì—†ì´ ì 'ê·¼ ê°€ëŠ¥í•œ íŽ˜ì´ì§€ === */}
         <Route path="/" element={<Login />} />
         <Route path="/signup1" element={<Signup1 />} />
         <Route path="/signup2" element={<Signup2 />} />
         <Route path="/signup3" element={<Signup3 />} />
         <Route path="/signup4" element={<Signup4 />} />
 
-        {/* === 로그인이 반드시 필요한 페이지 (ProtectedRoute로 감싸기) === */}
+        {/* === ë¡œê·¸ì¸ì´ ë°˜ë"œì‹œ í•„ìš"í•œ íŽ˜ì´ì§€ (ProtectedRouteë¡œ ê°ì‹¸ê¸°) === */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/seller_detail/:sellerId" element={<ProtectedRoute><SellerDetail /></ProtectedRoute>} />
         <Route path="/menu/:menuId" element={<ProtectedRoute><MenuDetail /></ProtectedRoute>} />
@@ -86,11 +86,11 @@ const AppRoutes = () => {
         <Route path="/recipe_detail/:recipeId" element={<ProtectedRoute><RecipeDetail /></ProtectedRoute>} />
         <Route path="/item_register" element={<ProtectedRoute><ItemRegister /></ProtectedRoute>} />
         <Route path="/AccountMng/:userId" element={<ProtectedRoute><AccountMng /></ProtectedRoute>} />
-        <Route path="/AuthReq" element={<ProtectedRoute><AuthReq /></ProtectedRoute>} /> {/* 위생인증 요청 페이지 */}
+        <Route path="/AuthReq" element={<ProtectedRoute><AuthReq /></ProtectedRoute>} /> {/* ìœ„ìƒì¸ì¦ ìš"ì²­ íŽ˜ì´ì§€ */}
         <Route path="/chat/:sellerId" element={<ChatRoom />} />
         <Route path="/chats" element={<ChatList />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/initial-profile" element={<InitialProfile />} />      </Routes>
+        <Route path="/initial-profile" element={<InitialProfile />} />
         <Route path="/review/:orderId" element={<ProtectedRoute><ReviewCreate /></ProtectedRoute>} />
         <Route path="/review/edit/:reviewId" element={<ProtectedRoute><ReviewCreate /></ProtectedRoute>} />
       </Routes>

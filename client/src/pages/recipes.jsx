@@ -133,39 +133,12 @@ const RecipeList = () => {
                             <div className={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
                                 <div className={styles.recipeTitle}>
                                     {item.title}
-                                    <span className={styles.likes}> 💚{item.like_cnt}</span>
+                                    <span className={styles.likes}> ðŸ'š{item.like_cnt}</span>
                                 </div>
                                 <div className={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
                             </div>
                             <div className={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.recipe_id)}}>
-                                {liked[item.recipe_id] ? '❤️' : '♡'}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-                    </div>
-                )}
-
-                {!keyword && (
-                    <div className={styles.sectionTitleBar}>
-                        <h3 className={styles.resultTitle}>{recipeList.length}개의 등록된 레시피</h3>
-                    </div>
-                )}
-
-                <div className={styles.recipeSection}>
-                    {recipeList.map(item => (
-                        <div className={styles.recipeCard} key={item.recipe_id}>
-                            <div className={styles.recipeImage} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}></div>
-                            <div className={styles.recipeInfo} onClick={() => navigate(`/recipe_detail/${item.recipe_id}`)}>
-                                <div className={styles.recipeTitle}>
-                                    {item.title}
-                                    <span className={styles.likes}> 💚{item.like_cnt}</span>
-                                </div>
-                                <div className={styles.recipeDesc}>{getSellerName(item.user_id)}</div>
-                            </div>
-                            <div className={styles.heart} onClick={(e) => {e.stopPropagation(); handleHeartClick(item.recipe_id)}}>
-                                {liked[item.recipe_id] ? '❤️' : '♡'}
+                                {liked[item.recipe_id] ? '💚' : '⭐️'}
                             </div>
                         </div>
                     ))}
