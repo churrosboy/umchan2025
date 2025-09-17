@@ -84,12 +84,12 @@ router.post('/', async (req, res) => {
     await users.insertOne(userDoc);
     res.status(201).json({ message: "사용자 등록 성공", user: userDoc });
   } catch (err) {
-    console.error("❌ 사용자 등록 실패:", err);
+    console.error("⌐ 사용자 등록 실패:", err);
     res.status(500).json({ message: "서버 오류", error: err.message });
   }
 });
 
-/* ------------------ 닉네임 중복 체크 추가 ------------------ */
+/* ------------------ 닉네임 중복 체크 수정 ------------------ */
 router.get("/check-nickname", async (req, res) => {
   try {
     const { nickname } = req.query;
@@ -98,16 +98,31 @@ router.get("/check-nickname", async (req, res) => {
       return res.status(400).json({ error: "닉네임을 입력해주세요." });
     }
 
-    if (nickname.length < 2 || nickname.length > 10) {
+    const trimmedNickname = nickname.trim();
+    
+    if (trimmedNickname.length < 2 || trimmedNickname.length > 10) {
       return res.status(400).json({ error: "닉네임은 2-10자 사이로 입력해주세요." });
     }
 
-    const existingUser = await users.findOne({ nickname: nickname.trim() });
+    // 대소문자를 구분하지 않고, 앞뒤 공백을 제거하여 검색
+    const existingUser = await users.findOne({ 
+      nickname: { 
+        $regex: new RegExp(`^${trimmedNickname}$`, 'i') // 대소문자 무시
+      } 
+    });
+    
     const available = !existingUser;
+
+    // 디버깅을 위한 로그 추가
+    console.log('닉네임 중복 체크:', {
+      requestedNickname: trimmedNickname,
+      foundUser: existingUser ? existingUser.nickname : null,
+      available
+    });
 
     res.json({ 
       available, 
-      nickname: nickname.trim(),
+      nickname: trimmedNickname,
       message: available ? '사용 가능한 닉네임입니다.' : '이미 사용 중인 닉네임입니다.'
     });
   } catch (err) {
@@ -175,7 +190,7 @@ router.post("/upload-profile-image",
   }
 );
 
-/* ------------------ 프로필 업데이트 추가 ------------------ */
+/* ------------------ 프로필 업데이트 수정 ------------------ */
 router.put("/update-profile", async (req, res) => {
   try {
     const token = parseBearer(req);
@@ -200,22 +215,32 @@ router.put("/update-profile", async (req, res) => {
     };
 
     if (nickname) {
-      if (nickname.trim().length < 2 || nickname.trim().length > 10) {
+      const trimmedNickname = nickname.trim();
+      
+      if (trimmedNickname.length < 2 || trimmedNickname.length > 10) {
         return res.status(400).json({ error: "닉네임은 2-10자 사이로 입력해주세요." });
       }
 
-      if (nickname.trim() !== currentUser.nickname) {
+      // 현재 사용자의 닉네임과 다른 경우에만 중복 체크
+      if (trimmedNickname.toLowerCase() !== (currentUser.nickname || '').toLowerCase()) {
         const existingNickname = await users.findOne({ 
-          nickname: nickname.trim(),
+          nickname: { 
+            $regex: new RegExp(`^${trimmedNickname}$`, 'i') // 대소문자 무시
+          },
           id: { $ne: targetUid } 
         });
         
         if (existingNickname) {
+          console.log('중복된 닉네임 발견:', {
+            requestedNickname: trimmedNickname,
+            existingNickname: existingNickname.nickname,
+            existingUserId: existingNickname.id
+          });
           return res.status(400).json({ error: "이미 사용 중인 닉네임입니다." });
         }
       }
 
-      updateData.nickname = nickname.trim();
+      updateData.nickname = trimmedNickname;
     }
 
     if (typeof introduction === "string") {

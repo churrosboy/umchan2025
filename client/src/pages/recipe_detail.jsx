@@ -102,7 +102,7 @@ const RecipeDetail = () => {
               {/* --- 1. 고정될 상단 콘텐츠 --- */}
               <div className={styles.staticContent}>
                   <div className={styles.recipeHeader}>
-                      <button className={styles.backBtn} onClick={goBack}>{'←'}</button>
+                      <button className={styles.backBtn} onClick={goBack}>{'â†'}</button>
                       <h2 style={{ margin: 0, fontSize: '18px' }}>{sellerName}<span style={{ margin: 0, fontSize: '15px' }}> 님의 레시피</span></h2>
                       <div className={styles.spacer} />
                   </div>
@@ -127,21 +127,6 @@ const RecipeDetail = () => {
                           </div>
                       )}
                   </div>
-
-                    {/* 메인 이미지 */}
-                    {recipe.thumbnail && (
-                        <div className={styles.recipeImage}>
-                            <img
-                                src={`${recipe.thumbnail}`}
-                                alt={recipe.title}
-                                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-                                onError={(e) => {
-                                    console.error('메인 이미지 로드 실패:', e.target.src);
-                                    e.target.style.display = 'none';
-                                }}
-                            />
-                        </div>
-                    )}
 
                     <div className={styles.recipeInfo}>
                         <div className={styles.recipeTitle}>
@@ -198,34 +183,23 @@ const RecipeDetail = () => {
                         ))}
                     </div>
 
-                {/* 댓글 섹션 */}
-                <div className={styles.commentsSection}>
-                    <h4 className={styles.commentsTitle}>댓글</h4>
-                    <form onSubmit={handleSubmitComment} className={styles.commentForm}>
-                        <div className={styles.commentInputGroup}>
-                            <div className={styles.nameInput}>{currentUserNickname}</div>
-                            <input
-                                type="text"
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                                placeholder="댓글을 입력하세요"
-                                className={styles.commentInput}
-                                required
-                            />
-                            <button type="submit" className={styles.commentSubmit}>
-                                등록
-                            </button>
-                        </div>
-                    </form>
-                    
-                    {recipe.comments && recipe.comments.length > 0 ? (
-                        recipe.comments.map((comment, idx) => (
-                            <div className={styles.comment} key={idx}>
-                                <span className={styles.commentWriter}>{comment.writer}</span>
-                                <span className={styles.commentDate}>
-                                    {new Date(comment.timestamp).toLocaleDateString()}
-                                </span>
-                                <span className={styles.commentContent}>{comment.content}</span>
+                    {/* 댓글 섹션 */}
+                    <div className={styles.commentsSection}>
+                        <h4 className={styles.commentsTitle}>댓글</h4>
+                        <form onSubmit={handleSubmitComment} className={styles.commentForm}>
+                            <div className={styles.commentInputGroup}>
+                                <div className={styles.nameInput}>{currentUserNickname}</div>
+                                <input
+                                    type="text"
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    placeholder="댓글을 입력하세요"
+                                    className={styles.commentInput}
+                                    required
+                                />
+                                <button type="submit" className={styles.commentSubmit}>
+                                    등록
+                                </button>
                             </div>
                         </form>
                         
