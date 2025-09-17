@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserById, searchUsersByProduct } from "../controllers/userContoroller.js";
+import { getUserById, searchUsersByProduct, searchUserNicknameById } from "../controllers/userContoroller.js";
 import { Int32, Double } from 'mongodb';
 import { users } from '../models/user_model.js'; 
 
@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
       thumbnail_list: [],
       instant_cnt: new Int32(0),
       reserve_cnt: new Int32(0),
-      profile_image: "",
+      profile_img: "",
       intro: ""
     };
 
@@ -57,5 +57,7 @@ router.get("/:id", getUserById);
 
 // 인증된 사용자 중 검색어에 해당하는 상품을 가진 사용자 검색
 router.get("/search/product", searchUsersByProduct);
+
+router.get("/nickname/:nickname", searchUserNicknameById);
 
 export default router;
