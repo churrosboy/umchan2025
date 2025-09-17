@@ -116,14 +116,14 @@ const Home = () => {
             smoothSetPanelHeight(newPanelHeight);
 
             const projection = map.getProjection();
-            const sellerPoint = projection.fromLatLngToPoint(sellerPosition);
+            const sellerPoint = projection.fromCoordToPoint(sellerPosition);
             
             const newCenterPoint = new window.naver.maps.Point(
               sellerPoint.x,
               sellerPoint.y + newPanelHeight / 2 
             );
 
-            const newCenterLatLng = projection.fromPointToLatLng(newCenterPoint);
+            const newCenterLatLng = projection.fromPointToCoord(newCenterPoint);
             map.panTo(newCenterLatLng);
           });
           newMarkers.push(marker);
@@ -208,42 +208,12 @@ const Home = () => {
 
   // 🆕 개선된 터치 종료 핸들러
   const handleTouchEnd = () => {
-    if (startY === null || !isDragging) return;
-    
-    const maxHeight = window.innerHeight - 132;
-    const minHeight = 100;
-    let targetHeight = panelHeight;
-    
-    // 관성 효과 적용
-    const velocityThreshold = 0.5;
-    if (Math.abs(touchVelocity.current) > velocityThreshold) {
-      const inertiaDistance = touchVelocity.current * 200; // 관성 거리
-      targetHeight = panelHeight - inertiaDistance;
-    }
-    
-    // 스냅 포인트 설정
-    const midHeight = maxHeight * 0.5;
-    const highThreshold = maxHeight * 0.85;
-    const lowThreshold = 150;
-    
-    if (targetHeight > highThreshold) {
-      targetHeight = maxHeight;
-    } else if (targetHeight < lowThreshold) {
-      targetHeight = minHeight;
-    } else if (targetHeight > midHeight) {
-      targetHeight = maxHeight;
-    } else {
-      targetHeight = minHeight;
-    }
-    
-    // 경계값 보정
-    targetHeight = Math.max(minHeight, Math.min(maxHeight, targetHeight));
-    
-    setIsDragging(false);
-    smoothSetPanelHeight(targetHeight);
+    if (!isDragging) return; // 드래그 중이 아니면 아무것도 안 함
+
+    setIsDragging(false); // 드래그 상태만 종료
     setStartY(null);
     
-    // 리셋
+    // 속도 관련 상태 초기화
     lastTouchY.current = null;
     lastTouchTime.current = null;
     touchVelocity.current = 0;
@@ -354,7 +324,7 @@ const Home = () => {
                     {seller.thumbnail_list && seller.thumbnail_list.map((img, idx) => (
                       <img
                         key={idx}
-                        src={`/images$seller1-1`}
+                        src={`/images${img}`}
                         alt={`썸네일${idx}`}
                         className={styles.thumbnailImage}
                       />
@@ -364,7 +334,10 @@ const Home = () => {
               ))}
             </>
           ) : (
-            <div>
+            <div
+              onClick={() => navigate(`/seller_detail/${selectedSeller.id || selectedSeller._id}`)}
+              style={{ cursor: 'pointer' }} 
+            >
               <h3 style={{ marginBottom: 5 }}>{selectedSeller.nickname}</h3>
               <p>
                 <Star width={13} height={13} style={{ verticalAlign: 'middle' }}/>

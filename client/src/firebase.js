@@ -1,3 +1,4 @@
+//client/firebase.js
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -6,15 +7,14 @@ import { getAuth, RecaptchaVerifier } from 'firebase/auth';
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAJCgpoNfjLj9aKIMLpNX7V6h78B6kr68Y",
-  authDomain: "umchan-c2fa3.firebaseapp.com",
-  projectId: "umchan-c2fa3",
-  storageBucket: "umchan-c2fa3.firebasestorage.app",
-  messagingSenderId: "537881686160",
-  appId: "1:537881686160:web:d91569745748c205bb6815",
-  measurementId: "G-GQBV4S22K8"
+  apiKey: "AIzaSyAxCII36iQrPjf_U8fiEjlW5NQQF6Yy64I",
+  authDomain: "umchan-eb63f.firebaseapp.com",
+  databaseURL: "https://umchan-eb63f-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "umchan-eb63f",
+  storageBucket: "umchan-eb63f.firebasestorage.app",
+  messagingSenderId: "100958189835",
+  appId: "1:100958189835:web:0712649e1eb2d85d620a0e"
 };
 
 // Initialize Firebase
