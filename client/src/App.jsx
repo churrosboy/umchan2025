@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 
 // pages
 import Login from './pages/auth/Login/Login';
-import Signup1 from './pages/auth/SignUp/SignUp1';
-import Signup2 from './pages/auth/SignUp/SignUp2';
-import Signup3 from './pages/auth/SignUp/SignUp3';
-import Signup4 from './pages/auth/SignUp/SignUp4';
+import Signup1 from './pages/auth/SignUp/SignUpEmail';
+import Signup2 from './pages/auth/SignUp/SignUpPW';
+import Signup3 from './pages/auth/SignUp/SignUpPhone';
+import Signup4 from './pages/auth/SignUp/SignUpAddr';
 
 import Home from './pages/home/Home';
 
@@ -56,7 +56,7 @@ const AppRoutes = () => {
   const location = useLocation();
 
   const hideNavigationBar = [
-    '/', '/signup1', '/signup2', '/signup3', '/signup4'
+    '/', '/signup/email', '/signup/password', '/signup/phone', '/signup/address'
   ].includes(location.pathname);
 
   const showSearchBar = (location.pathname === '/home' || location.pathname.startsWith('/seller_list/'));
@@ -67,10 +67,10 @@ const AppRoutes = () => {
       <Routes>
         {/* === 로그인 없이 접근 가능한 페이지 === */}
         <Route path="/" element={<Login />} />
-        <Route path="/signup1" element={<Signup1 />} />
-        <Route path="/signup2" element={<Signup2 />} />
-        <Route path="/signup3" element={<Signup3 />} />
-        <Route path="/signup4" element={<Signup4 />} />
+        <Route path="/signup/email" element={<Signup1 />} />
+        <Route path="/signup/password" element={<Signup2 />} />
+        <Route path="/signup/phone" element={<Signup3 />} />
+        <Route path="/signup/address" element={<Signup4 />} />
 
         {/* === 로그인이 반드시 필요한 페이지 (ProtectedRoute로 감싸기) === */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />

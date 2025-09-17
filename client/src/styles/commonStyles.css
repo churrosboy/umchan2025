@@ -1,0 +1,52 @@
+/* 전체 페이지 배경 및 정렬 */
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+/* 중앙의 흰색 박스 */
+.container {
+  width: 80%;
+  max-width: 360px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.title {
+  font-size: 22px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #fcd265;
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  background-color: #fcd265;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+}
