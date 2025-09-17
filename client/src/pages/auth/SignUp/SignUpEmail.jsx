@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { commonStyles } from '../../../styles/commonStyles';
+import '../../../styles/commonStyles.css';
 
 const Signup1 = () => {
   const navigate = useNavigate();
@@ -20,35 +20,31 @@ const Signup1 = () => {
       return;
     }
 
-    navigate('/signup2', { state: { name, email } });
+    navigate('/signup/password', { state: { name, email } });
   };
 
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.container}>
-        <h2 style={styles.title}>✏️ 회원정보를 입력해 주세요</h2>
+    <div className="wrapper">
+      <div className="container">
+        <h2 className="title">✏️ 회원정보를 입력해 주세요</h2>
         <input
-          style={styles.input}
+          className="input"
           type="text"
           placeholder="이름"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <input
-          style={styles.input}
+          className="input"
           type="email"
           placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <button style={styles.button} onClick={handleNext}>다음</button>
+        <button className="button" onClick={handleNext}>다음</button>
       </div>
     </div>
   );
-};
-
-const styles = {
-  ...commonStyles,
 };
 
 export default Signup1;

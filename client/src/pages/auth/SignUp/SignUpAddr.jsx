@@ -2,7 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../firebase';
-import { commonStyles } from '../../../styles/commonStyles';
+
+import '../../../styles/commonStyles.css';
+import styles from './SignUp.module.css';
 
 const API_BASE =
   process.env.REACT_APP_API_BASE ||
@@ -65,7 +67,7 @@ const Signup4 = () => {
   useEffect(() => {
     if (!email || !password) {
       alert('이메일/비밀번호 정보가 없습니다. 처음부터 진행해주세요.');
-      navigate('/signup1', { replace: true });
+      navigate('/signup/email', { replace: true });
     }
   }, [email, password, navigate]);
 
@@ -146,13 +148,14 @@ const Signup4 = () => {
   };
 
   return (
-    <div style={styles.wrapper}>
-      <form style={styles.container} onSubmit={handleSubmit}>
-        <h2 style={styles.title}>🏠 주소를 입력해주세요</h2>
+    <div className="wrapper">
+      <form className="container" onSubmit={handleSubmit}>
+        <h2 className="title">🏠 주소를 입력해주세요</h2>
 
-        <div style={styles.addressContainer}>
+        <div className={styles.addressContainer}>
           <input
-            style={{ ...styles.input, flex: 1, marginBottom: 0 }}
+            className="input"
+            style={{ flex: 1, marginBottom: 0 }}
             type="text"
             placeholder="우편번호"
             value={postcode}
@@ -160,7 +163,7 @@ const Signup4 = () => {
           />
           <button
             type="button"
-            style={styles.addressButton}
+            className={styles.addressButton}
             onClick={handleAddressSearch}
             disabled={isLoading}
           >
@@ -169,7 +172,7 @@ const Signup4 = () => {
         </div>
 
         <input
-          style={styles.input}
+          className="input"
           type="text"
           placeholder="주소"
           value={address}
@@ -178,80 +181,19 @@ const Signup4 = () => {
 
         <input
           id="detailAddress"
-          style={styles.input}
+          className="input"
           type="text"
           placeholder="상세 주소"
           value={detailAddress}
           onChange={(e) => setDetailAddress(e.target.value)}
         />
 
-        <button type="submit" style={styles.button} disabled={isLoading}>
+        <button type="submit" className="button" disabled={isLoading}>
           회원가입
         </button>
       </form>
     </div>
   );
-};
-
-// ----- 스타일 -----
-const styles = {
-  ...(commonStyles || {}), // commonStyles가 없으면 빈 객체
-  wrapper: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f9f9f9',
-  },
-  container: {
-    width: '90%',
-    maxWidth: '400px',
-    backgroundColor: '#fff',
-    borderRadius: '20px',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-    padding: '40px 30px',
-    textAlign: 'center',
-    boxSizing: 'border-box',
-  },
-  title: {
-    fontSize: '22px',
-    marginBottom: '30px',
-    color: '#333',
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    marginBottom: '15px',
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    fontSize: '14px',
-    boxSizing: 'border-box',
-  },
-  addressContainer: {
-    display: 'flex',
-    marginBottom: '15px',
-    gap: '10px',
-  },
-  addressButton: {
-    ...(commonStyles?.button || {}),
-    width: 'auto',
-    backgroundColor: '#e0e0e0',
-    color: '#333',
-    padding: '12px 15px',
-    whiteSpace: 'nowrap',
-    borderRadius: '10px',
-    border: 'none',
-    cursor: 'pointer',
-  },
-  button: {
-    ...(commonStyles?.button || {}),
-    width: '100%',
-    padding: '12px',
-    fontWeight: 'bold',
-    fontSize: '15px',
-    cursor: 'pointer',
-    borderRadius: '10px',
-  },
 };
 
 export default Signup4;

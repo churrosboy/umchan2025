@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { commonStyles } from '../../../styles/commonStyles';
 // Firebase auth import
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { auth } from '../../../firebase';
+
+import '../../../styles/commonStyles.css';
+import styles from './SignUp.module.css';
 
 const Signup3 = () => {
   const navigate = useNavigate();
@@ -30,11 +31,9 @@ const Signup3 = () => {
     });
   }, []);
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     const sanitizedValue = value.replace(/[^0-9]/g, '');
-
     setPhone((prev) => ({ ...prev, [name]: sanitizedValue }));
 
     if (name === 'part1' && sanitizedValue.length === 3) inputRef2.current.focus();
@@ -74,7 +73,7 @@ const Signup3 = () => {
       await confirmationResult.confirm(verificationCode);
       // 인증 성공!
       const originalPhone = `${phone.part1}-${phone.part2}-${phone.part3}`;
-      navigate('/signup4', { state: { ...prevData, phone: originalPhone } });
+      navigate('/signup/address', { state: { ...prevData, phone: originalPhone } });
 
     } catch (error) {
       console.error("인증 오류:", error);
@@ -82,36 +81,36 @@ const Signup3 = () => {
     }
   };
 
-
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.container}>
+    <div className="wrapper">
+      <div className="container">
         {/* UI를 인증번호 발송 전/후로 분기 처리 */}
         {!isCodeSent ? (
           <>
-            <h2 style={styles.title}>📱 휴대폰 번호를 입력해주세요</h2>
-            <div style={styles.phoneContainer}>
-              <input name="part1" style={styles.phoneInput} type="tel" maxLength="3" value={phone.part1} onChange={handleChange} />
-              <span style={styles.separator}>-</span>
-              <input name="part2" ref={inputRef2} style={styles.phoneInput} type="tel" maxLength="4" value={phone.part2} onChange={handleChange} />
-              <span style={styles.separator}>-</span>
-              <input name="part3" ref={inputRef3} style={styles.phoneInput} type="tel" maxLength="4" value={phone.part3} onChange={handleChange} />
+            <h2 className="title">📱 휴대폰 번호를 입력해주세요</h2>
+            <div className={styles.phoneContainer}>
+              <input name="part1" className={styles.phoneInput} type="tel" maxLength="3" value={phone.part1} onChange={handleChange} />
+              <span className={styles.separator}>-</span>
+              <input name="part2" ref={inputRef2} className={styles.phoneInput} type="tel" maxLength="4" value={phone.part2} onChange={handleChange} />
+              <span className={styles.separator}>-</span>
+              <input name="part3" ref={inputRef3} className={styles.phoneInput} type="tel" maxLength="4" value={phone.part3} onChange={handleChange} />
             </div>
-            <button style={styles.button} onClick={handleSendCode}>인증번호 받기</button>
+            <button className="button" onClick={handleSendCode}>인증번호 받기</button>
           </>
         ) : (
           <>
-            <h2 style={styles.title}>✉️ 인증번호를 입력해주세요</h2>
-            <p style={styles.infoText}>{`${phone.part1}-${phone.part2}-${phone.part3}`}으로 인증번호를 발송했습니다.</p>
+            <h2 className="title">✉️ 인증번호를 입력해주세요</h2>
+            <p className={styles.infoText}>{`${phone.part1}-${phone.part2}-${phone.part3}`}으로 인증번호를 발송했습니다.</p>
             <input
-              style={{ ...styles.phoneInput, width: '100%', marginBottom: '15px' }}
+              className={styles.phoneInput}
+              style={{ width: '100%', marginBottom: '15px' }}
               type="tel"
               maxLength="6"
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value.replace(/[^0-9]/g, ''))}
               placeholder="인증번호 6자리"
             />
-            <button style={styles.button} onClick={handleVerifyCode}>인증하고 다음으로</button>
+            <button className="button" onClick={handleVerifyCode} style={{ marginTop: '15px' }}>인증하고 다음으로</button>
           </>
         )}
       </div>
@@ -119,38 +118,6 @@ const Signup3 = () => {
       <div id="recaptcha-container"></div>
     </div>
   );
-};
-
-const styles = {
-  ...commonStyles,
-  button: { ...commonStyles.button, marginTop: '15px' },
-  phoneContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: '15px',
-  },
-  phoneInput: {
-    width: '25%',
-    padding: '12px',
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    fontSize: '16px',
-    textAlign: 'center',
-    boxSizing: 'border-box', // 너비 계산을 용이하게 하기 위해 추가
-  },
-  separator: {
-    fontSize: '16px',
-    color: '#333',
-    fontWeight: 'bold',
-  },
-  // --- 추가된 스타일 ---
-  infoText: {
-    fontSize: '14px',
-    color: '#666',
-    marginBottom: '20px',
-  },
 };
 
 export default Signup3;
