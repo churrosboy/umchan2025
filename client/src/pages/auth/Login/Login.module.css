@@ -1,58 +1,12 @@
 /* styles/Login.module.css */
-.wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 0 5vw;
-  background-color: #f9f9f9;
-}
-
-.container {
-  width: 90%;
-  max-width: 480px;
-  background-color: #fff;
-  border-radius: 20px;
-  padding: clamp(16px, 5vw, 32px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.title {
-  font-size: 1.5rem;
-  margin-bottom: 30px;
-  color: #333;
-}
-
-.input {
-  width: 90%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 1rem;
-}
-
-.button {
-  width: 100%;
-  padding: 12px;
-  background-color: #fcd265;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
 .signupText {
   margin-top: 20px;
-  font-size: 0.9rem;
+  font-size: 14px;
   color: #666;
 }
 
 .link {
-  color: #fcd265;
+  color: #fca311;
   font-weight: bold;
-  text-decoration: none;
   cursor: pointer;
 }

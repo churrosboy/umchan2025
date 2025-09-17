@@ -1,0 +1,62 @@
+/* PasswordStep 전용 */
+.inputContainer {
+  position: relative;
+  width: 100%;
+}
+
+.toggleButton {
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* PhoneStep 전용 */
+.phoneContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.phoneInput {
+  width: 25%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.separator {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+}
+
+.infoText {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* AddressStep 전용 */
+.addressContainer {
+  display: flex;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.addressButton {
+  padding: 12px 15px;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
